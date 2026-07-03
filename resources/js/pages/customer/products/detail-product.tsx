@@ -396,7 +396,7 @@ function PurchasePanel({
                     <button
                         type="button"
                         disabled={isOutOfStock}
-                        className={`inline-flex h-12 items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-[#E64800]'}`}
+                        className={`inline-flex h-12 items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary-hover'}`}
                     >
                         <ShoppingBag className="h-4 w-4" />
                         {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}

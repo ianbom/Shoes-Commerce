@@ -86,7 +86,7 @@ export default function Navbar({
                     </Link>
                     <Link
                         href="/list"
-                        className="ml-2 hidden h-11 items-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-[#E64800] md:inline-flex"
+                        className="ml-2 hidden h-11 items-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover md:inline-flex"
                     >
                         Shop Now
                     </Link>
@@ -135,7 +135,7 @@ export default function Navbar({
                     <Link
                         href="/list"
                         onClick={() => setIsOpen(false)}
-                        className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-[#E64800]"
+                        className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
                     >
                         Shop Now
                     </Link>

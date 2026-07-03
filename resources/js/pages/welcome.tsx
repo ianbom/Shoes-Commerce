@@ -392,7 +392,7 @@ export default function Welcome({
                         <div className="mt-7 flex flex-wrap gap-3">
                             <Link
                                 href="/list?type=new_arrival"
-                                className="inline-flex h-12 items-center gap-3 bg-primary px-6 text-[14px] font-extrabold text-white hover:bg-[#E64800]"
+                                className="inline-flex h-12 items-center gap-3 bg-primary px-6 text-[14px] font-extrabold text-white hover:bg-primary-hover"
                             >
                                 Shop New Arrivals
                                 <ArrowRight className="h-4 w-4" />
@@ -489,7 +489,7 @@ export default function Welcome({
                         </p>
                         <Link
                             href="/list"
-                            className="mt-5 inline-flex h-11 w-fit items-center gap-2 bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-[#E64800]"
+                            className="mt-5 inline-flex h-11 w-fit items-center gap-2 bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
                         >
                             Explore The Collection
                             <ArrowRight className="h-4 w-4" />
