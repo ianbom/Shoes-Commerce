@@ -350,8 +350,7 @@ function ProfileInfoCard({
                         Foto Avatar{' '}
                         <span className="font-medium">(opsional)</span>
                     </label>
-                    <div className=" sm:items-center">
-   
+                    <div className="sm:items-center">
                         <button
                             type="button"
                             onClick={() => avatarInputRef.current?.click()}
@@ -533,7 +532,6 @@ function AddressCard({
         <section className="border border-[#D8D8D8] bg-white px-8 py-6">
             <SectionTitle icon={MapPin} title="Alamat Utama" />
             <div className="mt-4 sm:items-center">
-
                 <div>
                     {defaultAddress ? (
                         <div className="text-sm font-medium text-[#2E2E2E]">

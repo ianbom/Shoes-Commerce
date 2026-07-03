@@ -73,20 +73,115 @@ const lifestyleImages = [
 ];
 
 const fallbackProducts: ProductCard[] = [
-    { id: 1, slug: 'nike-air-force-1-low-kobe-court-purple', name: 'Nike Air Force 1 Low Kobe Bryant Court Purple', price: 111, sale_price: 169, label: '-30%', image: shoeImages[0] },
-    { id: 2, slug: 'nike-air-force-1-low-kobe-lakers-away', name: 'Nike Air Force 1 Low Kobe Lakers Away', price: 99, sale_price: 140, label: '-25%', image: shoeImages[1] },
-    { id: 3, slug: 'nike-air-force-1-low-kobe-lakers-home', name: 'Nike Air Force 1 Low Kobe Lakers Home', price: 119, sale_price: 150, label: '-20%', image: shoeImages[2] },
-    { id: 4, slug: 'jordan-3-retro-sp-bicoastal', name: 'Jordan 3 Retro SP Bicoastal', price: 114, sale_price: 160, label: '-25%', image: shoeImages[3] },
-    { id: 5, slug: 'air-jordan-3-retro-spring', name: 'Air Jordan 3 Retro Spring', price: 115, sale_price: 145, label: '-20%', image: shoeImages[4] },
-    { id: 6, slug: 'jordan-11-retro-cdg-white', name: 'Jordan 11 Retro CDG White', price: 129, sale_price: null, label: 'New', image: shoeImages[5] },
-    { id: 7, slug: 'air-jordan-12-stealth', name: 'Air Jordan 12 Stealth', price: 142, sale_price: null, label: 'New', image: shoeImages[6] },
-    { id: 8, slug: 'vans-lx-old-skool-pearlized', name: 'Vans LX Old Skool Pearlized', price: 159, sale_price: null, label: 'Limited', image: shoeImages[7] },
-    { id: 9, slug: 'jordan-3-retro-brazil', name: 'Jordan 3 Retro Brazil', price: 119, sale_price: null, label: 'New', image: shoeImages[8] },
-    { id: 10, slug: 'air-jordan-4-comic', name: 'Air Jordan 4 Comic 2026', price: 134, sale_price: null, label: 'New', image: shoeImages[9] },
-    { id: 11, slug: 'air-jordan-13-flint', name: 'Air Jordan 13 Retro Flint', price: 109, sale_price: null, label: 'New', image: shoeImages[10] },
-    { id: 12, slug: 'nike-kobe-8-protro-mambacurial', name: 'Nike Kobe 8 Protro Mambacurial', price: 139, sale_price: null, label: 'Limited', image: shoeImages[11] },
+    {
+        id: 1,
+        slug: 'nike-air-force-1-low-kobe-court-purple',
+        name: 'Nike Air Force 1 Low Kobe Bryant Court Purple',
+        price: 111,
+        sale_price: 169,
+        label: '-30%',
+        image: shoeImages[0],
+    },
+    {
+        id: 2,
+        slug: 'nike-air-force-1-low-kobe-lakers-away',
+        name: 'Nike Air Force 1 Low Kobe Lakers Away',
+        price: 99,
+        sale_price: 140,
+        label: '-25%',
+        image: shoeImages[1],
+    },
+    {
+        id: 3,
+        slug: 'nike-air-force-1-low-kobe-lakers-home',
+        name: 'Nike Air Force 1 Low Kobe Lakers Home',
+        price: 119,
+        sale_price: 150,
+        label: '-20%',
+        image: shoeImages[2],
+    },
+    {
+        id: 4,
+        slug: 'jordan-3-retro-sp-bicoastal',
+        name: 'Jordan 3 Retro SP Bicoastal',
+        price: 114,
+        sale_price: 160,
+        label: '-25%',
+        image: shoeImages[3],
+    },
+    {
+        id: 5,
+        slug: 'air-jordan-3-retro-spring',
+        name: 'Air Jordan 3 Retro Spring',
+        price: 115,
+        sale_price: 145,
+        label: '-20%',
+        image: shoeImages[4],
+    },
+    {
+        id: 6,
+        slug: 'jordan-11-retro-cdg-white',
+        name: 'Jordan 11 Retro CDG White',
+        price: 129,
+        sale_price: null,
+        label: 'New',
+        image: shoeImages[5],
+    },
+    {
+        id: 7,
+        slug: 'air-jordan-12-stealth',
+        name: 'Air Jordan 12 Stealth',
+        price: 142,
+        sale_price: null,
+        label: 'New',
+        image: shoeImages[6],
+    },
+    {
+        id: 8,
+        slug: 'vans-lx-old-skool-pearlized',
+        name: 'Vans LX Old Skool Pearlized',
+        price: 159,
+        sale_price: null,
+        label: 'Limited',
+        image: shoeImages[7],
+    },
+    {
+        id: 9,
+        slug: 'jordan-3-retro-brazil',
+        name: 'Jordan 3 Retro Brazil',
+        price: 119,
+        sale_price: null,
+        label: 'New',
+        image: shoeImages[8],
+    },
+    {
+        id: 10,
+        slug: 'air-jordan-4-comic',
+        name: 'Air Jordan 4 Comic 2026',
+        price: 134,
+        sale_price: null,
+        label: 'New',
+        image: shoeImages[9],
+    },
+    {
+        id: 11,
+        slug: 'air-jordan-13-flint',
+        name: 'Air Jordan 13 Retro Flint',
+        price: 109,
+        sale_price: null,
+        label: 'New',
+        image: shoeImages[10],
+    },
+    {
+        id: 12,
+        slug: 'nike-kobe-8-protro-mambacurial',
+        name: 'Nike Kobe 8 Protro Mambacurial',
+        price: 139,
+        sale_price: null,
+        label: 'Limited',
+        image: shoeImages[11],
+    },
 ];
-
 
 function money(value: number) {
     if (value > 9999) {
@@ -104,8 +199,16 @@ function productName(product: ProductCard) {
     return product.name ?? product.title ?? 'NEXSTEP Sneaker';
 }
 
-function mergeProducts(products: ProductCard[] | undefined, start = 0, count = 4) {
-    const merged = [...(products ?? []), ...fallbackProducts.slice(start), ...fallbackProducts];
+function mergeProducts(
+    products: ProductCard[] | undefined,
+    start = 0,
+    count = 4,
+) {
+    const merged = [
+        ...(products ?? []),
+        ...fallbackProducts.slice(start),
+        ...fallbackProducts,
+    ];
     const seen = new Set<number | string>();
 
     return merged
@@ -123,11 +226,24 @@ function mergeProducts(products: ProductCard[] | undefined, start = 0, count = 4
         .slice(0, count);
 }
 
-function SectionHeader({ title, href, label = 'View All' }: { title: string; href: string; label?: string }) {
+function SectionHeader({
+    title,
+    href,
+    label = 'View All',
+}: {
+    title: string;
+    href: string;
+    label?: string;
+}) {
     return (
         <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-[22px] leading-none font-extrabold text-ink">{title}</h2>
-            <Link href={href} className="inline-flex items-center gap-2 text-[13px] font-bold text-ink hover:text-primary">
+            <h2 className="text-[22px] leading-none font-extrabold text-ink">
+                {title}
+            </h2>
+            <Link
+                href={href}
+                className="inline-flex items-center gap-2 text-[13px] font-bold text-ink hover:text-primary"
+            >
                 {label}
                 <ArrowRight className="h-4 w-4" />
             </Link>
@@ -135,27 +251,61 @@ function SectionHeader({ title, href, label = 'View All' }: { title: string; hre
     );
 }
 
-function ProductTile({ product, compact = false }: { product: ProductCard; compact?: boolean }) {
-    const oldPrice = product.sale_price && product.sale_price > product.price ? product.sale_price : null;
+function ProductTile({
+    product,
+    compact = false,
+}: {
+    product: ProductCard;
+    compact?: boolean;
+}) {
+    const oldPrice =
+        product.sale_price && product.sale_price > product.price
+            ? product.sale_price
+            : null;
     const label = product.label ?? product.badge;
     const image = product.image ?? shoeImages[product.id % shoeImages.length];
 
     return (
         <article className="group relative overflow-hidden bg-white transition">
             {label ? (
-                <span className={`absolute top-3 left-3 z-10 px-2 py-1 text-[11px] leading-none font-extrabold ${label.toLowerCase().includes('new') ? 'bg-surface-soft text-ink' : 'bg-primary text-white'}`}>
-                    {label.startsWith('-') ? label : label.replace('SALE', 'Sale').replace('BEST SELLER', 'Best Seller')}
+                <span
+                    className={`absolute top-3 left-3 z-10 px-2 py-1 text-[11px] leading-none font-extrabold ${label.toLowerCase().includes('new') ? 'bg-surface-soft text-ink' : 'bg-primary text-white'}`}
+                >
+                    {label.startsWith('-')
+                        ? label
+                        : label
+                              .replace('SALE', 'Sale')
+                              .replace('BEST SELLER', 'Best Seller')}
                 </span>
             ) : null}
-            <Link href={`/detail?product=${product.slug}`} aria-label={`View ${productName(product)}`} className="block">
-                <div className={`${compact ? 'h-40' : 'h-56 md:h-64'} overflow-hidden bg-white`}>
-                    <img src={image} alt={productName(product)} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" loading="lazy" />
+            <Link
+                href={`/detail?product=${product.slug}`}
+                aria-label={`View ${productName(product)}`}
+                className="block"
+            >
+                <div
+                    className={`${compact ? 'h-40' : 'h-56 md:h-64'} overflow-hidden bg-white`}
+                >
+                    <img
+                        src={image}
+                        alt={productName(product)}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                        loading="lazy"
+                    />
                 </div>
                 <div className="pt-3 pb-4">
-                    <p className="truncate text-[14px] font-semibold text-ink">{productName(product)}</p>
+                    <p className="truncate text-[14px] font-semibold text-ink">
+                        {productName(product)}
+                    </p>
                     <div className="mt-1 flex items-baseline gap-2">
-                        <span className="text-[15px] font-extrabold text-ink">{money(product.price)}</span>
-                        {oldPrice ? <span className="text-[12px] font-medium text-muted line-through">{money(oldPrice)}</span> : null}
+                        <span className="text-[15px] font-extrabold text-ink">
+                            {money(product.price)}
+                        </span>
+                        {oldPrice ? (
+                            <span className="text-[12px] font-medium text-muted line-through">
+                                {money(oldPrice)}
+                            </span>
+                        ) : null}
                     </div>
                 </div>
             </Link>
@@ -165,11 +315,23 @@ function ProductTile({ product, compact = false }: { product: ProductCard; compa
 
 function MiniProduct({ product }: { product: ProductCard }) {
     return (
-        <Link href={`/detail?product=${product.slug}`} className="grid grid-cols-[72px_1fr] items-center gap-3 border border-hairline p-2 hover:border-hairline-strong">
-            <img src={product.image ?? shoeImages[0]} alt={productName(product)} className="h-16 w-full object-contain" loading="lazy" />
+        <Link
+            href={`/detail?product=${product.slug}`}
+            className="grid grid-cols-[72px_1fr] items-center gap-3 border border-hairline p-2 hover:border-hairline-strong"
+        >
+            <img
+                src={product.image ?? shoeImages[0]}
+                alt={productName(product)}
+                className="h-16 w-full object-contain"
+                loading="lazy"
+            />
             <span>
-                <span className="block truncate text-[12px] font-semibold text-ink">{productName(product)}</span>
-                <span className="mt-1 block text-[12px] font-extrabold text-ink">{money(product.price)}</span>
+                <span className="block truncate text-[12px] font-semibold text-ink">
+                    {productName(product)}
+                </span>
+                <span className="mt-1 block text-[12px] font-extrabold text-ink">
+                    {money(product.price)}
+                </span>
             </span>
         </Link>
     );
@@ -184,37 +346,74 @@ export default function Welcome({
     mostLoved = [],
 }: Props) {
     const flashDeals = mergeProducts(hajjSeries, 0, 5);
-    const arrivals = mergeProducts(recentAdditions.length ? recentAdditions : wePresent, 5, 8);
+    const arrivals = mergeProducts(
+        recentAdditions.length ? recentAdditions : wePresent,
+        5,
+        8,
+    );
     const bestSellers = mergeProducts(mostLoved, 0, 6);
-    const categoryProducts = mergeProducts([...flashDeals, ...arrivals, ...bestSellers], 0, 16);
-    const heroImage = heroBanners.find(Boolean)?.image_desktop_url ?? shoeImages[0];
-    const categoryNames = collections.length > 0 ? collections.slice(0, 4).map((collection) => collection.name) : ['Luxury Sneakers', 'Streetwear Essentials', 'Performance Classics', 'Warehouse Ready'];
+    const categoryProducts = mergeProducts(
+        [...flashDeals, ...arrivals, ...bestSellers],
+        0,
+        16,
+    );
+    const heroImage =
+        heroBanners.find(Boolean)?.image_desktop_url ?? shoeImages[0];
+    const categoryNames =
+        collections.length > 0
+            ? collections.slice(0, 4).map((collection) => collection.name)
+            : [
+                  'Luxury Sneakers',
+                  'Streetwear Essentials',
+                  'Performance Classics',
+                  'Warehouse Ready',
+              ];
 
     return (
         <ShopLayout>
             <Head title="NEXSTEP" />
 
             <section className="relative overflow-hidden border-b border-hairline bg-white">
-                <div className="absolute inset-y-0 right-0 hidden w-1/2 text-[220px] leading-none font-black text-surface-soft lg:block">N</div>
+                <div className="absolute inset-y-0 right-0 hidden w-1/2 text-[220px] leading-none font-black text-surface-soft lg:block">
+                    N
+                </div>
                 <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-10 sm:px-8 lg:min-h-[520px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-20">
                     <div className="relative z-10">
-                        <p className="mb-4 text-[13px] font-extrabold text-primary uppercase">New Drop Season</p>
+                        <p className="mb-4 text-[13px] font-extrabold text-primary uppercase">
+                            New Drop Season
+                        </p>
                         <h1 className="max-w-[620px] text-[50px] leading-[0.95] font-black tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[84px]">
                             Step Into The Next Drop
                         </h1>
-                        <p className="mt-5 max-w-[520px] text-[17px] leading-7 font-medium text-body">Premium sneakers, limited releases, and streetwear essentials curated for everyday rotation.</p>
+                        <p className="mt-5 max-w-[520px] text-[17px] leading-7 font-medium text-body">
+                            Premium sneakers, limited releases, and streetwear
+                            essentials curated for everyday rotation.
+                        </p>
                         <div className="mt-7 flex flex-wrap gap-3">
-                            <Link href="/list?type=new_arrival" className="inline-flex h-12 items-center gap-3 bg-primary px-6 text-[14px] font-extrabold text-white hover:bg-[#E64800]">
+                            <Link
+                                href="/list?type=new_arrival"
+                                className="inline-flex h-12 items-center gap-3 bg-primary px-6 text-[14px] font-extrabold text-white hover:bg-[#E64800]"
+                            >
                                 Shop New Arrivals
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
-                            <Link href="/list?type=best_seller" className="inline-flex h-12 items-center border border-ink bg-white px-6 text-[14px] font-extrabold text-ink hover:bg-ink hover:text-white">
+                            <Link
+                                href="/list?type=best_seller"
+                                className="inline-flex h-12 items-center border border-ink bg-white px-6 text-[14px] font-extrabold text-ink hover:bg-ink hover:text-white"
+                            >
                                 View Best Sellers
                             </Link>
                         </div>
                         <div className="mt-8 flex flex-wrap gap-6 text-[12px] font-bold text-body">
-                            {[['100% Authentic', BadgeCheck], ['Fast Worldwide Shipping', Truck], ['Easy Returns', RotateCcw]].map(([label, Icon]) => (
-                                <span key={label as string} className="inline-flex items-center gap-2">
+                            {[
+                                ['100% Authentic', BadgeCheck],
+                                ['Fast Worldwide Shipping', Truck],
+                                ['Easy Returns', RotateCcw],
+                            ].map(([label, Icon]) => (
+                                <span
+                                    key={label as string}
+                                    className="inline-flex items-center gap-2"
+                                >
                                     <Icon className="h-5 w-5 text-ink" />
                                     {label as string}
                                 </span>
@@ -222,45 +421,89 @@ export default function Welcome({
                         </div>
                     </div>
                     <div className="relative z-10 min-h-[320px]">
-                        <img src={'/img/sepatu-hero.png'} alt="NEXSTEP hero sneaker" className="mx-auto h-[320px] w-full object-contain drop-shadow-[0_24px_18px_rgba(17,17,17,0.14)] sm:h-[440px] lg:h-[500px]" />
+                        <img
+                            src={'/img/sepatu-hero.png'}
+                            alt="NEXSTEP hero sneaker"
+                            className="mx-auto h-[320px] w-full object-contain drop-shadow-[0_24px_18px_rgba(17,17,17,0.14)] sm:h-[440px] lg:h-[500px]"
+                        />
                     </div>
                 </div>
             </section>
 
             <main className="mx-auto max-w-[1440px] px-5 py-5 sm:px-8 lg:px-20">
                 <section className="mb-8">
-                    <SectionHeader title="Weekly Flash Deals" href="/list?type=discount" label="View All Deals" />
+                    <SectionHeader
+                        title="Weekly Flash Deals"
+                        href="/list?type=discount"
+                        label="View All Deals"
+                    />
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                        {flashDeals.map((product) => <ProductTile key={product.slug} product={product} compact />)}
+                        {flashDeals.map((product) => (
+                            <ProductTile
+                                key={product.slug}
+                                product={product}
+                                compact
+                            />
+                        ))}
                     </div>
                 </section>
 
                 <section className="mb-8">
-                    <SectionHeader title="New Arrivals" href="/list?type=new_arrival" label="View All New Arrivals" />
+                    <SectionHeader
+                        title="New Arrivals"
+                        href="/list?type=new_arrival"
+                        label="View All New Arrivals"
+                    />
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        {arrivals.map((product) => <ProductTile key={product.slug} product={product} />)}
+                        {arrivals.map((product) => (
+                            <ProductTile key={product.slug} product={product} />
+                        ))}
                     </div>
                 </section>
 
                 <section className="mb-8">
-                    <SectionHeader title="Best Sellers" href="/list?type=best_seller" label="View All Best Sellers" />
+                    <SectionHeader
+                        title="Best Sellers"
+                        href="/list?type=best_seller"
+                        label="View All Best Sellers"
+                    />
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-                        {bestSellers.map((product) => <ProductTile key={product.slug} product={product} compact />)}
+                        {bestSellers.map((product) => (
+                            <ProductTile
+                                key={product.slug}
+                                product={product}
+                                compact
+                            />
+                        ))}
                     </div>
                 </section>
 
                 <section className="mb-8 grid gap-4 border-y border-hairline py-6 lg:grid-cols-[320px_1fr]">
                     <div className="flex flex-col justify-center">
-                        <h2 className="text-[34px] leading-[1] font-black tracking-[-0.03em] text-ink">Built For Collectors, Styled For Everyday</h2>
-                        <p className="mt-4 text-[14px] leading-6 font-medium text-body">From standout sneakers to street-ready gear, we have got your every step.</p>
-                        <Link href="/list" className="mt-5 inline-flex h-11 w-fit items-center gap-2 bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-[#E64800]">
+                        <h2 className="text-[34px] leading-[1] font-black tracking-[-0.03em] text-ink">
+                            Built For Collectors, Styled For Everyday
+                        </h2>
+                        <p className="mt-4 text-[14px] leading-6 font-medium text-body">
+                            From standout sneakers to street-ready gear, we have
+                            got your every step.
+                        </p>
+                        <Link
+                            href="/list"
+                            className="mt-5 inline-flex h-11 w-fit items-center gap-2 bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-[#E64800]"
+                        >
                             Explore The Collection
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
                         {lifestyleImages.map((image, index) => (
-                            <img key={image} src={image} alt={`NEXSTEP editorial ${index + 1}`} className="h-44 w-full object-cover md:h-56" loading="lazy" />
+                            <img
+                                key={image}
+                                src={image}
+                                alt={`NEXSTEP editorial ${index + 1}`}
+                                className="h-44 w-full object-cover md:h-56"
+                                loading="lazy"
+                            />
                         ))}
                     </div>
                 </section>
@@ -286,5 +529,3 @@ export default function Welcome({
 }
 
 Welcome.layout = (page: ReactNode) => page;
-
-

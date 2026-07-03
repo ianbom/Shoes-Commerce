@@ -806,14 +806,14 @@ const ProductTile = memo(function ProductTile({
                         }`}
                     />
                     {!isSoldOut && product.badge && (
-                        <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 items-center justify-center bg-primary px-1 py-2 text-[11px] font-extrabold tracking-[0.08em] text-white uppercase [writing-mode:vertical-rl] [text-orientation:mixed] [transform:rotate(180deg)] sm:w-10 sm:text-[12px]">
+                        <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 [transform:rotate(180deg)] items-center justify-center bg-primary px-1 py-2 text-[11px] font-extrabold tracking-[0.08em] text-white uppercase [text-orientation:mixed] [writing-mode:vertical-rl] sm:w-10 sm:text-[12px]">
                             {product.badge === 'DISCOUNT'
                                 ? 'SALE'
                                 : product.badge}
                         </span>
                     )}
                     {isSoldOut && (
-                        <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 items-center justify-center bg-ink px-1 py-2 text-[10px] font-extrabold tracking-[0.08em] text-white uppercase [writing-mode:vertical-rl] [text-orientation:mixed] [transform:rotate(180deg)] sm:w-10 sm:text-[11px]">
+                        <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 [transform:rotate(180deg)] items-center justify-center bg-ink px-1 py-2 text-[10px] font-extrabold tracking-[0.08em] text-white uppercase [text-orientation:mixed] [writing-mode:vertical-rl] sm:w-10 sm:text-[11px]">
                             Sold Out
                         </span>
                     )}
@@ -883,4 +883,3 @@ const ProductTile = memo(function ProductTile({
         </article>
     );
 });
-

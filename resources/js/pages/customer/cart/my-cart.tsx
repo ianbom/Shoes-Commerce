@@ -467,7 +467,6 @@ function QuantityControl({
     );
 }
 
-
 function OrderSummary({
     summary,
     hasStockIssues,

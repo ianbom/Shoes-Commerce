@@ -1,15 +1,18 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans: 'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-serif: 'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans:
+        'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system,
+        BlinkMacSystemFont, sans-serif;
+    --font-serif:
+        'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system,
+        BlinkMacSystemFont, sans-serif;
 
     --radius-xs: 0px;
     --radius-sm: 0px;

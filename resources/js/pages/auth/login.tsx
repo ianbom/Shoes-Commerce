@@ -71,7 +71,7 @@ export default function Login({
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="text-[11px] font-bold tracking-[0.12em] text-[#F58220] no-underline uppercase hover:text-[#E67312]"
+                                            className="text-[11px] font-bold tracking-[0.12em] text-[#F58220] uppercase no-underline hover:text-[#E67312]"
                                             tabIndex={5}
                                         >
                                             Forgot password?
@@ -179,4 +179,3 @@ Login.layout = {
         alt: 'AxeGear athlete wearing mirrored performance eyewear',
     },
 };
-

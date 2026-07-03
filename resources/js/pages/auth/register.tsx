@@ -136,8 +136,7 @@ export default function Register() {
 
 Register.layout = {
     title: 'Create Account',
-    description:
-        'Set up your AxeGear account with your details below.',
+    description: 'Set up your AxeGear account with your details below.',
     breadcrumbs: [
         { label: 'Home', href: home() },
         { label: 'Account' },
@@ -147,6 +146,4 @@ Register.layout = {
         src: '/img/login-image.png',
         alt: 'AxeGear athlete wearing mirrored performance eyewear',
     },
-
 };
-

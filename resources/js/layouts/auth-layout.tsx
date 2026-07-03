@@ -22,11 +22,10 @@ export default function AuthLayout({
     contentClassName,
     children,
 }: AuthLayoutProps) {
-    const resolvedHeroImage =
-        heroImage ?? {
-            src: '/img/login-image.png',
-            alt: 'AxeGear athlete wearing mirrored performance eyewear',
-        };
+    const resolvedHeroImage = heroImage ?? {
+        src: '/img/login-image.png',
+        alt: 'AxeGear athlete wearing mirrored performance eyewear',
+    };
 
     return (
         <div className="min-h-svh bg-white text-[#1A1A1A]">
@@ -41,8 +40,6 @@ export default function AuthLayout({
                 </div>
 
                 <div className="order-1 flex min-h-svh flex-col bg-white lg:order-2 lg:min-h-full">
-
-
                     <div className="flex flex-1 items-center px-5 py-8 sm:px-8 sm:py-10 lg:px-10 xl:px-12">
                         <div
                             className={[
@@ -53,7 +50,7 @@ export default function AuthLayout({
                             {breadcrumbs && breadcrumbs.length > 0 && (
                                 <nav
                                     aria-label="Breadcrumb"
-                                    className="mb-6 flex flex-wrap items-center gap-2 text-[11px] font-bold tracking-[0.16em] uppercase text-[#707070]"
+                                    className="mb-6 flex flex-wrap items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-[#707070] uppercase"
                                 >
                                     {breadcrumbs.map((crumb, index) => (
                                         <div
@@ -80,9 +77,10 @@ export default function AuthLayout({
                                                 </span>
                                             )}
 
-                                            {index <
-                                                breadcrumbs.length - 1 && (
-                                                <span aria-hidden="true">/</span>
+                                            {index < breadcrumbs.length - 1 && (
+                                                <span aria-hidden="true">
+                                                    /
+                                                </span>
                                             )}
                                         </div>
                                     ))}
@@ -112,6 +110,3 @@ export default function AuthLayout({
         </div>
     );
 }
-
-
-

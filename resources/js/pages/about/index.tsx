@@ -228,7 +228,6 @@ export default function AboutPage() {
                 <FeaturesSection />
                 <AthletesSection />
                 <CollectionsSection />
-               
             </div>
         </ShopLayout>
     );
@@ -528,7 +527,6 @@ function CollectionsSection() {
         </section>
     );
 }
-
 
 function SectionTag({ children }: { children: string }) {
     return (
