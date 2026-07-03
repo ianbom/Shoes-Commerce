@@ -30,14 +30,14 @@ export default function ShopLayout({ children }: ShopLayoutProps) {
     const isAuthenticated = Boolean(props.auth.user);
 
     return (
-        <div className="flex min-h-screen flex-col overflow-x-hidden bg-canvas font-sans text-ink selection:bg-primary selection:text-white">
+        <div className="flex min-h-screen flex-col overflow-x-hidden bg-white font-sans text-ink selection:bg-primary selection:text-white">
             <Navbar
                 cartCount={cartCount}
                 collections={featuredCollections}
                 currentUrl={url}
                 isAuthenticated={isAuthenticated}
             />
-            <main className="w-full flex-grow bg-canvas">{children}</main>
+            <main className="w-full flex-grow bg-white">{children}</main>
             <Toaster />
             <Footer />
         </div>
