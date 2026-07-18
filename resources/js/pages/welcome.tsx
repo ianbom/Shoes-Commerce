@@ -2,12 +2,27 @@ import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
     BadgeCheck,
-    ChevronLeft,
+    Box,
     ChevronRight,
+    CircleDollarSign,
+    Footprints,
+    Gift,
+    Globe2,
+    Headphones,
+    Heart,
+    Leaf,
+    PackageCheck,
     RotateCcw,
+    Search,
+    ShieldCheck,
+    Sparkles,
+    Star,
     Truck,
+    Waves,
+    Wind,
+    Zap,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import ShopLayout from '@/layouts/shop-layout';
 
@@ -64,135 +79,102 @@ const shoeImages = [
     'https://us03-imgcdn.ymcart.com/82023/2026/06/03/4/e/4ec8bba9e9f8607f.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
 ];
 
-const lifestyleImages = [
-    'https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?q=80&w=1200&auto=format&fit=crop',
+const fallbackProducts: ProductCard[] = shoeImages.map((image, index) => ({
+    id: index + 1,
+    slug: `nexstep-sneaker-${index + 1}`,
+    name: [
+        'Nike Air Force 1 Low Retro QS Kobe Bryant',
+        'Jordan 4 Retro Nigel Sylvester Brick',
+        'Air Jordan 3 OG True Blue 2026',
+        'Nike Air Force 1 Low Kobe Lakers Away',
+        'Nike Air Force 1 Low Kobe Lakers Home',
+        'Off White Virgil Abloh Archive X Air Jordan 1',
+        'Nike Air Force 1 Low Court Purple',
+        'Nike Air Force 1 Low Bryant Lakers Away',
+        'Nike Air Force 1 Low Bryant Lakers Home',
+        'Nina Chanel Abney X WMNS Jordan 3 Retro SP',
+        'Air Jordan 3 Retro Spring',
+        'Nike Kobe 8 Protro Mambacurial',
+    ][index],
+    price: 1097600 + index * 37200,
+    sale_price: index < 5 ? 1449000 + index * 145000 : null,
+    label:
+        index < 5 ? ['New', 'New', 'Featured', '-26%', '-20%'][index] : 'New',
+    image,
+}));
+
+const categoryCards = [
+    {
+        title: 'Running',
+        description:
+            'Lightweight, responsive sneakers for everyday performance.',
+        image: '/img/home/running.webp',
+        href: '/list?search=running',
+    },
+    {
+        title: 'Basketball',
+        description: 'Built for the game. Engineered for every move.',
+        image: '/img/home/basketball.webp',
+        href: '/list?search=basketball',
+    },
+    {
+        title: 'Training',
+        description: 'Support, stability, and comfort for every workout.',
+        image: '/img/home/training.webp',
+        href: '/list?search=training',
+    },
+    {
+        title: 'Lifestyle',
+        description: 'Street-ready styles that move with your world.',
+        image: '/img/home/lifestyle.webp',
+        href: '/list?search=lifestyle',
+    },
 ];
 
-const fallbackProducts: ProductCard[] = [
+const technologies: Array<{
+    title: string;
+    description: string;
+    icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+}> = [
     {
-        id: 1,
-        slug: 'nike-air-force-1-low-kobe-court-purple',
-        name: 'Nike Air Force 1 Low Kobe Bryant Court Purple',
-        price: 111,
-        sale_price: 169,
-        label: '-30%',
-        image: shoeImages[0],
+        title: 'Aero Foam',
+        description: 'Ultra-light foam for maximum comfort and energy return.',
+        icon: Footprints,
     },
     {
-        id: 2,
-        slug: 'nike-air-force-1-low-kobe-lakers-away',
-        name: 'Nike Air Force 1 Low Kobe Lakers Away',
-        price: 99,
-        sale_price: 140,
-        label: '-25%',
-        image: shoeImages[1],
+        title: 'Flex Motion',
+        description:
+            'Flexible grooves for natural movement and smooth transitions.',
+        icon: Waves,
     },
     {
-        id: 3,
-        slug: 'nike-air-force-1-low-kobe-lakers-home',
-        name: 'Nike Air Force 1 Low Kobe Lakers Home',
-        price: 119,
-        sale_price: 150,
-        label: '-20%',
-        image: shoeImages[2],
+        title: 'Grip Control',
+        description: 'Advanced outsole for superior traction on any surface.',
+        icon: Sparkles,
     },
     {
-        id: 4,
-        slug: 'jordan-3-retro-sp-bicoastal',
-        name: 'Jordan 3 Retro SP Bicoastal',
-        price: 114,
-        sale_price: 160,
-        label: '-25%',
-        image: shoeImages[3],
+        title: 'Breath Tech',
+        description: 'Breathable materials that keep your feet cool and dry.',
+        icon: Wind,
     },
     {
-        id: 5,
-        slug: 'air-jordan-3-retro-spring',
-        name: 'Air Jordan 3 Retro Spring',
-        price: 115,
-        sale_price: 145,
-        label: '-20%',
-        image: shoeImages[4],
+        title: 'Heel Support',
+        description: 'Reinforced support for stability and impact protection.',
+        icon: ShieldCheck,
     },
     {
-        id: 6,
-        slug: 'jordan-11-retro-cdg-white',
-        name: 'Jordan 11 Retro CDG White',
-        price: 129,
-        sale_price: null,
-        label: 'New',
-        image: shoeImages[5],
-    },
-    {
-        id: 7,
-        slug: 'air-jordan-12-stealth',
-        name: 'Air Jordan 12 Stealth',
-        price: 142,
-        sale_price: null,
-        label: 'New',
-        image: shoeImages[6],
-    },
-    {
-        id: 8,
-        slug: 'vans-lx-old-skool-pearlized',
-        name: 'Vans LX Old Skool Pearlized',
-        price: 159,
-        sale_price: null,
-        label: 'Limited',
-        image: shoeImages[7],
-    },
-    {
-        id: 9,
-        slug: 'jordan-3-retro-brazil',
-        name: 'Jordan 3 Retro Brazil',
-        price: 119,
-        sale_price: null,
-        label: 'New',
-        image: shoeImages[8],
-    },
-    {
-        id: 10,
-        slug: 'air-jordan-4-comic',
-        name: 'Air Jordan 4 Comic 2026',
-        price: 134,
-        sale_price: null,
-        label: 'New',
-        image: shoeImages[9],
-    },
-    {
-        id: 11,
-        slug: 'air-jordan-13-flint',
-        name: 'Air Jordan 13 Retro Flint',
-        price: 109,
-        sale_price: null,
-        label: 'New',
-        image: shoeImages[10],
-    },
-    {
-        id: 12,
-        slug: 'nike-kobe-8-protro-mambacurial',
-        name: 'Nike Kobe 8 Protro Mambacurial',
-        price: 139,
-        sale_price: null,
-        label: 'Limited',
-        image: shoeImages[11],
+        title: 'Eco Materials',
+        description: 'Sustainable materials for a cleaner future.',
+        icon: Leaf,
     },
 ];
 
 function money(value: number) {
-    if (value > 9999) {
-        return new Intl.NumberFormat('id-ID', {
-            currency: 'IDR',
-            maximumFractionDigits: 0,
-            style: 'currency',
-        }).format(value);
-    }
-
-    return `$${value.toFixed(2)}`;
+    return new Intl.NumberFormat('id-ID', {
+        currency: 'IDR',
+        maximumFractionDigits: 0,
+        style: 'currency',
+    }).format(value);
 }
 
 function productName(product: ProductCard) {
@@ -201,17 +183,16 @@ function productName(product: ProductCard) {
 
 function mergeProducts(
     products: ProductCard[] | undefined,
-    start = 0,
-    count = 4,
+    start: number,
+    count: number,
 ) {
-    const merged = [
+    const seen = new Set<number | string>();
+
+    return [
         ...(products ?? []),
         ...fallbackProducts.slice(start),
         ...fallbackProducts,
-    ];
-    const seen = new Set<number | string>();
-
-    return merged
+    ]
         .filter((product) => {
             const key = product.id ?? product.slug;
 
@@ -220,7 +201,6 @@ function mergeProducts(
             }
 
             seen.add(key);
-
             return true;
         })
         .slice(0, count);
@@ -229,23 +209,23 @@ function mergeProducts(
 function SectionHeader({
     title,
     href,
-    label = 'View All',
+    label,
 }: {
     title: string;
     href: string;
-    label?: string;
+    label: string;
 }) {
     return (
-        <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-[22px] leading-none font-extrabold text-ink">
+        <div className="mb-3 flex items-center justify-between gap-4">
+            <h2 className="text-[24px] leading-none text-ink uppercase sm:text-[26px]">
                 {title}
             </h2>
             <Link
                 href={href}
-                className="inline-flex items-center gap-2 text-[13px] font-bold text-ink hover:text-primary"
+                className="inline-flex items-center gap-2 text-[12px] font-bold text-ink uppercase hover:text-primary"
             >
                 {label}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="size-4" />
             </Link>
         </div>
     );
@@ -253,57 +233,64 @@ function SectionHeader({
 
 function ProductTile({
     product,
-    compact = false,
+    featured = false,
 }: {
     product: ProductCard;
-    compact?: boolean;
+    featured?: boolean;
 }) {
-    const oldPrice =
-        product.sale_price && product.sale_price > product.price
-            ? product.sale_price
+    const currentPrice = product.sale_price ?? product.price;
+    const oldPrice = product.sale_price !== null ? product.price : null;
+    const discount =
+        oldPrice && oldPrice > currentPrice
+            ? Math.round((1 - currentPrice / oldPrice) * 100)
             : null;
-    const label = product.label ?? product.badge;
+    const label = product.label ?? product.badge ?? (featured ? 'New' : null);
     const image = product.image ?? shoeImages[product.id % shoeImages.length];
 
     return (
-        <article className="group relative overflow-hidden bg-white transition">
-            {label ? (
-                <span
-                    className={`absolute top-3 left-3 z-10 px-2 py-1 text-[11px] leading-none font-extrabold ${label.toLowerCase().includes('new') ? 'bg-surface-soft text-ink' : 'bg-primary text-white'}`}
-                >
-                    {label.startsWith('-')
-                        ? label
-                        : label
-                              .replace('SALE', 'Sale')
-                              .replace('BEST SELLER', 'Best Seller')}
-                </span>
-            ) : null}
+        <article className="group relative min-w-0 overflow-hidden rounded-[12px] border border-hairline bg-surface-subtle">
             <Link
                 href={`/detail?product=${product.slug}`}
                 aria-label={`View ${productName(product)}`}
                 className="block"
             >
-                <div
-                    className={`${compact ? 'h-40' : 'h-56 md:h-64'} overflow-hidden bg-white`}
-                >
+                <div className="relative h-[155px] overflow-hidden sm:h-[180px] lg:h-[195px]">
+                    {label ? (
+                        <span className="absolute top-3 left-3 z-10 bg-ink px-2 py-1 text-[10px] leading-none text-white uppercase">
+                            {label}
+                        </span>
+                    ) : null}
+                    <Heart
+                        className="absolute top-3 right-3 z-10 size-5 fill-white text-ink"
+                        strokeWidth={1.7}
+                    />
                     <img
                         src={image}
                         alt={productName(product)}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                        onError={(event) => {
+                            event.currentTarget.src =
+                                shoeImages[product.id % shoeImages.length];
+                        }}
+                        className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
                         loading="lazy"
                     />
                 </div>
-                <div className="pt-3 pb-4">
-                    <p className="truncate font-display text-[16px] font-semibold tracking-[0.06em] text-ink">
+                <div className="px-3 pb-4">
+                    <h3 className="line-clamp-2 min-h-10 text-[16px] leading-5 text-ink uppercase">
                         {productName(product)}
-                    </p>
-                    <div className="mt-1 flex items-baseline gap-2">
-                        <span className="text-[15px] font-extrabold text-ink">
-                            {money(product.price)}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <span className="text-[14px] font-extrabold text-ink">
+                            {money(currentPrice)}
                         </span>
                         {oldPrice ? (
-                            <span className="text-[12px] font-medium text-muted line-through">
+                            <span className="text-[11px] text-muted-foreground line-through">
                                 {money(oldPrice)}
+                            </span>
+                        ) : null}
+                        {discount ? (
+                            <span className="ml-auto text-[12px] font-extrabold text-primary">
+                                -{discount}%
                             </span>
                         ) : null}
                     </div>
@@ -313,217 +300,349 @@ function ProductTile({
     );
 }
 
-function MiniProduct({ product }: { product: ProductCard }) {
+function HeroTrustCard({
+    icon: Icon,
+    title,
+    text,
+}: {
+    icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+    title: string;
+    text: string;
+}) {
     return (
-        <Link
-            href={`/detail?product=${product.slug}`}
-            className="grid grid-cols-[72px_1fr] items-center gap-3 border border-hairline p-2 hover:border-hairline-strong"
-        >
-            <img
-                src={product.image ?? shoeImages[0]}
-                alt={productName(product)}
-                className="h-16 w-full object-contain"
-                loading="lazy"
-            />
-            <span>
-                <span className="block truncate font-display text-[12px] font-semibold tracking-[0.06em] text-ink">
-                    {productName(product)}
+        <div className="flex items-center gap-3 rounded-[10px] border border-black/5 bg-white px-4 py-3 shadow-dropdown">
+            <Icon className="size-6 shrink-0 text-ink" />
+            <div>
+                <strong className="block text-[13px] leading-4 text-ink">
+                    {title}
+                </strong>
+                <span className="text-[11px] leading-4 text-muted-foreground">
+                    {text}
                 </span>
-                <span className="mt-1 block text-[12px] font-extrabold text-ink">
-                    {money(product.price)}
-                </span>
-            </span>
-        </Link>
+            </div>
+        </div>
     );
 }
 
 export default function Welcome({
-    heroBanners = [],
     collections = [],
     hajjSeries = [],
     wePresent = [],
     recentAdditions = [],
-    mostLoved = [],
 }: Props) {
     const flashDeals = mergeProducts(hajjSeries, 0, 5);
-    const arrivals = mergeProducts(
-        recentAdditions.length ? recentAdditions : wePresent,
-        5,
-        8,
-    );
-    const bestSellers = mergeProducts(mostLoved, 0, 6);
-    const categoryProducts = mergeProducts(
-        [...flashDeals, ...arrivals, ...bestSellers],
-        0,
-        16,
-    );
-    const heroImage =
-        heroBanners.find(Boolean)?.image_desktop_url ?? shoeImages[0];
-    const categoryNames =
-        collections.length > 0
-            ? collections.slice(0, 4).map((collection) => collection.name)
-            : [
-                  'Luxury Sneakers',
-                  'Streetwear Essentials',
-                  'Performance Classics',
-                  'Warehouse Ready',
-              ];
+    const arrivals = mergeProducts([...wePresent, ...recentAdditions], 5, 6);
+    const categoryLinks = [
+        { label: 'New Arrivals', href: '/list?type=new_arrival', icon: Star },
+        {
+            label: 'Best Sellers',
+            href: '/list?type=best_seller',
+            icon: BadgeCheck,
+        },
+        { label: 'Sneakers', href: '/list?search=sneakers', icon: Footprints },
+        {
+            label: 'Streetwear',
+            href: '/list?search=streetwear',
+            icon: Sparkles,
+        },
+        {
+            label: 'Limited Drops',
+            href: '/list?type=featured',
+            icon: CircleDollarSign,
+        },
+        { label: 'View All', href: '/list', icon: Gift },
+    ];
 
     return (
         <ShopLayout>
-            <Head title="NEXSTEP" />
+            <Head title="NEXSTEP — Sneakers For Your Rhythm" />
 
-            <section className="relative overflow-hidden border-b border-hairline bg-white">
-                <div className="absolute inset-y-0 right-0 hidden w-1/2 text-[220px] leading-none font-black text-surface-soft lg:block">
-                    N
-                </div>
-                <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-10 sm:px-8 lg:min-h-[520px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-20">
-                    <div className="relative z-10">
-                        <p className="mb-4 text-[13px] font-extrabold text-primary uppercase">
-                            New Drop Season
-                        </p>
-                        <h1 className="max-w-[620px] text-[50px] leading-[0.95] font-black tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[84px]">
-                            Step Into The Next Drop
-                        </h1>
-                        <p className="mt-5 max-w-[520px] text-[17px] leading-7 font-medium text-body">
-                            Premium sneakers, limited releases, and streetwear
-                            essentials curated for everyday rotation.
-                        </p>
-                        <div className="mt-7 flex flex-wrap gap-3">
-                            <Link
-                                href="/list?type=new_arrival"
-                                className="inline-flex h-12 items-center gap-3 bg-primary px-6 text-[14px] font-extrabold text-white hover:bg-primary-hover"
-                            >
-                                Shop New Arrivals
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                            <Link
-                                href="/list?type=best_seller"
-                                className="inline-flex h-12 items-center border border-ink bg-white px-6 text-[14px] font-extrabold text-ink hover:bg-ink hover:text-white"
-                            >
-                                View Best Sellers
-                            </Link>
-                        </div>
-                        <div className="mt-8 flex flex-wrap gap-6 text-[12px] font-bold text-body">
-                            {[
-                                ['100% Authentic', BadgeCheck],
-                                ['Fast Worldwide Shipping', Truck],
-                                ['Easy Returns', RotateCcw],
-                            ].map(([label, Icon]) => (
-                                <span
-                                    key={label as string}
-                                    className="inline-flex items-center gap-2"
+            <div className="mx-auto max-w-[1440px] px-4 pt-4 pb-10 sm:px-7 lg:px-10">
+                <section className="relative overflow-hidden rounded-[24px] border border-hairline bg-[radial-gradient(circle_at_68%_45%,#ffffff_0,#f7f7f7_48%,#f2f2f2_100%)] px-7 py-8 sm:px-10 md:min-h-[455px] md:px-8 md:py-10 lg:px-12">
+                    <div className="pointer-events-none absolute inset-y-0 left-[34%] hidden text-[310px] leading-none text-black/[0.025] md:block">
+                        N
+                    </div>
+                    <div className="relative grid items-center gap-5 md:grid-cols-[0.95fr_1.35fr_0.65fr] lg:gap-8">
+                        <div className="z-10">
+                            <p className="text-[13px] font-bold text-[#FA5400] uppercase">
+                                New Drop Season
+                            </p>
+                            <h1 className="mt-4 max-w-[430px] text-[50px] leading-[0.88] tracking-[0.025em] text-ink uppercase sm:text-[52px] lg:text-[72px]">
+                                Sneakers For Your Rhythm, Comfort, And The City
+                            </h1>
+                            <p className="mt-5 max-w-[390px] text-[14px] leading-6 text-body">
+                                Premium sneakers, limited releases, and
+                                streetwear essentials curated for everyday
+                                rotation.
+                            </p>
+                            <div className="mt-6 flex flex-wrap gap-3">
+                                <Link
+                                    href="/list?type=new_arrival"
+                                    className="inline-flex h-12 items-center gap-2 rounded-[4px] bg-ink px-6 text-[13px] text-white uppercase hover:bg-primary"
                                 >
-                                    <Icon className="h-5 w-5 text-ink" />
-                                    {label as string}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="relative z-10 min-h-[320px]">
-                        <img
-                            src={'/img/sepatu-hero.png'}
-                            alt="NEXSTEP hero sneaker"
-                            className="mx-auto h-[320px] w-full object-contain drop-shadow-[0_24px_18px_rgba(17,17,17,0.14)] sm:h-[440px] lg:h-[500px]"
-                        />
-                    </div>
-                </div>
-            </section>
-
-            <main className="mx-auto max-w-[1440px] px-5 py-5 sm:px-8 lg:px-20">
-                <section className="mb-8">
-                    <SectionHeader
-                        title="Weekly Flash Deals"
-                        href="/list?type=discount"
-                        label="View All Deals"
-                    />
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                        {flashDeals.map((product) => (
-                            <ProductTile
-                                key={product.slug}
-                                product={product}
-                                compact
-                            />
-                        ))}
-                    </div>
-                </section>
-
-                <section className="mb-8">
-                    <SectionHeader
-                        title="New Arrivals"
-                        href="/list?type=new_arrival"
-                        label="View All New Arrivals"
-                    />
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        {arrivals.map((product) => (
-                            <ProductTile key={product.slug} product={product} />
-                        ))}
-                    </div>
-                </section>
-
-                <section className="mb-8">
-                    <SectionHeader
-                        title="Best Sellers"
-                        href="/list?type=best_seller"
-                        label="View All Best Sellers"
-                    />
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-                        {bestSellers.map((product) => (
-                            <ProductTile
-                                key={product.slug}
-                                product={product}
-                                compact
-                            />
-                        ))}
-                    </div>
-                </section>
-
-                <section className="mb-8 grid gap-4 border-y border-hairline py-6 lg:grid-cols-[320px_1fr]">
-                    <div className="flex flex-col justify-center">
-                        <h2 className="text-[34px] leading-[1] font-black tracking-[-0.03em] text-ink">
-                            Built For Collectors, Styled For Everyday
-                        </h2>
-                        <p className="mt-4 text-[14px] leading-6 font-medium text-body">
-                            From standout sneakers to street-ready gear, we have
-                            got your every step.
-                        </p>
-                        <Link
-                            href="/list"
-                            className="mt-5 inline-flex h-11 w-fit items-center gap-2 bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
-                        >
-                            Explore The Collection
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-                        {lifestyleImages.map((image, index) => (
-                            <img
-                                key={image}
-                                src={image}
-                                alt={`NEXSTEP editorial ${index + 1}`}
-                                className="h-44 w-full object-cover md:h-56"
-                                loading="lazy"
-                            />
-                        ))}
-                    </div>
-                </section>
-
-                {/* <section className="mb-8 grid gap-32 md:grid-cols-2 xl:grid-cols-3">
-                    {categoryNames.map((name, index) => (
-                        <div key={name}>
-                            <div className="mb-3 flex items-center justify-between">
-                                <h3 className="text-[17px] font-extrabold text-ink">{name}</h3>
-                                <Link href={`/list?search=${encodeURIComponent(name)}`} className="inline-flex items-center gap-1 text-[12px] font-bold text-ink hover:text-primary">
-                                    View All <ArrowRight className="h-3 w-3" />
+                                    Shop New Arrivals{' '}
+                                    <ArrowRight className="size-4" />
+                                </Link>
+                                <Link
+                                    href="/list?type=best_seller"
+                                    className="inline-flex h-12 items-center rounded-[4px] border border-ink bg-white px-6 text-[13px] text-ink uppercase hover:bg-ink hover:text-white"
+                                >
+                                    View Best Sellers
                                 </Link>
                             </div>
-                            <div className="grid gap-2">
-                                {categoryProducts.slice(index * 4, index * 4 + 4).map((product) => <MiniProduct key={`${name}-${product.slug}`} product={product} />)}
+                            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-[11px] font-semibold text-ink">
+                                <span className="inline-flex items-center gap-2">
+                                    <ShieldCheck className="size-4" />
+                                    100% Authentic
+                                </span>
+                                <span className="inline-flex items-center gap-2">
+                                    <Truck className="size-4" />
+                                    Fast Worldwide Shipping
+                                </span>
+                                <span className="inline-flex items-center gap-2">
+                                    <RotateCcw className="size-4" />
+                                    Easy Returns
+                                </span>
                             </div>
                         </div>
-                    ))}
-                </section> */}
-            </main>
+
+                        <div className="relative flex min-h-[280px] items-center justify-center md:min-h-[360px] lg:min-h-[390px]">
+                            <div className="absolute inset-x-8 bottom-10 h-12 rounded-full bg-black/15 blur-xl" />
+                            <img
+                                src="/img/sepatu-hero.png"
+                                alt="NEXSTEP orange, black, and white high-top sneaker"
+                                className="relative z-10 w-full max-w-[620px] scale-[1.35] -rotate-6 object-contain drop-shadow-[0_28px_22px_rgba(0,0,0,0.18)]"
+                            />
+                        </div>
+
+                        <div className="z-10 grid gap-3 sm:grid-cols-3 md:grid-cols-1 lg:gap-4">
+                            <HeroTrustCard
+                                icon={ShieldCheck}
+                                title="100% Authentic"
+                                text="Guaranteed original"
+                            />
+                            <HeroTrustCard
+                                icon={Globe2}
+                                title="Fast Worldwide Shipping"
+                                text="On all orders"
+                            />
+                            <HeroTrustCard
+                                icon={RotateCcw}
+                                title="Easy Returns"
+                                text="Hassle-free returns"
+                            />
+                            <div className="mt-4 hidden items-center gap-3 rounded-full bg-white px-3 py-3 shadow-dropdown md:flex lg:mt-6 lg:px-4">
+                                <div className="flex -space-x-2">
+                                    {['AR', 'DM', 'SL', 'JP'].map(
+                                        (initials, index) => (
+                                            <span
+                                                key={initials}
+                                                className={`flex size-9 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold text-white ${['bg-zinc-800', 'bg-amber-700', 'bg-stone-500', 'bg-zinc-950'][index]}`}
+                                            >
+                                                {initials}
+                                            </span>
+                                        ),
+                                    )}
+                                </div>
+                                <div className="text-[11px] leading-4">
+                                    <strong className="block text-ink">
+                                        10,000+ collectors
+                                    </strong>
+                                    <span className="inline-flex items-center gap-1 text-body">
+                                        4.9{' '}
+                                        <span className="text-primary">
+                                            ★★★★★
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="mt-6 grid gap-3 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr]">
+                    <form
+                        action="/list"
+                        method="get"
+                        className="flex h-12 items-center rounded-full border border-hairline bg-white px-4 shadow-subtle"
+                    >
+                        <Search className="size-5 shrink-0 text-ink" />
+                        <input
+                            name="search"
+                            aria-label="Search sneakers, brands, or collections"
+                            placeholder="Search sneakers, brands, or collections"
+                            className="h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[12px] outline-none"
+                        />
+                        <button
+                            type="submit"
+                            aria-label="Submit search"
+                            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink text-white"
+                        >
+                            <Search className="size-4" />
+                        </button>
+                    </form>
+                    <div className="flex gap-2 overflow-x-auto ">
+                        {categoryLinks.map(({ label, href, icon: Icon }) => (
+                            <Link
+                                key={label}
+                                href={href}
+                                className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[8px] border border-hairline px-4 text-[11px] text-ink uppercase hover:border-ink hover:bg-surface-soft"
+                            >
+                                <Icon className="size-4" />
+                                {label}
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+
+                <main className="mt-7 space-y-8">
+                    <section>
+                        <SectionHeader
+                            title="Weekly Flash Deals"
+                            href="/list?type=discount"
+                            label="View All Deals"
+                        />
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                            {flashDeals.map((product) => (
+                                <ProductTile
+                                    key={product.slug}
+                                    product={product}
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                    <section>
+                        <SectionHeader
+                            title="New Arrivals"
+                            href="/list?type=new_arrival"
+                            label="View All New Arrivals"
+                        />
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
+                            {arrivals.map((product) => (
+                                <ProductTile
+                                    key={product.slug}
+                                    product={product}
+                                    featured
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                    <section className="grid gap-4 md:grid-cols-2">
+                        {categoryCards.map((category) => (
+                            <Link
+                                key={category.title}
+                                href={category.href}
+                                className="group relative min-h-[220px] overflow-hidden rounded-[14px] border border-hairline bg-surface-subtle p-7 sm:min-h-[250px]"
+                            >
+                                <div className="relative z-10 max-w-[180px]">
+                                    <h2 className="text-[38px] leading-none text-ink uppercase sm:text-[44px]">
+                                        {category.title}
+                                    </h2>
+                                    <p className="mt-3 text-[12px] leading-5 text-body">
+                                        {category.description}
+                                    </p>
+                                    <span className="mt-6 inline-flex items-center gap-2 text-[12px] font-bold text-ink uppercase">
+                                        Shop Now{' '}
+                                        <ArrowRight className="size-4" />
+                                    </span>
+                                </div>
+                                <img
+                                    src={category.image}
+                                    alt=""
+                                    className="absolute top-0 right-0 h-full w-[62%] object-cover object-center transition duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-y-0 left-[30%] w-[30%] bg-gradient-to-r from-surface-subtle to-transparent" />
+                            </Link>
+                        ))}
+                    </section>
+
+                    <section>
+                        <h2 className="mb-4 text-[26px] leading-none text-ink uppercase">
+                            Technology For Your Every Step
+                        </h2>
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
+                            {technologies.map(
+                                ({ title, description, icon: Icon }) => (
+                                    <article
+                                        key={title}
+                                        className="flex min-h-[190px] flex-col items-center justify-center rounded-[12px] border border-hairline bg-surface-subtle px-5 py-6 text-center"
+                                    >
+                                        <Icon
+                                            className="size-10 text-ink"
+                                            strokeWidth={1.3}
+                                        />
+                                        <h3 className="mt-5 text-[17px] leading-none text-ink uppercase">
+                                            {title}
+                                        </h3>
+                                        <p className="mt-3 text-[11px] leading-4 text-body">
+                                            {description}
+                                        </p>
+                                    </article>
+                                ),
+                            )}
+                        </div>
+                    </section>
+
+                    <section className="relative overflow-hidden rounded-[14px] bg-[linear-gradient(105deg,#121212_0%,#050505_55%,#161616_100%)] px-7 py-8 text-white sm:px-10 md:grid md:min-h-[190px] md:grid-cols-[210px_1fr_170px] md:items-center md:gap-5 lg:grid-cols-[250px_1fr_230px] lg:gap-8">
+                        <div className="relative mx-auto h-36 w-56 -rotate-6 rounded-[10px] border border-white/10 bg-[linear-gradient(145deg,#252525,#080808)] p-6 shadow-modal md:mx-0">
+                            <strong className="text-[29px] leading-[0.85] text-white uppercase">
+                                Nexstep
+                                <br />
+                                Club
+                            </strong>
+                            <span className="absolute right-5 bottom-5 flex size-8 items-center justify-center rounded-[6px] bg-white text-[18px] text-ink">
+                                N
+                            </span>
+                        </div>
+                        <div className="mt-7 md:mt-0">
+                            <h2 className="text-[38px] leading-none text-white uppercase">
+                                Join The Nexstep Club
+                            </h2>
+                            <p className="mt-3 max-w-[520px] text-[13px] leading-5 text-white/75">
+                                Exclusive member benefits, early access to
+                                drops, special offers, and more.
+                            </p>
+                            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3 text-[10px] text-white/90">
+                                <span className="inline-flex items-center gap-2">
+                                    <Zap className="size-4" />
+                                    Early Access to Drops
+                                </span>
+                                <span className="inline-flex items-center gap-2">
+                                    <CircleDollarSign className="size-4" />
+                                    Member Only Discounts
+                                </span>
+                                <span className="inline-flex items-center gap-2">
+                                    <Gift className="size-4" />
+                                    Exclusive Rewards
+                                </span>
+                                <span className="inline-flex items-center gap-2">
+                                    <Box className="size-4" />
+                                    Birthday Surprises
+                                </span>
+                            </div>
+                        </div>
+                        <div className="mt-7 text-center md:mt-0">
+                            <Link
+                                href="/register"
+                                className="inline-flex h-12 w-full items-center justify-center rounded-[3px] bg-[#FA5400] px-8 text-[15px] text-white uppercase hover:bg-[#E64800]"
+                            >
+                                Join Now
+                            </Link>
+                            <p className="mt-3 text-[11px] text-white/70">
+                                Already a member?{' '}
+                                <Link
+                                    href="/login"
+                                    className="text-primary underline"
+                                >
+                                    Sign in
+                                </Link>
+                            </p>
+                        </div>
+                    </section>
+                </main>
+            </div>
         </ShopLayout>
     );
 }
