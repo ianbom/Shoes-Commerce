@@ -740,9 +740,7 @@ const ProductTile = memo(function ProductTile({
     const [isWishlisted, setIsWishlisted] = useState(product.is_wishlisted);
     const isSoldOut = product.available_stock <= 0;
     const productHref = detail.url({ query: { product: product.slug } });
-    const subtitle = product.collection ?? product.category ?? product.sku;
-    const visibleColors = product.colors.slice(0, 4);
-
+    const subtitle = product.collection ?? product.category;
     const toggleWishlist = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -841,28 +839,12 @@ const ProductTile = memo(function ProductTile({
             </button>
 
             <Link href={productHref} className="block px-4 pt-1 pb-4 sm:px-5">
-                <h3 className="line-clamp-1 text-[16px] leading-5 font-extrabold text-ink uppercase">
+                <h3 className="line-clamp-1 font-display text-[20px] leading-5 font-extrabold tracking-[0.06em] text-ink uppercase">
                     {product.title}
                 </h3>
                 <p className="mt-1 line-clamp-1 text-[15px] leading-5 text-body">
                     {subtitle ?? 'Performance Gear'}
                 </p>
-                <div className="mt-1 flex min-h-5 flex-wrap items-center gap-1.5">
-                    {visibleColors.length > 0 ? (
-                        visibleColors.map((color, colorIndex) => (
-                            <span
-                                key={`${color.hex}-${color.name ?? colorIndex}`}
-                                aria-label={color.name ?? color.hex}
-                                className="size-4 border border-hairline-strong"
-                                style={{ backgroundColor: color.hex }}
-                            />
-                        ))
-                    ) : (
-                        <span className="line-clamp-1 text-[15px] leading-5 text-body">
-                            {product.sku || 'AxeGear Edition'}
-                        </span>
-                    )}
-                </div>
                 <div className="mt-2 flex flex-wrap items-center gap-4 text-[18px] leading-none font-extrabold">
                     {product.sale_price !== null && (
                         <span className="text-ink line-through decoration-1">

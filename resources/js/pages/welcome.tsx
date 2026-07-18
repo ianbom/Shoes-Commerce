@@ -294,7 +294,7 @@ function ProductTile({
                     />
                 </div>
                 <div className="pt-3 pb-4">
-                    <p className="truncate text-[14px] font-semibold text-ink">
+                    <p className="truncate font-display text-[16px] font-semibold tracking-[0.06em] text-ink">
                         {productName(product)}
                     </p>
                     <div className="mt-1 flex items-baseline gap-2">
@@ -326,7 +326,7 @@ function MiniProduct({ product }: { product: ProductCard }) {
                 loading="lazy"
             />
             <span>
-                <span className="block truncate text-[12px] font-semibold text-ink">
+                <span className="block truncate font-display text-[12px] font-semibold tracking-[0.06em] text-ink">
                     {productName(product)}
                 </span>
                 <span className="mt-1 block text-[12px] font-extrabold text-ink">
