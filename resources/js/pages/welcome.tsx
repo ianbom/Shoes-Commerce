@@ -108,25 +108,25 @@ const categoryCards = [
         title: 'Running',
         description:
             'Lightweight, responsive sneakers for everyday performance.',
-        image: '/img/home/running.webp',
+        image: '/welcome/image copy 2.png',
         href: '/list?search=running',
     },
     {
         title: 'Basketball',
         description: 'Built for the game. Engineered for every move.',
-        image: '/img/home/basketball.webp',
+        image: '/welcome/image copy 3.png',
         href: '/list?search=basketball',
     },
     {
         title: 'Training',
         description: 'Support, stability, and comfort for every workout.',
-        image: '/img/home/training.webp',
+        image: '/welcome/image.png',
         href: '/list?search=training',
     },
     {
         title: 'Lifestyle',
         description: 'Street-ready styles that move with your world.',
-        image: '/img/home/lifestyle.webp',
+        image: '/welcome/image copy.png',
         href: '/list?search=lifestyle',
     },
 ];
@@ -178,7 +178,7 @@ function money(value: number) {
 }
 
 function productName(product: ProductCard) {
-    return product.name ?? product.title ?? 'NEXSTEP Sneaker';
+    return product.name ?? product.title ?? 'GodKillerGoods Sneaker';
 }
 
 function mergeProducts(
@@ -355,7 +355,7 @@ export default function Welcome({
 
     return (
         <ShopLayout>
-            <Head title="NEXSTEP — Sneakers For Your Rhythm" />
+            <Head title="GodKillerGoods — Sneakers For Your Rhythm" />
 
             <div className="mx-auto max-w-[1440px] px-4 pt-4 pb-10 sm:px-7 lg:px-10">
                 <section className="relative overflow-hidden rounded-[24px] border border-hairline bg-[radial-gradient(circle_at_68%_45%,#ffffff_0,#f7f7f7_48%,#f2f2f2_100%)] px-7 py-8 sm:px-10 md:min-h-[455px] md:px-8 md:py-10 lg:px-12">
@@ -410,7 +410,7 @@ export default function Welcome({
                             <div className="absolute inset-x-8 bottom-10 h-12 rounded-full bg-black/15 blur-xl" />
                             <img
                                 src="/img/sepatu-hero.png"
-                                alt="NEXSTEP orange, black, and white high-top sneaker"
+                                alt="GodKillerGoods orange, black, and white high-top sneaker"
                                 className="relative z-10 w-full max-w-[620px] scale-[1.35] -rotate-6 object-contain drop-shadow-[0_28px_22px_rgba(0,0,0,0.18)]"
                             />
                         </div>
@@ -481,7 +481,7 @@ export default function Welcome({
                             <Search className="size-4" />
                         </button>
                     </form>
-                    <div className="flex gap-2 overflow-x-auto ">
+                    <div className="flex gap-2 overflow-x-auto">
                         {categoryLinks.map(({ label, href, icon: Icon }) => (
                             <Link
                                 key={label}
@@ -551,9 +551,9 @@ export default function Welcome({
                                 <img
                                     src={category.image}
                                     alt=""
-                                    className="absolute top-0 right-0 h-full w-[62%] object-cover object-center transition duration-500 group-hover:scale-105"
+                                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-y-0 left-[30%] w-[30%] bg-gradient-to-r from-surface-subtle to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/0" />
                             </Link>
                         ))}
                     </section>
@@ -588,17 +588,17 @@ export default function Welcome({
                     <section className="relative overflow-hidden rounded-[14px] bg-[linear-gradient(105deg,#121212_0%,#050505_55%,#161616_100%)] px-7 py-8 text-white sm:px-10 md:grid md:min-h-[190px] md:grid-cols-[210px_1fr_170px] md:items-center md:gap-5 lg:grid-cols-[250px_1fr_230px] lg:gap-8">
                         <div className="relative mx-auto h-36 w-56 -rotate-6 rounded-[10px] border border-white/10 bg-[linear-gradient(145deg,#252525,#080808)] p-6 shadow-modal md:mx-0">
                             <strong className="text-[29px] leading-[0.85] text-white uppercase">
-                                Nexstep
+                                GodKiller Goods
                                 <br />
                                 Club
                             </strong>
                             <span className="absolute right-5 bottom-5 flex size-8 items-center justify-center rounded-[6px] bg-white text-[18px] text-ink">
-                                N
+                                GG
                             </span>
                         </div>
                         <div className="mt-7 md:mt-0">
                             <h2 className="text-[38px] leading-none text-white uppercase">
-                                Join The Nexstep Club
+                                Join The GodKillerGoods Club
                             </h2>
                             <p className="mt-3 max-w-[520px] text-[13px] leading-5 text-white/75">
                                 Exclusive member benefits, early access to

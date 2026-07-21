@@ -7,6 +7,7 @@ type NavbarProps = {
     collections?: unknown[];
     currentUrl?: string;
     isAuthenticated?: boolean;
+    logoSrc?: string;
 };
 
 const navItems = [
@@ -18,17 +19,10 @@ const navItems = [
     { label: 'About', href: '/about' },
 ];
 
-function Wordmark() {
-    return (
-        <span className="text-[28px] leading-none font-black tracking-[-0.05em] text-ink uppercase">
-            NEXSTEP
-        </span>
-    );
-}
-
 export default function Navbar({
     cartCount = 0,
     currentUrl = '/',
+    logoSrc = '/logo-shay/gods-hitam.webp',
 }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const cartBadge = cartCount > 99 ? '99+' : String(cartCount);
@@ -42,7 +36,11 @@ export default function Navbar({
                     aria-label="NEXSTEP home"
                     className="shrink-0 hover:opacity-80"
                 >
-                    <Wordmark />
+                    <img
+                        src={logoSrc}
+                        alt="GODKILLER GOODS"
+                        className="h-auto w-[150px] object-contain"
+                    />
                 </Link>
 
                 <nav className="hidden items-center gap-9 text-[14px] leading-none font-medium text-ink lg:flex">
@@ -111,7 +109,11 @@ export default function Navbar({
                 className={`fixed top-0 right-0 bottom-0 z-[80] w-[min(86vw,360px)] border-l border-hairline bg-white p-5 transition-transform lg:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 <div className="mb-6 flex items-center justify-between border-b border-hairline pb-5">
-                    <Wordmark />
+                    <img
+                        src={logoSrc}
+                        alt="GODKILLER GOODS"
+                        className="h-auto w-[150px] object-contain"
+                    />
                     <button
                         type="button"
                         aria-label="Close menu"

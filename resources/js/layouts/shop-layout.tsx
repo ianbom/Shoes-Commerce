@@ -9,6 +9,9 @@ interface ShopLayoutProps {
     children: ReactNode;
 }
 
+const navbarLogo = '/logo-shay/gods-hitam.webp';
+const footerLogo = '/logo-shay/gods-putih.webp';
+
 type SharedShopProps = {
     auth: {
         user: unknown | null;
@@ -36,10 +39,11 @@ export default function ShopLayout({ children }: ShopLayoutProps) {
                 collections={featuredCollections}
                 currentUrl={url}
                 isAuthenticated={isAuthenticated}
+                logoSrc={navbarLogo}
             />
             <main className="w-full flex-grow bg-white">{children}</main>
             <Toaster />
-            <Footer />
+            <Footer logoSrc={footerLogo} />
         </div>
     );
 }

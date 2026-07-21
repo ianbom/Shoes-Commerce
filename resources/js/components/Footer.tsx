@@ -36,17 +36,22 @@ const columns = [
 
 const payments = ['VISA', 'MC', 'AMEX', 'Pay', 'Klarna', 'afterpay'];
 
-export default function Footer() {
+export default function Footer({
+    logoSrc = '/logo-shay/gods-putih.webp',
+}: {
+    logoSrc?: string;
+}) {
     return (
         <footer className="bg-[#111111] text-white">
             <section>
                 <div className="mx-auto grid max-w-[1440px] gap-9 px-5 py-8 sm:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_0.7fr_0.7fr_1fr] lg:px-20">
                     <section>
-                        <Link
-                            href="/"
-                            className="text-[30px] leading-none font-black tracking-[-0.05em] text-white uppercase"
-                        >
-                            NEXSTEP
+                        <Link href="/" aria-label="GODKILLER GOODS home">
+                            <img
+                                src={logoSrc}
+                                alt="GODKILLER GOODS"
+                                className="h-auto w-[220px] max-w-full object-contain"
+                            />
                         </Link>
                         <p className="mt-4 max-w-[270px] text-[13px] leading-5 font-medium text-white/68">
                             Premium sneakers, limited drops, and streetwear for
