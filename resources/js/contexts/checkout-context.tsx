@@ -340,7 +340,7 @@ export function CheckoutProvider({
                         idempotency_key: idempotencyKey,
                         voucher_code: currentVoucher?.code ?? null,
                         notes,
-                        no_return_refund_agreed: agreed,
+                        terms_agreed: agreed,
                     },
                 );
 

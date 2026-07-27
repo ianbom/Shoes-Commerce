@@ -190,7 +190,7 @@ class ProductBrowsingService
             'primaryImage:id,product_id,image_url,alt_text',
             'images:id,product_id,image_url,alt_text,sort_order',
             'variants' => fn ($query) => $query
-                ->select('id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'package_type', 'stock', 'reserved_stock', 'regular_price', 'sale_price', 'image_url', 'is_active')
+            ->select('id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'stock', 'reserved_stock', 'regular_price', 'sale_price', 'image_url', 'is_active')
                 ->where('is_active', true)
                 ->orderByRaw('(stock - reserved_stock) > 0 desc')
                 ->orderBy('color_name')
@@ -278,7 +278,6 @@ class ProductBrowsingService
                     'size' => $variant->size,
                     'regular_price' => $variant->regular_price !== null ? (float) $variant->regular_price : null,
                     'sale_price' => $variant->sale_price !== null ? (float) $variant->sale_price : null,
-                    'package_type' => $variant->package_type,
                     'stock' => $variant->stock,
                     'reserved_stock' => $variant->reserved_stock,
                     'available_stock' => max(0, $variant->stock - $variant->reserved_stock),

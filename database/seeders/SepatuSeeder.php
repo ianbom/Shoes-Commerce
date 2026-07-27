@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Models\ProductMarketplaceLink;
 use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -42,8 +41,6 @@ class SepatuSeeder extends Seeder
                         'name' => $product['name'],
                         'sku' => $product['sku'],
                         'brand_name' => $product['brand_name'],
-                        'product_line' => $product['product_line'],
-                        'style_name' => $product['style_name'],
                         'regular_price' => $product['regular_price'],
                         'sale_price' => null,
                         'short_description' => Str::limit($product['description'], 150),
@@ -69,7 +66,6 @@ class SepatuSeeder extends Seeder
                 $record->collections()->sync($collectionIds);
                 $this->syncImages($record, $product['images']);
                 $this->syncVariants($record, $product);
-                $this->syncMarketplaceLink($record, $product);
 
                 $seededSkus[] = $product['sku'];
             }
@@ -131,8 +127,6 @@ class SepatuSeeder extends Seeder
             'slug' => Str::slug($name).'-'.$this->productId($url),
             'sku' => $sku,
             'brand_name' => (string) data_get($data, 'brand.name', 'Flightkickz'),
-            'product_line' => (string) data_get($data, 'brand.name', 'Sneakers'),
-            'style_name' => Str::limit($name, 180, ''),
             'description' => trim((string) ($data['description'] ?? $name)),
             'regular_price' => $this->rupiah((string) data_get($data, 'offers.price', '0')),
             'stock_status' => Str::contains((string) data_get($data, 'offers.availability', ''), 'OutOfStock') ? 'out_of_stock' : 'in_stock',
@@ -270,21 +264,13 @@ class SepatuSeeder extends Seeder
                 ['sku' => $sku],
                 [
                     'product_id' => $product->id,
-                    'barcode' => null,
-                    'variant_name' => $variant['name'],
-                    'color_name' => null,
+                    'color_name' => $variant['name'],
                     'color_hex' => null,
                     'size' => $variant['size'],
-                    'package_type' => 'Sneakers',
                     'regular_price' => $productData['regular_price'],
                     'sale_price' => null,
                     'stock' => $productData['stock_status'] === 'out_of_stock' ? 0 : $variant['stock'],
                     'reserved_stock' => 0,
-                    'desty_available_stock' => $productData['stock_status'] === 'out_of_stock' ? 0 : $variant['stock'],
-                    'desty_on_hand_stock' => $productData['stock_status'] === 'out_of_stock' ? 0 : $variant['stock'],
-                    'desty_reserved_stock' => 0,
-                    'stock_source' => 'manual',
-                    'allow_manual_stock_edit' => true,
                     'weight' => 1000,
                     'length' => 35,
                     'width' => 25,
@@ -305,25 +291,6 @@ class SepatuSeeder extends Seeder
             ->where('product_id', $product->id)
             ->whereNotIn('sku', $keptSkus)
             ->delete();
-    }
-
-    /**
-     * @param  array<string, mixed>  $productData
-     */
-    private function syncMarketplaceLink(Product $product, array $productData): void
-    {
-        ProductMarketplaceLink::query()->updateOrCreate(
-            ['product_id' => $product->id, 'marketplace_name' => 'Flightkickz'],
-            [
-                'external_product_id' => $productData['source_id'],
-                'external_sku' => $productData['sku'],
-                'product_url' => $productData['source_url'],
-                'price_snapshot' => $productData['regular_price'],
-                'stock_snapshot' => collect($productData['variants'])->sum('stock'),
-                'last_synced_at' => now(),
-                'is_active' => true,
-            ],
-        );
     }
 
     private function category(): Category

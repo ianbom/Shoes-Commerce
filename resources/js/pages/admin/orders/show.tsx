@@ -81,8 +81,8 @@ type Order = {
     order_status: string;
     shipping_status: string;
     notes: string | null;
-    no_return_refund_agreed: boolean;
-    no_return_refund_agreed_at: string | null;
+    terms_agreed: boolean;
+    terms_agreed_at: string | null;
     items: OrderItem[];
     address: Record<string, string | number | null> | null;
     payment: Record<string, string | number | null> | null;
@@ -659,15 +659,15 @@ export default function OrderShow({ order }: Props) {
                                         <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-500">
                                             No return/refund:{' '}
                                             <span className="font-semibold text-zinc-900">
-                                                {order.no_return_refund_agreed
+                                                {order.terms_agreed
                                                     ? 'YES'
                                                     : 'NO'}
                                             </span>
-                                            {order.no_return_refund_agreed_at && (
+                                            {order.terms_agreed_at && (
                                                 <span className="mt-1 block">
                                                     Agreed at{' '}
                                                     {formatDate(
-                                                        order.no_return_refund_agreed_at,
+                                                        order.terms_agreed_at,
                                                     )}
                                                 </span>
                                             )}

@@ -19,7 +19,7 @@ class PlaceOrderRequest extends FormRequest
             'idempotency_key' => ['required', 'string', 'max:100'],
             'voucher_code' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string', 'max:2000'],
-            'no_return_refund_agreed' => ['accepted'],
+            'terms_agreed' => ['accepted'],
         ];
     }
 }

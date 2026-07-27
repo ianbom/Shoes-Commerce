@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['product_id', 'image_url', 'alt_text', 'sort_order', 'is_primary'])]
+#[Fillable(['product_id', 'image_url', 'alt_text', 'color_name', 'sort_order', 'is_primary'])]
 class ProductImage extends Model
 {
     use SoftDeletes;

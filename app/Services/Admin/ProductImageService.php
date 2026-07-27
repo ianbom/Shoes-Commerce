@@ -34,6 +34,7 @@ class ProductImageService
             $payload = [
                 'image_url' => $storedImageUrl,
                 'alt_text' => $image['alt_text'] ?? $product->name,
+                'color_name' => $image['color_name'] ?? null,
                 'sort_order' => (int) ($image['sort_order'] ?? $index),
                 'is_primary' => $index === $primaryIndex,
             ];

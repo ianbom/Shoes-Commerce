@@ -123,6 +123,10 @@ function createCartStockItem(User $user, Product $product, ProductVariant $varia
         'product_id' => $product->id,
         'product_variant_id' => $variant->id,
         'quantity' => $quantity,
+        'product_name_snapshot' => $product->name,
+        'variant_sku_snapshot' => $variant->sku,
+        'color_name_snapshot' => $variant->color_name,
+        'size_snapshot' => $variant->size,
         'price_snapshot' => 100000,
     ]);
 }

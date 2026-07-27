@@ -14,10 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'product_name',
     'product_sku',
     'variant_sku',
-    'variant_name',
     'color_name',
     'size',
-    'package_type',
     'price',
     'quantity',
     'subtotal',
@@ -42,11 +40,6 @@ class OrderItem extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
-    }
-
-    public function inventoryReservations(): HasMany
-    {
-        return $this->hasMany(InventoryReservation::class);
     }
 
     public function reviews(): HasMany

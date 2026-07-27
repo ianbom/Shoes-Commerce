@@ -29,6 +29,10 @@ it('includes existing cart quantity for each product detail variant', function (
         'product_id' => $product->id,
         'product_variant_id' => $variant->id,
         'quantity' => 5,
+        'product_name_snapshot' => $product->name,
+        'variant_sku_snapshot' => $variant->sku,
+        'color_name_snapshot' => $variant->color_name,
+        'size_snapshot' => $variant->size,
         'price_snapshot' => 100000,
     ]);
 

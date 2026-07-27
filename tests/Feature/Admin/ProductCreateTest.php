@@ -108,7 +108,12 @@ it('creates a product with images, variants, and stock logs from the admin form 
         ->reserved_stock->toBe(2)
         ->is_active->toBeTrue();
 
-    expect((float) $variant->regular_price)->toBe(15000.00);
+    expect((float) $variant->regular_price)->toBe(15000.00)
+        ->and((float) $variant->sale_price)->toBe(12000.00)
+        ->and($variant->weight)->toBe(700)
+        ->and($variant->length)->toBe(32)
+        ->and($variant->width)->toBe(26)
+        ->and($variant->height)->toBe(7);
     expect($variant->image_url)->toStartWith('/storage/product/gamis-syari-pita/variants/');
     Storage::disk('public')->assertExists(Str::after($variant->image_url, '/storage/'));
 
@@ -167,6 +172,7 @@ function productPayload(Category $category, Collection $collection): array
                 'image_url' => null,
                 'image' => UploadedFile::fake()->image('product-front.jpg', 800, 1067),
                 'alt_text' => 'Gamis Syar\'i Pita tampak depan',
+                'color_name' => 'Black',
                 'sort_order' => 0,
                 'is_primary' => true,
             ],
@@ -178,8 +184,13 @@ function productPayload(Category $category, Collection $collection): array
                 'color_hex' => '#000000',
                 'size' => 'M',
                 'regular_price' => 15000,
+                'sale_price' => 12000,
                 'stock' => 12,
                 'reserved_stock' => 2,
+                'weight' => 700,
+                'length' => 32,
+                'width' => 26,
+                'height' => 7,
                 'image_url' => null,
                 'image' => UploadedFile::fake()->image('variant-black.jpg', 800, 1067),
                 'is_active' => true,

@@ -44,7 +44,7 @@ class ProductVariantService
                 'inactive' => ProductVariant::query()->when($product, fn ($query) => $query->whereBelongsTo($product))->where('is_active', false)->count(),
                 'in_stock' => ProductVariant::query()->when($product, fn ($query) => $query->whereBelongsTo($product))->whereRaw('(stock - reserved_stock) > 5')->count(),
                 'low_stock' => ProductVariant::query()->when($product, fn ($query) => $query->whereBelongsTo($product))->whereRaw('(stock - reserved_stock) > 0')->whereRaw('(stock - reserved_stock) <= 5')->count(),
-                'sold_out' => ProductVariant::query()->when($product, fn ($query) => $query->whereBelongsTo($product))->whereRaw('(stock - reserved_stock) = 0')->count(),
+                'sold_out' => ProductVariant::query()->when($product, fn ($query) => $query->whereBelongsTo($product))->whereRaw('(stock - reserved_stock) <= 0')->count(),
             ],
         ];
     }
@@ -96,7 +96,8 @@ class ProductVariantService
         $variant->load('product:id,name');
 
         return [
-            ...$variant->only(['id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'regular_price', 'stock', 'reserved_stock', 'image_url', 'is_active']),
+            ...$variant->only(['id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'regular_price', 'sale_price', 'stock', 'reserved_stock', 'weight', 'length', 'width', 'height', 'image_url', 'is_active']),
+            'available_stock' => max(0, $variant->stock - $variant->reserved_stock),
             'product' => $variant->product?->name,
         ];
     }
@@ -112,9 +113,14 @@ class ProductVariantService
             'color_hex' => $variant->color_hex,
             'size' => $variant->size,
             'regular_price' => $variant->regular_price,
+            'sale_price' => $variant->sale_price,
             'stock' => $variant->stock,
             'reserved_stock' => $variant->reserved_stock,
-            'available_stock' => $variant->stock - $variant->reserved_stock,
+            'available_stock' => max(0, $variant->stock - $variant->reserved_stock),
+            'weight' => $variant->weight,
+            'length' => $variant->length,
+            'width' => $variant->width,
+            'height' => $variant->height,
             'image_url' => $variant->image_url,
             'is_active' => $variant->is_active,
             'order_items_count' => $variant->order_items_count,

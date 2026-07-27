@@ -42,8 +42,8 @@ it('emails the customer when admin creates a shipment from an order', function (
         'payment_status' => 'paid',
         'order_status' => 'paid',
         'shipping_status' => 'not_created',
-        'no_return_refund_agreed' => true,
-        'no_return_refund_agreed_at' => now(),
+        'terms_agreed' => true,
+        'terms_agreed_at' => now(),
         'paid_at' => now(),
     ]);
 

@@ -24,7 +24,7 @@ export default function AuthLayout({
 }: AuthLayoutProps) {
     const resolvedHeroImage = heroImage ?? {
         src: '/img/login-image.png',
-        alt: 'AxeGear athlete wearing mirrored performance eyewear',
+        alt: 'GodKillerGoodsathlete wearing mirrored performance eyewear',
     };
 
     return (
@@ -68,7 +68,7 @@ export default function AuthLayout({
                                                 <span
                                                     className={
                                                         index ===
-                                                        breadcrumbs.length - 1
+                                                            breadcrumbs.length - 1
                                                             ? 'text-[#1A1A1A]'
                                                             : undefined
                                                     }

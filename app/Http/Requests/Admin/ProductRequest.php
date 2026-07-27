@@ -35,8 +35,6 @@ class ProductRequest extends FormRequest
             'slug' => ['required', 'string', 'max:220', Rule::unique('products', 'slug')->ignore($product)],
             'sku' => ['nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($product)],
             'brand_name' => ['nullable', 'string', 'max:150'],
-            'product_line' => ['nullable', 'string', 'max:150'],
-            'style_name' => ['nullable', 'string', 'max:180'],
             'regular_price' => ['required', 'numeric', 'min:0'],
             'sale_price' => ['nullable', 'numeric', 'min:0', 'lte:regular_price'],
             'short_description' => ['nullable', 'string', 'max:1000'],
@@ -57,6 +55,7 @@ class ProductRequest extends FormRequest
             'images.*.image_url' => ['nullable', 'string', 'max:255', 'not_regex:/^blob:/i'],
             'images.*.image' => ['nullable', 'file', 'image', 'max:4096'],
             'images.*.alt_text' => ['nullable', 'string', 'max:255'],
+            'images.*.color_name' => ['nullable', 'string', 'max:100'],
             'images.*.sort_order' => ['nullable', 'integer', 'min:0'],
             'images.*.is_primary' => ['sometimes', 'boolean'],
             'variants' => ['nullable', 'array'],
@@ -64,14 +63,15 @@ class ProductRequest extends FormRequest
             'variants.*.sku' => ['nullable', 'string', 'max:100'],
             'variants.*.color_name' => ['nullable', 'string', 'max:100'],
             'variants.*.color_hex' => ['nullable'],
-            'variants.*.barcode' => ['nullable', 'string', 'max:100'],
-            'variants.*.variant_name' => ['nullable', 'string', 'max:180'],
             'variants.*.size' => ['nullable', 'string', 'max:100'],
-            'variants.*.package_type' => ['nullable', 'string', 'max:150'],
             'variants.*.regular_price' => ['nullable', 'numeric', 'min:0'],
             'variants.*.sale_price' => ['nullable', 'numeric', 'min:0'],
             'variants.*.stock' => ['nullable', 'integer', 'min:0'],
             'variants.*.reserved_stock' => ['nullable', 'integer', 'min:0'],
+            'variants.*.weight' => ['nullable', 'integer', 'min:0'],
+            'variants.*.length' => ['nullable', 'integer', 'min:0'],
+            'variants.*.width' => ['nullable', 'integer', 'min:0'],
+            'variants.*.height' => ['nullable', 'integer', 'min:0'],
             'variants.*.image_url' => ['nullable', 'string', 'max:255', 'not_regex:/^blob:/i'],
             'variants.*.image' => ['nullable', 'file', 'image', 'max:4096'],
             'variants.*.is_active' => ['sometimes', 'boolean'],
@@ -85,6 +85,29 @@ class ProductRequest extends FormRequest
     {
         return [
             function ($validator): void {
+                $variants = collect($this->input('variants', []))
+                    ->filter(fn (array $variant): bool => filled($variant['sku'] ?? null));
+
+                $variants->each(function (array $variant, int $index) use ($validator): void {
+                    if (filled($variant['sale_price'] ?? null) && blank($variant['regular_price'] ?? null)) {
+                        $validator->errors()->add("variants.{$index}.sale_price", 'Sale price membutuhkan regular price.');
+                    } elseif ((float) ($variant['sale_price'] ?? 0) > (float) ($variant['regular_price'] ?? 0)) {
+                        $validator->errors()->add("variants.{$index}.sale_price", 'Sale price tidak boleh lebih besar dari regular price.');
+                    }
+
+                    if ((int) ($variant['reserved_stock'] ?? 0) > (int) ($variant['stock'] ?? 0)) {
+                        $validator->errors()->add("variants.{$index}.reserved_stock", 'Reserved stock tidak boleh lebih besar dari stock.');
+                    }
+
+                    if (blank($variant['color_name'] ?? null)) {
+                        $validator->errors()->add("variants.{$index}.color_name", 'Color wajib diisi jika SKU varian diisi.');
+                    }
+
+                    if (blank($variant['size'] ?? null)) {
+                        $validator->errors()->add("variants.{$index}.size", 'Size wajib diisi jika SKU varian diisi.');
+                    }
+                });
+
                 if ($this->input('status') !== 'published') {
                     return;
                 }
@@ -104,16 +127,7 @@ class ProductRequest extends FormRequest
                     $validator->errors()->add('images', 'Produk published membutuhkan satu gambar utama.');
                 }
 
-                $variants = collect($this->input('variants', []))
-                    ->filter(fn (array $variant): bool => filled($variant['sku'] ?? null));
-
-                $variants->each(function (array $variant, int $index) use ($validator): void {
-                    if ((int) ($variant['reserved_stock'] ?? 0) > (int) ($variant['stock'] ?? 0)) {
-                        $validator->errors()->add("variants.{$index}.reserved_stock", 'Reserved stock tidak boleh lebih besar dari stock.');
-                    }
-                });
-
-                if (! $variants->contains(fn (array $variant): bool => (bool) ($variant['is_active'] ?? false) && (int) ($variant['stock'] ?? 0) > 0)) {
+                if (! $variants->contains(fn (array $variant): bool => (bool) ($variant['is_active'] ?? false) && ((int) ($variant['stock'] ?? 0) - (int) ($variant['reserved_stock'] ?? 0)) > 0)) {
                     $validator->errors()->add('variants', 'Produk published membutuhkan satu varian aktif dengan stok tersedia.');
                 }
             },

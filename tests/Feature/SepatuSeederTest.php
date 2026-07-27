@@ -21,7 +21,7 @@ it('seeds flightkickz products with multiple images and variants', function () {
     (new SepatuSeeder)->run();
 
     $product = Product::query()
-        ->with(['category', 'images', 'variants', 'marketplaceLinks'])
+        ->with(['category', 'images', 'variants'])
         ->where('sku', 'FKZ-CT8013-015')
         ->firstOrFail();
 
@@ -39,7 +39,6 @@ it('seeds flightkickz products with multiple images and variants', function () {
     expect(ProductVariant::query()->where('product_id', $product->id)->count())->toBe(2)
         ->and($product->variants->pluck('size')->all())->toBe(['US7/UK6/EU40', 'US8/UK7/EU41']);
 
-    expect($product->marketplaceLinks)->toHaveCount(1);
 });
 
 function flightkickzProductHtml(): string

@@ -471,9 +471,9 @@ function CheckoutScreen() {
                                         Kebijakan Privasi.
                                     </span>
                                 </label>
-                                {errors.no_return_refund_agreed && (
+                                {errors.terms_agreed && (
                                     <p className="mt-2 text-[12px] font-semibold text-[#C81E1E]">
-                                        {errors.no_return_refund_agreed}
+                                        {errors.terms_agreed}
                                     </p>
                                 )}
                                 {errors.checkout && (

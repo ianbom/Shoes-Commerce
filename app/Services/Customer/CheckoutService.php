@@ -248,8 +248,8 @@ class CheckoutService
                 'payment_status' => 'pending',
                 'order_status' => 'pending_payment',
                 'shipping_status' => 'not_created',
-                'no_return_refund_agreed' => (bool) ($payload['no_return_refund_agreed'] ?? false),
-                'no_return_refund_agreed_at' => ! empty($payload['no_return_refund_agreed']) ? now() : null,
+                'terms_agreed' => (bool) ($payload['terms_agreed'] ?? false),
+                'terms_agreed_at' => ! empty($payload['terms_agreed']) ? now() : null,
                 'notes' => $payload['notes'] ?? null,
             ]);
 

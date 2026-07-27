@@ -163,8 +163,8 @@ class OrderManagementService
             'cancelled_at' => $order->cancelled_at?->toDateTimeString(),
             'expired_at' => $order->expired_at?->toDateTimeString(),
             'completed_at' => $order->completed_at?->toDateTimeString(),
-            'no_return_refund_agreed' => $order->no_return_refund_agreed,
-            'no_return_refund_agreed_at' => $order->no_return_refund_agreed_at?->toDateTimeString(),
+            'terms_agreed' => $order->terms_agreed,
+            'terms_agreed_at' => $order->terms_agreed_at?->toDateTimeString(),
             'items' => $order->items->map(fn ($item): array => [
                 'id' => $item->id,
                 'product_id' => $item->product_id,

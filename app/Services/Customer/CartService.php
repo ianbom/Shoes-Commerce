@@ -77,7 +77,13 @@ class CartService
                 [
                     'product_id' => $product->id,
                     'quantity' => $nextQuantity,
+                    'product_name_snapshot' => $product->name,
+                    'product_sku_snapshot' => $product->sku,
+                    'variant_sku_snapshot' => $variant->sku,
+                    'color_name_snapshot' => $variant->color_name,
+                    'size_snapshot' => $variant->size,
                     'price_snapshot' => $priceSnapshot,
+                    'image_url_snapshot' => $variant->image_url ?? $product->primaryImage?->image_url,
                 ],
             );
         });
@@ -111,7 +117,13 @@ class CartService
             $item->forceFill([
                 'product_id' => $product->id,
                 'quantity' => $quantity,
+                'product_name_snapshot' => $product->name,
+                'product_sku_snapshot' => $product->sku,
+                'variant_sku_snapshot' => $variant->sku,
+                'color_name_snapshot' => $variant->color_name,
+                'size_snapshot' => $variant->size,
                 'price_snapshot' => $variant->sale_price ?? $variant->regular_price ?? $product->sale_price ?? $product->regular_price,
+                'image_url_snapshot' => $variant->image_url ?? $product->primaryImage?->image_url,
             ])->save();
 
             return $item->refresh();
