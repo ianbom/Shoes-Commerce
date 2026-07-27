@@ -63,6 +63,7 @@ class ProductBrowsingService
                 });
             })
             ->when($filters['category'] !== '', fn ($query) => $query->whereHas('category', fn ($query) => $query->where('slug', $filters['category'])))
+            ->when($filters['brand'] !== '', fn ($query) => $query->where('brand_name', $filters['brand']))
             ->when($filters['collection'] !== '', fn ($query) => $query->whereHas('collections', fn ($query) => $query->where('slug', $filters['collection'])))
             ->when($filters['type'] === 'featured', fn ($query) => $query->where('is_featured', true))
             ->when($filters['type'] === 'new_arrival', fn ($query) => $query->where('is_new_arrival', true))
@@ -306,6 +307,7 @@ class ProductBrowsingService
         return [
             'search' => trim((string) $request->query('search', '')),
             'category' => (string) $request->query('category', ''),
+            'brand' => trim((string) $request->query('brand', '')),
             'collection' => (string) $request->query('collection', ''),
             'type' => $this->option($request, 'type', ['all', 'featured', 'new_arrival', 'best_seller', 'discount'], 'all'),
             'availability' => $this->option($request, 'availability', ['all', 'in_stock', 'out_of_stock'], 'all'),
@@ -340,6 +342,15 @@ class ProductBrowsingService
     {
         return [
             'categories' => Category::query()->where('is_active', true)->orderBy('name')->get(['id', 'name', 'slug']),
+            'brands' => Product::query()
+                ->where('status', 'published')
+                ->whereNotNull('brand_name')
+                ->where('brand_name', '!=', '')
+                ->orderBy('brand_name')
+                ->distinct()
+                ->pluck('brand_name')
+                ->map(fn (string $brand) => ['value' => $brand, 'label' => $brand])
+                ->values(),
             'collections' => Collection::query()->where('is_active', true)->orderBy('name')->get(['id', 'name', 'slug', 'description']),
             'colors' => $this->colorOptions(),
             'sizes' => $this->sizeOptions(),

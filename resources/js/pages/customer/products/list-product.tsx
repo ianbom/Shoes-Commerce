@@ -18,9 +18,8 @@ import { detail, list, login } from '@/routes';
 type FilterState = {
     search: string;
     category: string;
-    collection: string;
+    brand: string;
     type: string;
-    availability: string;
     price: string;
     color: string;
     size: string;
@@ -80,15 +79,9 @@ type Props = {
     filters: Omit<FilterState, 'per_page'> & {
         per_page: number;
     };
-    collectionBanner: {
-        title: string;
-        banner_desktop_url: string | null;
-        banner_mobile_url: string | null;
-        is_default: boolean;
-    };
     options: {
         categories: FilterOption[];
-        collections: FilterOption[];
+        brands: FilterOption[];
         colors: FilterOption[];
         sizes: string[];
         priceRanges: Array<{ value: string; label: string }>;
@@ -105,9 +98,8 @@ type SharedProps = {
 const defaultFilters: FilterState = {
     search: '',
     category: '',
-    collection: '',
+    brand: '',
     type: 'all',
-    availability: 'all',
     price: 'all',
     color: '',
     size: '',
@@ -122,20 +114,6 @@ const typeOptions = [
     { value: 'new_arrival', label: 'New' },
     { value: 'best_seller', label: 'Best Seller' },
     { value: 'discount', label: 'Sale' },
-];
-
-const availabilityOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'in_stock', label: 'In Stock' },
-    { value: 'out_of_stock', label: 'Out of Stock' },
-];
-
-const fallbackImages = [
-    '/img/abdul-raheem-kannath-aNWfK46QWto-unsplash.webp',
-    '/img/ainur-iman-qcNmigFPTQM-unsplash.webp',
-    '/img/atiyeh-fathi-CvdzGjVX9DA-unsplash.webp',
-    '/img/hasan-almasi-_X2UAmIcpko-unsplash.webp',
-    '/img/ike-ellyana-2F70bGqQVa4-unsplash.webp',
 ];
 
 const formatPrice = (value: number) =>
@@ -167,7 +145,6 @@ export default function ListProduct({
     products,
     filters,
     options,
-    collectionBanner,
 }: Props) {
     const { auth } = usePage<SharedProps>().props;
     const isAuthenticated = Boolean(auth.user);
@@ -224,16 +201,13 @@ export default function ListProduct({
         visit(form);
     };
 
-    const selectedCollection = options.collections.find(
-        (collection) => collection.slug === filters.collection,
-    );
-    const pageTitle = selectedCollection?.name ?? 'All Products';
+    const pageTitle = 'All Products';
 
     return (
         <ShopLayout>
             <Head title={`${pageTitle} - AxeGear`} />
 
-            <section className="pb-9">
+            <section className="pt-8 pb-9 sm:pt-10 lg:pt-12">
                 <button
                     type="button"
                     aria-label="Close filter overlay"
@@ -293,38 +267,6 @@ export default function ListProduct({
                         </button>
                     </div>
                 </aside>
-
-                <section className="mb-8 w-full overflow-hidden bg-[#F2F2F2]">
-                    <div className="relative aspect-[16/6] min-h-[180px] w-full sm:min-h-[220px] lg:aspect-[16/4.8] lg:min-h-[260px]">
-                        <picture>
-                            <source
-                                media="(max-width: 767px)"
-                                srcSet={
-                                    collectionBanner.banner_mobile_url ??
-                                    collectionBanner.banner_desktop_url ??
-                                    fallbackImages[1]
-                                }
-                            />
-                            <img
-                                src={
-                                    collectionBanner.banner_desktop_url ??
-                                    collectionBanner.banner_mobile_url ??
-                                    fallbackImages[0]
-                                }
-                                alt={collectionBanner.title}
-                                className="absolute inset-0 h-full w-full object-cover"
-                            />
-                        </picture>
-                        <div className="absolute inset-0 bg-black/15" />
-                        {!collectionBanner.is_default && (
-                            <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-                                <h1 className="text-[32px] leading-none font-extrabold tracking-[-0.03em] text-white sm:text-[40px] lg:text-[52px]">
-                                    {collectionBanner.title}
-                                </h1>
-                            </div>
-                        )}
-                    </div>
-                </section>
 
                 <div className="mx-auto mb-8 grid max-w-[1728px] gap-5 px-6 sm:px-8 md:grid-cols-[280px_minmax(0,1fr)] md:items-start lg:grid-cols-[300px_minmax(0,1fr)] lg:px-9">
                     <nav
@@ -492,20 +434,18 @@ function FilterPanel({
                 ))}
             </FilterSection>
 
-            <FilterSection title="Style">
+            <FilterSection title="Brand">
                 <FilterRadio
-                    label="All Collections"
-                    active={form.collection === ''}
-                    onClick={() => setFilter('collection', '')}
+                    label="All Brands"
+                    active={form.brand === ''}
+                    onClick={() => setFilter('brand', '')}
                 />
-                {options.collections.map((collection) => (
+                {options.brands.map((brand) => (
                     <FilterRadio
-                        key={collection.id ?? collection.slug}
-                        label={collection.name ?? 'Untitled'}
-                        active={form.collection === collection.slug}
-                        onClick={() =>
-                            setFilter('collection', collection.slug ?? '')
-                        }
+                        key={brand.value}
+                        label={brand.label ?? brand.value ?? 'Untitled'}
+                        active={form.brand === brand.value}
+                        onClick={() => setFilter('brand', brand.value ?? '')}
                     />
                 ))}
             </FilterSection>
@@ -521,7 +461,7 @@ function FilterPanel({
                 ))}
             </FilterSection>
 
-            <FilterSection title="Sport">
+            <FilterSection title="Price">
                 {options.priceRanges.map((price) => (
                     <FilterRadio
                         key={price.value}
@@ -591,31 +531,6 @@ function FilterPanel({
                 </div>
             </FilterSection>
 
-            <FilterSection title="Availability">
-                {availabilityOptions.map((availability) => (
-                    <FilterRadio
-                        key={availability.value}
-                        label={availability.label}
-                        active={form.availability === availability.value}
-                        onClick={() =>
-                            setFilter('availability', availability.value)
-                        }
-                    />
-                ))}
-            </FilterSection>
-
-            <FilterSection title="Lens Type">
-                <FilterRadio
-                    label="All Lens Types"
-                    active={form.price === 'all'}
-                    onClick={() => setFilter('price', 'all')}
-                />
-                <FilterRadio
-                    label="Sale Pricing"
-                    active={form.type === 'discount'}
-                    onClick={() => setFilter('type', 'discount')}
-                />
-            </FilterSection>
         </div>
     );
 }
@@ -794,7 +709,7 @@ const ProductTile = memo(function ProductTile({
                     <img
                         src={
                             product.image ??
-                            fallbackImages[index % fallbackImages.length]
+                            '/img/all-product.webp'
                         }
                         alt={product.title}
                         loading="lazy"

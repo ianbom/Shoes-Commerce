@@ -129,14 +129,14 @@
     --chart-4: #777777;
     --chart-5: #999999;
     --radius: 0px;
-    --sidebar: #ffffff;
-    --sidebar-foreground: #111111;
-    --sidebar-primary: #111111;
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #f7f7f7;
-    --sidebar-accent-foreground: #111111;
-    --sidebar-border: #e5e5e5;
-    --sidebar-ring: #111111;
+    --sidebar: #000000;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #ffffff;
+    --sidebar-primary-foreground: #000000;
+    --sidebar-accent: #1f1f1f;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #333333;
+    --sidebar-ring: #ffffff;
 }
 
 .dark {

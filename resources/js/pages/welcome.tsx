@@ -390,20 +390,6 @@ export default function Welcome({
                                     View Best Sellers
                                 </Link>
                             </div>
-                            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-[11px] font-semibold text-ink">
-                                <span className="inline-flex items-center gap-2">
-                                    <ShieldCheck className="size-4" />
-                                    100% Authentic
-                                </span>
-                                <span className="inline-flex items-center gap-2">
-                                    <Truck className="size-4" />
-                                    Fast Worldwide Shipping
-                                </span>
-                                <span className="inline-flex items-center gap-2">
-                                    <RotateCcw className="size-4" />
-                                    Easy Returns
-                                </span>
-                            </div>
                         </div>
 
                         <div className="relative flex min-h-[280px] items-center justify-center md:min-h-[360px] lg:min-h-[390px]">
@@ -553,7 +539,7 @@ export default function Welcome({
                                     alt=""
                                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/0" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/35 to-transparent" />
                             </Link>
                         ))}
                     </section>
