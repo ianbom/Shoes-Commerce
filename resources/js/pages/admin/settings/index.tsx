@@ -97,7 +97,7 @@ export default function AdminSettingsIndex({
                     </div>
 
                     {recentlySuccessful ? (
-                        <span className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
+                        <span className="rounded-md border border-black/[0.32] bg-black/[0.04] px-3 py-2 text-sm font-medium text-black dark:border-white/[0.32] dark:bg-black/[0.08] dark:text-black">
                             Settings tersimpan
                         </span>
                     ) : null}

@@ -59,7 +59,7 @@ export default function StockAdjustment({ variant }: Props) {
                                             ? `/admin/products/${variant.product_id}`
                                             : '#'
                                     }
-                                    className="rounded-md transition-colors hover:text-[#151515] focus-visible:ring-2 focus-visible:ring-[#151515]/30 focus-visible:outline-none"
+                                    className="rounded-md transition-colors hover:text-black focus-visible:ring-2 focus-visible:ring-black/[0.16] focus-visible:outline-none"
                                     aria-disabled={!variant.product_id}
                                 >
                                     {variant.sku}
@@ -69,7 +69,7 @@ export default function StockAdjustment({ variant }: Props) {
                                 {variant.product_id ? (
                                     <Link
                                         href={`/admin/products/${variant.product_id}`}
-                                        className="underline-offset-4 hover:text-[#151515] hover:underline"
+                                        className="underline-offset-4 hover:text-black hover:underline"
                                     >
                                         {variant.product ?? '-'}
                                     </Link>

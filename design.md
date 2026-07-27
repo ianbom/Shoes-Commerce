@@ -2,25 +2,25 @@
 
 ## Overview
 
-NEXSTEP uses a **minimal premium sneaker-commerce design system** based on the new landing page direction: a clean white canvas, bold black typography, restrained orange accents, thin gray borders, sharp product photography, and a structured e-commerce flow. The design should feel modern, athletic, editorial, product-first, and retail-ready.
+NEXSTEP uses a **premium monochrome sneaker-commerce design system** built exclusively from black and white. The interface combines a clean white canvas, strong black typography, high-contrast product photography, sharp borders, and a structured e-commerce flow. The visual direction should feel modern, athletic, editorial, product-first, and retail-ready.
 
-The new design is not a dense marketplace page. It should still show many products, but the experience must feel curated, spacious, and brand-led. Visual strength comes from **large typography, clear hierarchy, consistent product grids, strong imagery, and disciplined color usage**.
+The design is not a dense marketplace page. It should present a rich catalogue while remaining curated, spacious, and brand-led. Visual strength comes from **oversized Bebas Neue titles, readable Montserrat descriptions, consistent product grids, bold black-and-white contrast, and disciplined spacing**.
 
-The primary identity is built around a Nike-inspired retail palette:
+The primary identity is built around two base colours only:
 
-- **White** (`{colors.canvas}` — `#FFFFFF`) for the main page background, hero canvas, product sections, cards, and whitespace.
-- **Black** (`{colors.ink}` — `#111111`) for logo, navigation, headlines, product names, prices, icons, and footer.
-- **Gray** (`{colors.muted}` — `#757575`, `{colors.hairline}` — `#E5E5E5`) for secondary text, dividers, helper text, card borders, and UI separation.
-- **Orange** (`{colors.primary}` — `#FA5400`) only for CTA buttons, sale badges, limited labels, small highlights, active states, and directional accents.
+- **White** (`{colors.white}` — `#FFFFFF`) for the page canvas, product cards, forms, image zones, content surfaces, and negative space.
+- **Black** (`{colors.black}` — `#000000`) for titles, body text, navigation, borders, icons, buttons, badges, footer, and active states.
+
+Opacity variants may be created from black or white using `rgba()` for hierarchy, disabled states, overlays, hairlines, and subtle surfaces. No hue other than black and white may be introduced into the interface.
 
 The homepage follows this structure:
 
-1. Clean white header with NEXSTEP logo, centered navigation, utility icons, and orange `Shop Now` CTA.
-2. Large hero section with bold headline on the left and one dominant sneaker image on the right.
+1. Clean white header with NEXSTEP logo, centred navigation, monochrome utility icons, and black `Shop Now` CTA.
+2. Large hero section with a Bebas Neue headline on the left and one dominant sneaker image on the right.
 3. Compact product rows for Weekly Flash Deals, New Arrivals, and Best Sellers.
 4. Editorial image gallery with sneaker lifestyle and warehouse/product imagery.
 5. Curated product category rows: Luxury Sneakers, Streetwear Essentials, Performance Classics, and Warehouse Ready.
-6. Warehouse/logistics trust section with map, fulfillment imagery, and service benefits.
+6. Warehouse/logistics trust section with map, fulfilment imagery, and service benefits.
 7. Testimonials and community video previews.
 8. Why Choose Us benefit strip.
 9. Newsletter CTA.
@@ -28,176 +28,173 @@ The homepage follows this structure:
 
 **Key Characteristics:**
 
-- **Minimal athletic retail:** clean, sharp, high-contrast, and premium.
-- **Product-first composition:** sneaker images must be large, clear, and consistent.
-- **Editorial hero:** strong campaign headline, one hero product, minimal supporting copy.
-- **Flat visual system:** use borders and spacing instead of heavy shadows.
-- **Disciplined orange accent:** orange is powerful because it is used sparingly.
+- **Strict monochrome retail:** only black, white, and their opacity variants.
+- **Typography-led hierarchy:** Bebas Neue for titles; Montserrat for descriptions and interface copy.
+- **Product-first composition:** sneaker images remain large, clear, and consistent.
+- **Editorial hero:** strong campaign headline, one hero product, and minimal supporting copy.
+- **Flat visual system:** use borders, inversion, and spacing instead of coloured accents or heavy shadows.
 - **Consistent product grid:** cards align precisely with equal image ratios and clean pricing.
-- **Readable typography:** bold sans-serif headlines, clean body text, no decorative fonts.
-- **Commercial clarity:** every section should support browsing, trust, and conversion.
-
----
+- **Commercial clarity:** every section supports browsing, trust, and conversion.
 
 ## Colors
 
 ### Core Palette
 
-- **Canvas White** (`{colors.canvas}` — `#FFFFFF`): Main background, hero background, product cards, content surfaces, and whitespace.
-- **Nike Black / NEXSTEP Ink** (`{colors.ink}` — `#111111`): Primary text, logo, nav links, headings, prices, icons, footer background, and strong UI elements.
-- **Secondary Gray** (`{colors.muted}` — `#757575`): Body copy, product categories, old prices, helper text, metadata, footer secondary copy.
-- **Border Gray** (`{colors.hairline}` — `#E5E5E5`): Product card border, header divider, form input border, section dividers, testimonial card outline.
-- **Soft Gray** (`{colors.surface-soft}` — `#F5F5F5`): Subtle section backgrounds, product image zones, newsletter surfaces, skeleton loading.
-- **Extra Soft Gray** (`{colors.surface-subtle}` — `#FAFAFA`): Very light background variation for calm section rhythm.
-- **NEXSTEP Orange** (`{colors.primary}` — `#FA5400`): Primary CTA, sale badges, limited labels, selected states, small accent lines, active controls, and important highlights.
+- **Pure White** (`{colors.white}` — `#FFFFFF`): Main page background, product cards, content surfaces, input backgrounds, and whitespace.
+- **Pure Black** (`{colors.black}` — `#000000`): Titles, descriptions, logo, navigation, product names, prices, icons, buttons, badges, borders, and footer.
+- **Black 72%** (`{colors.black-72}` — `rgba(0,0,0,0.72)`): Secondary body text, metadata, helper text, and footer supporting copy.
+- **Black 48%** (`{colors.black-48}` — `rgba(0,0,0,0.48)`): Placeholders, old prices, disabled text, and unavailable variants.
+- **Black 16%** (`{colors.black-16}` — `rgba(0,0,0,0.16)`): Standard card borders, dividers, input borders, and inactive controls.
+- **Black 8%** (`{colors.black-08}` — `rgba(0,0,0,0.08)`): Subtle section bands, image-zone separation, skeleton loading, and hover surfaces.
+- **White 72%** (`{colors.white-72}` — `rgba(255,255,255,0.72)`): Supporting text on black surfaces.
+- **White 16%** (`{colors.white-16}` — `rgba(255,255,255,0.16)`): Dividers and borders on dark surfaces.
 
 ### Brand & Accent
 
-- **Primary Orange** (`{colors.primary}` — `#FA5400`): Main CTA and accent color.
-- **Primary Hover** (`{colors.primary-hover}` — `#E64800`): Hover state for orange buttons and active interactive elements.
-- **Primary Active** (`{colors.primary-active}` — `#C93D00`): Pressed state for orange buttons.
-- **Primary Soft** (`{colors.primary-soft}` — `#FFF1EA`): Very light orange background for subtle promo notes or selected states.
-- **Primary Border** (`{colors.primary-border}` — `#FFB08A`): Soft orange border for selected chips, labels, and small emphasis containers.
+The brand has no separate accent hue. Emphasis is created through black-and-white inversion.
+
+- **Primary** (`{colors.primary}` — `#000000`): Main CTA, selected state, important badge, active control, and focus border.
+- **Primary Hover** (`{colors.primary-hover}` — `rgba(0,0,0,0.84)`): Hover state for black controls.
+- **Primary Active** (`{colors.primary-active}` — `rgba(0,0,0,0.72)`): Pressed state.
+- **Primary Soft** (`{colors.primary-soft}` — `rgba(0,0,0,0.08)`): Selected chip background, subtle notification, or secondary surface.
+- **On Primary** (`{colors.on-primary}` — `#FFFFFF`): Text and icons on black controls.
 
 ### Surface
 
 - **Canvas** (`{colors.canvas}` — `#FFFFFF`): Default page background.
-- **Surface** (`{colors.surface}` — `#FFFFFF`): Product cards, testimonial cards, input backgrounds, modal surfaces, cart drawer, checkout panels.
-- **Surface Soft** (`{colors.surface-soft}` — `#F5F5F5`): Product image area, logistics section background, subtle page bands.
-- **Surface Subtle** (`{colors.surface-subtle}` — `#FAFAFA`): Secondary light section background.
-- **Surface Dark** (`{colors.surface-dark}` — `#111111`): Footer, dark CTA panels, dark overlays if needed.
-- **Surface Dark Soft** (`{colors.surface-dark-soft}` — `#1A1A1A`): Footer secondary panel, dark input background, dark hover surfaces.
+- **Surface** (`{colors.surface}` — `#FFFFFF`): Product cards, modals, inputs, checkout panels, and cart drawer.
+- **Surface Soft** (`{colors.surface-soft}` — `rgba(0,0,0,0.04)`): Product image area and subtle section separation.
+- **Surface Strong** (`{colors.surface-strong}` — `rgba(0,0,0,0.08)`): Skeletons, selected rows, and stronger monochrome bands.
+- **Surface Inverse** (`{colors.surface-inverse}` — `#000000`): Footer, dark campaign panel, tooltip, and inverse CTA.
 
 ### Hairlines & Borders
 
-- **Hairline** (`{colors.hairline}` — `#E5E5E5`): Standard product card border, section divider, input border.
-- **Hairline Strong** (`{colors.hairline-strong}` — `#D4D4D4`): Stronger divider, focused card border, dropdown border.
-- **Border Ink** (`{colors.border-ink}` — `#111111`): Outline buttons, selected variants, focused form controls.
-- **Border Primary** (`{colors.border-primary}` — `#FA5400`): Selected tab, selected filter, limited label border, active carousel control.
-- **Divider Soft** (`{colors.divider-soft}` — `#EEEEEE`): Low-emphasis separators inside cards and footer.
+- **Hairline** (`{colors.hairline}` — `rgba(0,0,0,0.16)`): Standard product card, input, and section border.
+- **Hairline Strong** (`{colors.hairline-strong}` — `rgba(0,0,0,0.32)`): Hovered card, dropdown, and focused container border.
+- **Border Ink** (`{colors.border-ink}` — `#000000`): Selected variants, outline buttons, focus states, and strong dividers.
+- **Border Inverse** (`{colors.border-inverse}` — `rgba(255,255,255,0.24)`): Dividers and inputs on black surfaces.
 
 ### Text
 
-- **Ink** (`{colors.ink}` — `#111111`): Primary headings, logo, navigation, product names, prices, card labels, footer headings.
-- **Body** (`{colors.body}` — `#2B2B2B`): Body copy, product descriptions, long content, form labels.
-- **Muted** (`{colors.muted}` — `#757575`): Supporting text, product categories, metadata, old prices, footer secondary links.
-- **Muted Soft** (`{colors.muted-soft}` — `#A3A3A3`): Placeholder text, disabled copy, unavailable variants.
-- **On Dark** (`{colors.on-dark}` — `#FFFFFF`): Text on dark footer or black buttons.
-- **On Primary** (`{colors.on-primary}` — `#FFFFFF`): Text on orange CTA buttons and orange badges.
-- **Highlight Text** (`{colors.highlight}` — `#FA5400`): Small labels, sale badges, sale emphasis, active state text.
+- **Ink** (`{colors.ink}` — `#000000`): Titles, navigation, product names, prices, labels, and primary body text.
+- **Body** (`{colors.body}` — `rgba(0,0,0,0.78)`): Long descriptions and supporting paragraphs.
+- **Muted** (`{colors.muted}` — `rgba(0,0,0,0.56)`): Metadata, categories, old prices, helper text, and secondary links.
+- **Muted Soft** (`{colors.muted-soft}` — `rgba(0,0,0,0.40)`): Placeholder text and disabled content.
+- **On Dark** (`{colors.on-dark}` — `#FFFFFF`): Titles and controls on black surfaces.
+- **On Dark Muted** (`{colors.on-dark-muted}` — `rgba(255,255,255,0.68)`): Secondary footer and dark-panel copy.
 
-### Product Status
+### Product and System Status
 
-- **Sale** (`{colors.status-sale}` — `#FA5400`): Sale badge and sale highlight.
-- **Limited** (`{colors.status-limited}` — `#FA5400`): Limited label, low quantity note.
-- **New** (`{colors.status-new}` — `#F5F5F5`): New label background with black text.
-- **In Stock** (`{colors.status-in-stock}` — `#111111`): Default stock status.
-- **Out of Stock** (`{colors.status-out}` — `#A3A3A3`): Disabled/out-of-stock state.
-- **Error** (`{colors.error}` — `#D43F21`): Form error, checkout failure, payment failed.
-- **Success** (`{colors.success}` — `#128A09`): Order success, delivered, payment success.
+All statuses remain monochrome. Meaning must be communicated through text, icon shape, border style, and pattern—not hue.
+
+- **Sale**: black badge with white text.
+- **Limited**: white badge with black dashed border.
+- **New**: white badge with black solid border.
+- **Best Seller**: black badge with white text.
+- **In Stock**: black text with filled-circle icon.
+- **Low Stock**: black text with outlined warning icon.
+- **Out of Stock**: 48% black text with line-through treatment.
+- **Success**: black confirmation icon plus explicit success label.
+- **Warning**: black warning icon plus explicit warning label.
+- **Error**: black error icon, strong border, and explicit error message.
 
 ### Color Usage Ratio
 
 Recommended page ratio:
 
-- **White / light surfaces:** 78–85%
-- **Black / dark text and footer:** 10–16%
-- **Gray UI and dividers:** 5–8%
-- **Orange accent:** 3–6%
+- **White and transparent white surfaces:** 72–82%
+- **Black text, borders, buttons, and footer:** 18–28%
 
-Orange must not dominate the design. Use it for action, not decoration.
-
----
+Never introduce a third colour. Contrast and hierarchy must come from scale, font, weight, opacity, border treatment, and inversion.
 
 ## Typography
 
 ### Font Family
 
-The typography should feel close to a modern athletic retail brand: bold, direct, highly readable, and minimal.
+The typography combines a bold condensed display face with a clean geometric sans-serif:
 
-Recommended stack:
+- **Bebas Neue** for hero headlines, page titles, section titles, promotional numbers, and major campaign labels.
+- **Montserrat** for descriptions, navigation, buttons, product information, forms, pricing, labels, captions, and all long-form content.
 
-```css
-font-family: "Helvetica Neue", Helvetica, Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-```
-
-Alternative implementation stack when Helvetica Neue is not available:
+Recommended CSS stacks:
 
 ```css
-font-family: Inter, "Helvetica Neue", Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+/* Display and title text */
+font-family: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+
+/* Description and interface text */
+font-family: "Montserrat", Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 ```
 
 Guidelines:
 
-- Use **Helvetica Neue / Helvetica / Arial** for the most Nike-like feel.
-- Use **Inter** only as a practical fallback for web consistency.
-- Do not use decorative, condensed, futuristic, or overly stylized fonts.
-- Use strong font weight for hero and section titles.
-- Product names should be clean and readable, not overly compressed.
-- Navigation should use title case, not full uppercase, matching the new NEXSTEP design.
+- Bebas Neue is reserved for headings and high-impact display text.
+- Montserrat is mandatory for paragraphs and descriptive content.
+- Avoid long paragraphs in Bebas Neue because the condensed uppercase construction reduces readability.
+- Titles may use uppercase naturally because Bebas Neue is designed for display.
+- Navigation and product names should use Montserrat unless they function as a major section title.
+- Do not introduce additional decorative or body fonts.
 
 ### Hierarchy
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---:|---:|---:|---:|---|
-| `{typography.hero-xl}` | 72px | 800 | 0.95 | -2.4px | Homepage hero headline |
-| `{typography.hero-lg}` | 56px | 800 | 1.0 | -1.6px | Large campaign title |
-| `{typography.display-xl}` | 40px | 800 | 1.05 | -1.0px | Page title, editorial section title |
-| `{typography.display-lg}` | 32px | 700 | 1.1 | -0.6px | Section title, product detail title |
-| `{typography.display-md}` | 24px | 700 | 1.2 | -0.3px | Product section heading |
-| `{typography.title-lg}` | 20px | 700 | 1.25 | -0.2px | Card group title, footer brand |
-| `{typography.title-md}` | 16px | 700 | 1.3 | 0 | Product card title |
-| `{typography.title-sm}` | 14px | 700 | 1.3 | 0 | Footer heading, small group title |
-| `{typography.nav}` | 14px | 500 | 1.2 | 0 | Header navigation |
-| `{typography.body-lg}` | 18px | 400 | 1.55 | 0 | Hero description, large body |
-| `{typography.body-md}` | 16px | 400 | 1.5 | 0 | Default body text |
-| `{typography.body-sm}` | 14px | 400 | 1.45 | 0 | Product metadata, helper text |
-| `{typography.caption}` | 12px | 500 | 1.35 | 0 | Product category, badge text |
-| `{typography.caption-bold}` | 11px | 700 | 1.25 | 0.2px | Sale badge, small labels |
-| `{typography.price}` | 16px | 700 | 1.25 | 0 | Product card price |
-| `{typography.price-lg}` | 20px | 700 | 1.25 | 0 | Product detail price |
-| `{typography.button-md}` | 14px | 700 | 1.2 | 0 | Main CTA button |
-| `{typography.button-sm}` | 12px | 700 | 1.2 | 0 | Small button / badge |
+| Token | Font | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---:|---:|---:|---:|---|
+| `{typography.hero-xl}` | Bebas Neue | 88px | 400 | 0.88 | 0.5px | Homepage hero headline |
+| `{typography.hero-lg}` | Bebas Neue | 68px | 400 | 0.9 | 0.5px | Large campaign title |
+| `{typography.display-xl}` | Bebas Neue | 48px | 400 | 0.95 | 0.4px | Page and editorial title |
+| `{typography.display-lg}` | Bebas Neue | 40px | 400 | 1.0 | 0.3px | Section title and PDP title |
+| `{typography.display-md}` | Bebas Neue | 32px | 400 | 1.0 | 0.3px | Product-section heading |
+| `{typography.title-lg}` | Bebas Neue | 26px | 400 | 1.05 | 0.2px | Card-group and footer title |
+| `{typography.title-md}` | Montserrat | 16px | 700 | 1.3 | 0 | Product-card title |
+| `{typography.title-sm}` | Montserrat | 14px | 700 | 1.3 | 0 | Footer heading and small group title |
+| `{typography.nav}` | Montserrat | 14px | 600 | 1.2 | 0.1px | Header navigation |
+| `{typography.body-lg}` | Montserrat | 18px | 400 | 1.65 | 0 | Hero description and introductory copy |
+| `{typography.body-md}` | Montserrat | 16px | 400 | 1.6 | 0 | Default descriptions |
+| `{typography.body-sm}` | Montserrat | 14px | 400 | 1.5 | 0 | Product metadata and helper text |
+| `{typography.caption}` | Montserrat | 12px | 500 | 1.4 | 0.1px | Category and badge text |
+| `{typography.caption-bold}` | Montserrat | 11px | 700 | 1.3 | 0.3px | Sale badge and compact labels |
+| `{typography.price}` | Montserrat | 16px | 700 | 1.25 | 0 | Product-card price |
+| `{typography.price-lg}` | Montserrat | 22px | 700 | 1.25 | 0 | Product-detail price |
+| `{typography.button-md}` | Montserrat | 14px | 700 | 1.2 | 0.2px | Main CTA |
+| `{typography.button-sm}` | Montserrat | 12px | 700 | 1.2 | 0.2px | Small button or badge |
 
 ### Principles
 
-- Hero headlines should be large, bold, and confident.
-- Section titles should be short and direct.
-- Product titles should use title case, not all caps.
-- Metadata should be muted and smaller than product titles.
-- Sale labels should be small, orange, and readable.
-- Buttons should feel crisp and commercial, not playful.
-- Avoid text-heavy cards; keep product information concise.
+- Hero and major section titles use Bebas Neue for a strong editorial identity.
+- Descriptions always use Montserrat with comfortable line height.
+- Keep Bebas Neue titles short, direct, and visually dominant.
+- Product titles, prices, metadata, and controls use Montserrat.
+- Do not imitate hierarchy by adding colour; use font family, scale, weight, opacity, and whitespace.
+- Buttons should feel crisp, commercial, and readable.
+- Avoid text-heavy cards and keep product information concise.
 
 ### Product Name Rules
 
 Use compact sneaker naming:
 
 ```txt
-{Model Name} {Color / Style}
+{Model Name} {Colour / Style}
 ```
 
 Examples:
 
-- `Desert Runner Sand`
-- `Urban Speed Black`
-- `Core Low White Red`
-- `Vintage Green Low`
-- `Aero Glide Grey`
-- `Heritage Navy`
+- `Desert Runner Black`
+- `Urban Speed White`
+- `Core Low Black White`
+- `Vintage Low White`
+- `Aero Glide Black`
+- `Heritage Mono`
 - `Shadow Mid 03`
 - `All Core Comfort Black`
 
 Product cards should show:
 
 1. Product image
-2. Product name
+2. Product name in Montserrat
 3. Optional category/style label
 4. Price
 5. Optional old price
-6. Optional badge: `New`, `Limited`, `Best Seller`, `-25%`
-
----
+6. Optional monochrome badge: `New`, `Limited`, `Best Seller`, or `-25%`
 
 ## Layout
 
@@ -214,7 +211,7 @@ Product cards should show:
 - **Section vertical spacing:** 40–72px depending section density.
 - **Product grid gap:** 16–24px.
 - **Card padding:** 16px.
-- **Card border:** 1px `#E5E5E5`.
+- **Card border:** 1px `rgba(0,0,0,0.16)`.
 - **Footer padding:** 56–72px desktop, 32–40px mobile.
 
 ### Grid & Container
@@ -237,9 +234,9 @@ Desktop header:
 
 - Left: `NEXSTEP` logo in black.
 - Center: navigation links.
-- Right: search icon, wishlist icon, cart icon, orange `Shop Now` button.
+- Right: search icon, wishlist icon, cart icon, black `Shop Now` button.
 - Background: white.
-- Border-bottom: 1px `#E5E5E5`.
+- Border-bottom: 1px `rgba(0,0,0,0.16)`.
 - Height: 64px.
 - Logo: bold black wordmark.
 - Nav text: title case, medium weight, black.
@@ -259,7 +256,7 @@ Rules:
 - Keep header minimal and flat.
 - Do not use heavy shadows or glassmorphism.
 - Do not use uppercase navigation.
-- CTA button should be small, crisp, orange, and aligned with icon height.
+- CTA button should be small, crisp, black, and aligned with icon height.
 
 ### Homepage Layout
 
@@ -320,20 +317,20 @@ The design should be mostly flat. Borders and spacing define hierarchy more than
 Specs:
 
 - Background: `#FFFFFF`
-- Text/icon: `#111111`
-- Border-bottom: 1px `#E5E5E5`
+- Text/icon: `#000000`
+- Border-bottom: 1px `rgba(0,0,0,0.16)`
 - Height: 64px desktop
 - Logo: bold black wordmark, left aligned
 - Navigation: centered, title case
 - Utility icons: search, wishlist, cart
-- CTA: orange `Shop Now`
+- CTA: black `Shop Now`
 
 Behavior:
 
 - Sticky optional.
 - On scroll, keep white background.
 - No blur/glass effect.
-- Dropdown menus should be clean white panels with gray border.
+- Dropdown menus should be clean white panels with black-opacity border.
 
 ### Hero Section
 
@@ -352,12 +349,12 @@ Content:
 Specs:
 
 - Background: `#FFFFFF`
-- Optional subtle grid lines or faint oversized letterform in `#F5F5F5`
+- Optional subtle grid lines or faint oversized letterform in `rgba(0,0,0,0.04)`
 - Main headline: black, very bold, large
-- Primary CTA: orange background, white text
-- Secondary CTA: white background, black text, gray/black border
-- Accent usage: small orange label, CTA, tiny graphic marks only
-- Carousel controls: small circular icon buttons, light gray border, active orange icon
+- Primary CTA: black background, white text
+- Secondary CTA: white background, black text, black border
+- Accent usage: small black label, CTA, tiny graphic marks only
+- Carousel controls: small circular icon buttons, white with a black-opacity border, active black icon
 
 Rules:
 
@@ -390,16 +387,16 @@ Rules:
 Specs:
 
 - Background: `#FFFFFF`
-- Border: 1px `#E5E5E5`
+- Border: 1px `rgba(0,0,0,0.16)`
 - Radius: 4–6px
 - Padding: 16px
 - Shadow: none
-- Image area: white or `#FAFAFA`
+- Image area: white or a subtle black-opacity surface
 - Product image: centered, object-contain
-- Wishlist icon: top-right, black/gray line icon
+- Wishlist icon: top-right, black at full or reduced opacity line icon
 - Product title: black, 14–16px, 600–700
 - Price: black, 14–16px, 700
-- Old price: muted gray with strikethrough
+- Old price: black at reduced opacity with strikethrough
 
 Rules:
 
@@ -414,10 +411,10 @@ Rules:
 
 Types:
 
-- Sale percentage: orange background, white text, e.g. `-25%`.
-- New: light gray background, black text, e.g. `New`.
-- Limited: soft orange background, orange text, e.g. `Limited`.
-- Best Seller: orange background, white text, e.g. `Best Seller`.
+- Sale percentage: black background, white text, e.g. `-25%`.
+- New: white background, black text, and a solid black border, e.g. `New`.
+- Limited: white background, black text, and a dashed black border, e.g. `Limited`.
+- Best Seller: black background, white text, e.g. `Best Seller`.
 
 Specs:
 
@@ -429,7 +426,7 @@ Specs:
 Rules:
 
 - Maximum one primary badge per product card.
-- Do not overuse orange badges across every product.
+- Do not overuse black badges across every product.
 
 ### Weekly Flash Deals
 
@@ -445,7 +442,7 @@ Rules:
 
 - Keep this section compact.
 - Avoid making sale cards visually louder than the hero.
-- Orange should mainly appear in discount badges.
+- black should mainly appear in discount badges.
 
 ### New Arrivals
 
@@ -532,14 +529,14 @@ Content:
 - Headline: `Fast Fulfillment From Trusted Warehouses`
 - Supporting text: short copy about global facilities and fast dispatch.
 - Benefit icons: `Verified Authentic`, `Worldwide Shipping`, `Easy Returns`, `Easy Returns / Easy Service`
-- Map illustration with orange route lines.
+- Map illustration with black route lines.
 - Warehouse image grid on the right.
 
 Specs:
 
-- Background: `#FAFAFA` or white with thin border.
+- Background: white or `rgba(0,0,0,0.04)` with thin border.
 - Icons: monochrome black line icons.
-- Orange: only for map route accents and small markers.
+- black: only for map route accents and small markers.
 
 Rules:
 
@@ -553,7 +550,7 @@ Rules:
 
 Content:
 
-- Star rating in orange.
+- Star rating in black.
 - Short review text.
 - Avatar image.
 - Name.
@@ -562,17 +559,17 @@ Content:
 Specs:
 
 - Background: white.
-- Border: 1px `#E5E5E5`.
+- Border: 1px `rgba(0,0,0,0.16)`.
 - Radius: 6px.
 - Padding: 20–24px.
-- Stars: orange.
+- Stars: black.
 - Review text: black.
-- Metadata: muted gray.
+- Metadata: black at reduced opacity.
 
 Rules:
 
 - Keep reviews short and believable.
-- Do not make review cards too colorful.
+- Do not make review cards visually busy.
 
 ### Community Video Cards
 
@@ -590,7 +587,7 @@ Specs:
 - Thumbnail aspect ratio: 16:9.
 - Play button: white circle with black icon, subtle shadow.
 - Title: black.
-- Subtitle: muted gray.
+- Subtitle: black at reduced opacity.
 
 Rules:
 
@@ -629,14 +626,14 @@ Content:
 - Headline: `Get Early Access To New Drops`
 - Supporting text about restocks, exclusive offers, and limited releases.
 - Email input.
-- Orange `Subscribe` button.
+- black `Subscribe` button.
 - Optional package/box illustration on the right.
 
 Specs:
 
-- Background: white or `#FAFAFA`.
-- Input border: `#E5E5E5`.
-- Button: orange.
+- Background: white or a subtle black-opacity surface.
+- Input border: `rgba(0,0,0,0.16)`.
+- Button: black.
 - Illustration: subtle, product-related, not dominant.
 
 Rules:
@@ -650,13 +647,13 @@ Rules:
 
 Specs:
 
-- Background: `#111111`
+- Background: `#000000`
 - Primary text: `#FFFFFF`
-- Secondary text: `#A3A3A3`
+- Secondary text: `rgba(0,0,0,0.40)`
 - Divider: rgba(255,255,255,0.14)
-- Link hover: `#FA5400`
+- Link hover: `#000000`
 - Payment badges: clean and small
-- Social icons: white/gray, hover orange
+- Social icons: white or black at reduced opacity, hover inverted
 
 Footer columns:
 
@@ -670,7 +667,7 @@ Rules:
 
 - Keep footer compact and structured.
 - Do not add large colorful footer graphics.
-- Use white/gray text hierarchy clearly.
+- Use white or black at reduced opacity text hierarchy clearly.
 
 ---
 
@@ -680,9 +677,9 @@ Rules:
 
 **`button-primary`**
 
-- Background: `#FA5400`
-- Hover: `#E64800`
-- Active: `#C93D00`
+- Background: `#000000`
+- Hover: `rgba(0,0,0,0.84)`
+- Active: `rgba(0,0,0,0.72)`
 - Text: `#FFFFFF`
 - Height: 44–48px
 - Padding: 0 20–24px
@@ -695,9 +692,9 @@ Rules:
 **`button-secondary`**
 
 - Background: `#FFFFFF`
-- Border: 1px solid `#111111`
-- Text: `#111111`
-- Hover background: `#111111`
+- Border: 1px solid `#000000`
+- Text: `#000000`
+- Hover background: `#000000`
 - Hover text: `#FFFFFF`
 - Height: 44–48px
 - Radius: 4px
@@ -708,8 +705,8 @@ Rules:
 **`button-link`**
 
 - Background: transparent
-- Text: `#111111`
-- Hover text: `#FA5400`
+- Text: `#000000`
+- Hover text: `#000000`
 - Icon: small arrow
 - Use for: `View All`, `View All Deals`, `View All New Arrivals`.
 
@@ -717,12 +714,12 @@ Rules:
 
 **`icon-button`**
 
-- Icon color: `#111111`
-- Hover color: `#FA5400`
-- Active color: `#FA5400`
+- Icon color: `#000000`
+- Hover color: `#000000`
+- Active color: `#000000`
 - Size: 40px
 - Background: transparent or white
-- Border: none or 1px `#E5E5E5` for carousel controls
+- Border: none or 1px `rgba(0,0,0,0.16)` for carousel controls
 - Used for search, wishlist, cart, carousel arrows, video play.
 
 ---
@@ -734,14 +731,14 @@ Rules:
 **`text-input`**
 
 - Background: `#FFFFFF`
-- Border: 1px `#E5E5E5`
-- Text: `#111111`
-- Placeholder: `#A3A3A3`
+- Border: 1px `rgba(0,0,0,0.16)`
+- Text: `#000000`
+- Placeholder: `rgba(0,0,0,0.40)`
 - Height: 44–48px
 - Radius: 4px
 - Padding: 0 14–16px
-- Focus border: 1.5–2px `#111111`
-- Error border: `#D43F21`
+- Focus border: 1.5–2px `#000000`
+- Error border: `#000000`
 
 ### Select Input
 
@@ -755,8 +752,8 @@ Rules:
 
 **`checkbox`**
 
-- Border: `#111111`
-- Checked background: `#111111` or `#FA5400`
+- Border: `#000000`
+- Checked background: `#000000` or `#000000`
 - Check icon: white
 - Use for filters, agreement, newsletter consent.
 
@@ -769,9 +766,9 @@ Product detail pages should extend the same visual system:
 - Large product gallery on the left.
 - Purchase panel on the right.
 - Product title in bold black.
-- Price in black; sale/limited highlight in orange.
+- Price in black; sale/limited highlight in black.
 - Variant selector with clean bordered chips.
-- Primary `Add to Cart` button in orange.
+- Primary `Add to Cart` button in black.
 - Secondary `Buy Now` or `Wishlist` action in black/outline.
 - Product description in clean rich text.
 - Related products in the same card system as homepage.
@@ -779,10 +776,10 @@ Product detail pages should extend the same visual system:
 ### Product Gallery
 
 - Main image ratio: 1:1 or 4:5.
-- Background: `#FAFAFA` or white.
+- Background: white or `rgba(0,0,0,0.04)`.
 - Product must be centered.
-- Thumbnails use gray borders.
-- Selected thumbnail uses black or orange border.
+- Thumbnails use black-opacity borders.
+- Selected thumbnail uses black or black border.
 
 ### Product Purchase Panel
 
@@ -796,15 +793,15 @@ Product detail pages should extend the same visual system:
 
 Because product descriptions may come from rich text content, style them consistently:
 
-- Text: `#2B2B2B`
+- Text: `rgba(0,0,0,0.78)`
 - Max width: 760–880px
 - Body: 16px / 1.6
 - H2: 24px / 700
 - H3: 18px / 700
 - Paragraph margin: 12–16px
-- Links: orange
-- Tables: 1px `#E5E5E5` border
-- Table header: `#F5F5F5`
+- Links: black
+- Tables: 1px `rgba(0,0,0,0.16)` border
+- Table header: `rgba(0,0,0,0.04)`
 
 Recommended sections:
 
@@ -864,23 +861,23 @@ Rules:
 
 ---
 
-## Interaction States
+## Montserrataction States
 
 ### Hover
 
-- Nav links turn orange or underline subtly.
-- Product card border darkens from `#E5E5E5` to `#D4D4D4`.
+- Nav links invert to white on black or underline subtly.
+- Product card border darkens from `rgba(0,0,0,0.16)` to `rgba(0,0,0,0.32)`.
 - Product image may scale to `1.02`.
-- Wishlist icon turns black/orange.
-- Primary button uses darker orange.
-- Footer links turn orange.
+- Wishlist icon turns black.
+- Primary button uses darker black.
+- Footer links invert to white on black.
 
 ### Active
 
-- Active nav link can use black text with subtle underline, or orange text sparingly.
-- Selected filter chip uses black border or soft orange background.
+- Active nav link can use black text with subtle underline, or black text sparingly.
+- Selected filter chip uses black border or black at 8% opacity background.
 - Selected variant uses black border.
-- Active carousel dot/control uses orange.
+- Active carousel dot/control uses black.
 
 ### Focus
 
@@ -891,14 +888,14 @@ Rules:
 
 ### Disabled
 
-- Disabled button background: `#E5E5E5`.
-- Disabled text: `#A3A3A3`.
+- Disabled button background: `rgba(0,0,0,0.16)`.
+- Disabled text: `rgba(0,0,0,0.40)`.
 - Disabled variant: muted with line-through or unavailable label.
 
 ### Loading
 
-- Skeleton background: `#F5F5F5`.
-- Skeleton highlight: `#FAFAFA`.
+- Skeleton background: `rgba(0,0,0,0.04)`.
+- Skeleton highlight: `rgba(0,0,0,0.02)`.
 - Product grid should preserve layout while loading.
 - CTA loading state keeps button dimensions stable.
 
@@ -906,9 +903,9 @@ Rules:
 
 Examples:
 
-- Empty cart: `Your cart is empty` + orange `Shop New Arrivals`.
+- Empty cart: `Your cart is empty` + black `Shop New Arrivals`.
 - No products: `No sneakers found` + outline `Clear Filters`.
-- Failed checkout: use red for error message, orange for retry CTA.
+- Failed checkout: use black icon and explicit error text, with a black retry CTA.
 
 ---
 
@@ -917,7 +914,7 @@ Examples:
 ### Product Photography
 
 - Use clean cutout sneaker images.
-- Background should be white or very light gray.
+- Background should be white or very white with a black-opacity border.
 - Product must be centered and sharp.
 - Maintain consistent scale across product cards.
 - Use object-contain for product cards.
@@ -928,7 +925,7 @@ Examples:
 
 - Use one large high-quality sneaker image.
 - The shoe should feel premium, sharp, and energetic.
-- Hero background remains minimal: white, faint gray grid, subtle oversized letterform, or minimal orange accent strokes.
+- Hero background remains minimal: white, faint black-opacity grid, subtle oversized letterform, or minimal black graphic strokes.
 - Avoid multiple competing shoe images in the hero.
 
 ### Lifestyle Imagery
@@ -975,8 +972,8 @@ Color usage:
 
 - White background.
 - Black navigation and text.
-- Gray borders and muted labels.
-- Orange only for CTA, sale, and small highlights.
+- black-opacity borders and muted labels.
+- black only for CTA, sale, and small highlights.
 - Footer black.
 
 ### Collection Page
@@ -1013,8 +1010,8 @@ Cart and checkout must feel clean and trustworthy:
 
 - White background.
 - Black text.
-- Orange primary action.
-- Thin gray borders.
+- black primary action.
+- Thin black-opacity borders.
 - Clear item rows.
 - Clear totals.
 - Minimal distractions.
@@ -1024,36 +1021,36 @@ Cart and checkout must feel clean and trustworthy:
 
 ## Tailwind Token Recommendation
 
-Recommended Tailwind color extension:
+Recommended Tailwind colour extension:
 
 ```ts
 colors: {
+  white: "#FFFFFF",
+  black: "#000000",
+
   canvas: "#FFFFFF",
-  ink: "#111111",
-  primary: "#FA5400",
-  "primary-hover": "#E64800",
-  "primary-active": "#C93D00",
-  "primary-soft": "#FFF1EA",
-  "primary-border": "#FFB08A",
-
-  body: "#2B2B2B",
-  muted: "#757575",
-  "muted-soft": "#A3A3A3",
-
   surface: "#FFFFFF",
-  "surface-soft": "#F5F5F5",
-  "surface-subtle": "#FAFAFA",
-  "surface-dark": "#111111",
-  "surface-dark-soft": "#1A1A1A",
+  "surface-soft": "rgba(0,0,0,0.04)",
+  "surface-strong": "rgba(0,0,0,0.08)",
+  "surface-inverse": "#000000",
 
-  hairline: "#E5E5E5",
-  "hairline-strong": "#D4D4D4",
-  "border-ink": "#111111",
-  "border-primary": "#FA5400",
+  ink: "#000000",
+  body: "rgba(0,0,0,0.78)",
+  muted: "rgba(0,0,0,0.56)",
+  "muted-soft": "rgba(0,0,0,0.40)",
+  "on-dark": "#FFFFFF",
+  "on-dark-muted": "rgba(255,255,255,0.68)",
 
-  success: "#128A09",
-  warning: "#FA5400",
-  error: "#D43F21"
+  primary: "#000000",
+  "primary-hover": "rgba(0,0,0,0.84)",
+  "primary-active": "rgba(0,0,0,0.72)",
+  "primary-soft": "rgba(0,0,0,0.08)",
+  "on-primary": "#FFFFFF",
+
+  hairline: "rgba(0,0,0,0.16)",
+  "hairline-strong": "rgba(0,0,0,0.32)",
+  "border-ink": "#000000",
+  "border-inverse": "rgba(255,255,255,0.24)"
 }
 ```
 
@@ -1075,30 +1072,28 @@ Recommended shadow extension:
 
 ```ts
 boxShadow: {
-  subtle: "0 1px 2px rgba(17,17,17,0.06)",
-  dropdown: "0 8px 24px rgba(17,17,17,0.12)",
-  modal: "0 24px 60px rgba(17,17,17,0.22)"
+  subtle: "0 1px 2px rgba(0,0,0,0.08)",
+  dropdown: "0 8px 24px rgba(0,0,0,0.16)",
+  modal: "0 24px 60px rgba(0,0,0,0.28)"
 }
 ```
 
-Recommended font family extension:
+Recommended font-family extension:
 
 ```ts
 fontFamily: {
+  display: [
+    "Bebas Neue",
+    "Arial Narrow",
+    "Impact",
+    "sans-serif"
+  ],
   sans: [
-    "Helvetica Neue",
-    "Helvetica",
+    "Montserrat",
     "Arial",
     "system-ui",
     "-apple-system",
     "BlinkMacSystemFont",
-    "sans-serif"
-  ],
-  fallback: [
-    "Inter",
-    "Helvetica Neue",
-    "Arial",
-    "system-ui",
     "sans-serif"
   ]
 }
@@ -1106,36 +1101,36 @@ fontFamily: {
 
 Recommended typography utility notes:
 
-- Use `font-extrabold` or `font-bold` for hero headlines.
-- Use `text-ink` for primary text.
-- Use `text-muted` for metadata and helper text.
-- Use `bg-primary` only for primary CTA and important badges.
-- Use `border-hairline` for product cards and UI dividers.
-- Use `bg-surface-dark` for footer.
-
----
+- Use `font-display` for hero, page, campaign, and section titles.
+- Use `font-sans` for descriptions, product information, navigation, forms, and buttons.
+- Use `text-black` for primary content and `text-black/60` for metadata.
+- Use `bg-black text-white` for primary CTA and important badges.
+- Use `border-black/15` for product cards and standard dividers.
+- Use `bg-black` for the footer and inverse campaign panels.
+- Never add a non-monochrome Tailwind colour class to the UI.
 
 ## Accessibility
 
-- `#111111` on `#FFFFFF` should be the default text pairing.
-- `#FFFFFF` text on `#FA5400` should use medium/bold weight for CTA readability.
-- Do not rely only on orange for status meaning; include labels like `Sale`, `Limited`, `New`, or `Selected`.
+- `#000000` on `#FFFFFF` is the default high-contrast pairing.
+- `#FFFFFF` on `#000000` is used for primary CTA, badges, footer, and inverse panels.
+- Secondary text must retain sufficient opacity and should normally stay at or above `rgba(0,0,0,0.56)` on white.
+- Do not rely on opacity alone for status meaning; include explicit text and a recognisable icon.
+- Error, warning, and success states must use labels and symbols because no semantic hue is available.
 - All icons need accessible labels.
 - Product cards need descriptive link labels.
-- Review stars should have accessible text rating.
+- Review ratings should include accessible text.
 - Video cards should have accessible play labels.
 - Header and footer links must be keyboard accessible.
 - Cart drawer and mobile menu must trap focus.
-- Buttons need visible focus states.
-- Forms must show clear error messages.
-
----
+- Buttons require a visible black or white focus outline depending on the surface.
+- Forms must show clear text-based error messages.
+- Bebas Neue must not be used for long descriptions or form help text.
 
 ## Known Gaps
 
 - The provided landing page image is a static visual reference, so hover states, dropdowns, drawers, and loading states need validation during frontend implementation.
 - Product image consistency depends on clean asset preparation; mismatched crops will break the premium grid feel.
-- The orange accent must be controlled carefully; too much orange will make the design feel less premium.
+- Large black surfaces must be controlled carefully; keep the white canvas dominant so the design remains premium.
 - Mobile layout should be manually QA-tested because product-rich pages can become cramped.
 - The NEXSTEP logo in the mockup should be treated as direction only; final logo spacing and wordmark proportions should follow actual brand assets.
 
@@ -1145,10 +1140,12 @@ Recommended typography utility notes:
 
 Reference inputs:
 
-- New NEXSTEP landing page mockup provided by the user.
+- NEXSTEP landing-page direction supplied by the user.
 - Final visual direction:
   - `#FFFFFF` as the main canvas and product-first background.
-  - `#111111` as the main text, logo, navigation, and footer color.
-  - `#757575`, `#E5E5E5`, `#F5F5F5`, and `#FAFAFA` as Nike-like gray support colors.
-  - `#FA5400` as restrained orange CTA/accent color.
-  - Helvetica Neue / Helvetica / Arial as the primary font direction.
+  - `#000000` as the only solid interface colour.
+  - Black and white opacity variants for hierarchy, borders, overlays, disabled states, and subtle surfaces.
+  - Bebas Neue for hero headings, page titles, campaign titles, and section headings.
+  - Montserrat for descriptions, product information, navigation, buttons, forms, captions, and all body copy.
+  - No chromatic accent or third solid colour in the interface.
+

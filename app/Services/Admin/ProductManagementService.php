@@ -242,6 +242,9 @@ class ProductManagementService
             }
 
             $uploadedImage = $request->file("variants.{$variant['_index']}.image");
+            $productVariant = ! empty($variant['id'])
+                ? $product->variants()->whereKey($variant['id'])->firstOrFail()
+                : null;
             $payload = [
                 'sku' => $variant['sku'],
                 'color_name' => $variant['color_name'] ?? null,
@@ -257,15 +260,14 @@ class ProductManagementService
                 'height' => $variant['height'] ?? null,
                 'image_url' => $uploadedImage
                     ? Storage::url($uploadedImage->storeAs($folder, $this->makeVariantFilename($variant['sku'], $index, $uploadedImage->getClientOriginalExtension()), 'public'))
-                    : ($variant['image_url'] ?? null),
+                    : $productVariant?->image_url,
                 'is_active' => (bool) ($variant['is_active'] ?? false),
             ];
 
-            if (! empty($variant['id'])) {
-                $productVariant = $product->variants()->whereKey($variant['id'])->firstOrFail();
+            if ($productVariant) {
                 $stockBefore = $productVariant->stock;
 
-                if ($uploadedImage || blank($payload['image_url'])) {
+                if ($uploadedImage) {
                     $this->images->deleteStoredImage($productVariant->image_url);
                 }
 

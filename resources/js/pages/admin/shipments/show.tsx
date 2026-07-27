@@ -306,7 +306,7 @@ export default function ShipmentShow({ shipment, shippingStatuses }: Props) {
                     />
                 </div>
                 {!shipment.biteship_order_id && (
-                    <Card className="border-amber-200 bg-amber-50/60 dark:border-amber-900 dark:bg-amber-950/20">
+                    <Card className="border-black/[0.32] bg-black/[0.04] dark:border-white/[0.32] dark:bg-black/[0.08]">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <PackagePlus className="size-5" /> Create

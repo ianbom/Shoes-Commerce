@@ -16,7 +16,7 @@ class ProductImageService
     {
         $images = collect($images)
             ->map(fn (array $image, int $index): array => [...$image, '_index' => $index])
-            ->filter(fn (array $image): bool => $this->hasStoredImageUrl($image['image_url'] ?? null) || $request->hasFile("images.{$image['_index']}.image"))
+            ->filter(fn (array $image): bool => filled($image['id'] ?? null) || $request->hasFile("images.{$image['_index']}.image"))
             ->values();
 
         $primaryIndex = $images->search(fn (array $image): bool => (bool) ($image['is_primary'] ?? false));
@@ -27,28 +27,28 @@ class ProductImageService
 
         foreach ($images as $index => $image) {
             $uploadedImage = $request->file("images.{$image['_index']}.image");
+            $productImage = ! empty($image['id'])
+                ? $product->images()->whereKey($image['id'])->first()
+                : null;
             $storedImageUrl = $uploadedImage
                 ? Storage::url($uploadedImage->storeAs($folder, $this->makeFilename($product, $index, $uploadedImage->getClientOriginalExtension()), 'public'))
-                : $this->normalizeStoredImageUrl($image['image_url'] ?? null);
+                : $productImage?->image_url;
 
             $payload = [
                 'image_url' => $storedImageUrl,
-                'alt_text' => $image['alt_text'] ?? $product->name,
-                'color_name' => $image['color_name'] ?? null,
+                'alt_text' => null,
+                'color_name' => null,
                 'sort_order' => (int) ($image['sort_order'] ?? $index),
                 'is_primary' => $index === $primaryIndex,
             ];
 
-            if (! empty($image['id'])) {
-                $productImage = $product->images()->whereKey($image['id'])->first();
-                if ($productImage) {
-                    if ($uploadedImage) {
-                        $this->deleteStoredImage($productImage->image_url);
-                    }
-
-                    $productImage->update($payload);
-                    $keptIds[] = $productImage->id;
+            if ($productImage) {
+                if ($uploadedImage) {
+                    $this->deleteStoredImage($productImage->image_url);
                 }
+
+                $productImage->update($payload);
+                $keptIds[] = $productImage->id;
 
                 continue;
             }
@@ -74,6 +74,7 @@ class ProductImageService
         if (str_contains($imageUrl, '/storage/')) {
             $path = Str::after($imageUrl, '/storage/');
             Storage::disk('public')->delete($path);
+
             return;
         }
 

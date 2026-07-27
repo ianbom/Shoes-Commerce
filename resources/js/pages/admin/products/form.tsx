@@ -4,7 +4,13 @@ import type { ChangeEvent, FormEvent, ReactNode } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -12,52 +18,1052 @@ import { Textarea } from '@/components/ui/textarea';
 import { PageHeader, formatPrice } from '@/pages/admin/catalog/shared';
 
 type Option = { id: number; name: string };
-type ImageRow = { id?: number; image_url: string; image: File | null; preview: string | null; alt_text: string; color_name: string; sort_order: number; is_primary: boolean };
-type VariantRow = { id?: number; sku: string; color_name: string; color_hex: string; size: string; regular_price: string | number; sale_price: string | number; stock: string | number; reserved_stock: string | number; weight: string | number; length: string | number; width: string | number; height: string | number; image_url: string; image: File | null; preview: string | null; is_active: boolean };
-type FormData = { _method: 'POST' | 'PUT'; category_id: string | number; collection_id: string | number; name: string; slug: string; sku: string; brand_name: string; regular_price: string | number; sale_price: string | number; short_description: string; description: string; stock_status: string; weight: string | number; length: string | number; width: string | number; height: string | number; status: string; is_featured: boolean; is_new_arrival: boolean; is_best_seller: boolean; meta_title: string; meta_description: string; images: ImageRow[]; variants: VariantRow[] };
-type Product = Omit<FormData, '_method' | 'images' | 'variants'> & { id: number; images: Omit<ImageRow, 'image' | 'preview'>[]; variants: Omit<VariantRow, 'image' | 'preview'>[] };
-type Props = { mode: 'create' | 'edit'; product: Product | null; options: { categories: Option[]; collections: Option[]; statuses: string[] } };
+type ImageRow = {
+    id?: number;
+    image: File | null;
+    preview: string | null;
+    sort_order: string | number;
+    is_primary: boolean;
+};
+type VariantRow = {
+    id?: number;
+    sku: string;
+    color_name: string;
+    color_hex: string;
+    size: string;
+    regular_price: string | number;
+    sale_price: string | number;
+    stock: string | number;
+    reserved_stock: string | number;
+    weight: string | number;
+    length: string | number;
+    width: string | number;
+    height: string | number;
+    image: File | null;
+    preview: string | null;
+    is_active: boolean;
+};
+type FormData = {
+    _method: 'POST' | 'PUT';
+    category_id: string | number;
+    collection_id: string | number;
+    name: string;
+    slug: string;
+    sku: string;
+    brand_name: string;
+    regular_price: string | number;
+    sale_price: string | number;
+    short_description: string;
+    description: string;
+    stock_status: string;
+    weight: string | number;
+    length: string | number;
+    width: string | number;
+    height: string | number;
+    status: string;
+    is_featured: boolean;
+    is_new_arrival: boolean;
+    is_best_seller: boolean;
+    meta_title: string;
+    meta_description: string;
+    images: ImageRow[];
+    variants: VariantRow[];
+};
+type Product = Omit<FormData, '_method' | 'images' | 'variants'> & {
+    id: number;
+    images: Array<{
+        id: number;
+        image_url: string;
+        sort_order: number;
+        is_primary: boolean;
+    }>;
+    variants: Array<
+        Omit<VariantRow, 'image' | 'preview'> & { image_url: string | null }
+    >;
+};
+type Props = {
+    mode: 'create' | 'edit';
+    product: Product | null;
+    options: {
+        categories: Option[];
+        collections: Option[];
+        statuses: string[];
+    };
+};
 
-const inputClass = 'h-11 border-zinc-200 bg-white focus-visible:border-zinc-950 focus-visible:ring-zinc-950';
-const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-const blankImage = (sort_order: number): ImageRow => ({ image_url: '', image: null, preview: null, alt_text: '', color_name: '', sort_order, is_primary: sort_order === 0 });
-const blankVariant = (): VariantRow => ({ sku: '', color_name: '', color_hex: '#111111', size: '', regular_price: '', sale_price: '', stock: 0, reserved_stock: 0, weight: '', length: '', width: '', height: '', image_url: '', image: null, preview: null, is_active: true });
+const inputClass =
+    'h-11 border-black bg-white focus-visible:border-black focus-visible:ring-black';
+const selectClass =
+    'admin-form-select h-11 rounded-md border border-black bg-white px-3 text-sm focus:border-black focus:ring-2 focus:ring-black/20 focus:outline-none';
+const slugify = (value: string) =>
+    value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+const blankImage = (sortOrder: number): ImageRow => ({
+    image: null,
+    preview: null,
+    sort_order: sortOrder,
+    is_primary: sortOrder === 0,
+});
+const blankVariant = (): VariantRow => ({
+    sku: '',
+    color_name: '',
+    color_hex: '#111111',
+    size: '',
+    regular_price: '',
+    sale_price: '',
+    stock: 0,
+    reserved_stock: 0,
+    weight: '',
+    length: '',
+    width: '',
+    height: '',
+    image: null,
+    preview: null,
+    is_active: true,
+});
 
-function Section({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-    return <Card className="border-zinc-200 shadow-none"><CardHeader className="border-b border-zinc-100"><CardTitle className="text-base">{title}</CardTitle><CardDescription>{description}</CardDescription></CardHeader><CardContent className="pt-6">{children}</CardContent></Card>;
+function Section({
+    title,
+    description,
+    children,
+}: {
+    title: string;
+    description: string;
+    children: ReactNode;
+}) {
+    return (
+        <Card className="border-black/20 shadow-none">
+            <CardHeader className="border-b border-black/10">
+                <CardTitle className="text-base">{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">{children}</CardContent>
+        </Card>
+    );
 }
 
-function Field({ label, error, children, className = '' }: { label: string; error?: string; children: ReactNode; className?: string }) {
-    return <div className={`grid gap-2 ${className}`}><Label>{label}</Label>{children}<InputError message={error} /></div>;
+function Field({
+    label,
+    error,
+    children,
+    className = '',
+}: {
+    label: string;
+    error?: string;
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className={`grid gap-2 ${className}`}>
+            <Label>{label}</Label>
+            {children}
+            <InputError message={error} />
+        </div>
+    );
 }
 
 export default function ProductForm({ mode, product, options }: Props) {
     const isEdit = mode === 'edit' && product !== null;
     const { data, setData, post, processing, errors } = useForm<FormData>({
-        _method: isEdit ? 'PUT' : 'POST', category_id: product?.category_id ?? '', collection_id: product?.collection_id ?? '', name: product?.name ?? '', slug: product?.slug ?? '', sku: product?.sku ?? '', brand_name: product?.brand_name ?? 'Axegear', regular_price: product?.regular_price ?? '', sale_price: product?.sale_price ?? '', short_description: product?.short_description ?? '', description: product?.description ?? '', stock_status: product?.stock_status ?? 'in_stock', weight: product?.weight ?? 0, length: product?.length ?? '', width: product?.width ?? '', height: product?.height ?? '', status: product?.status ?? 'draft', is_featured: product?.is_featured ?? false, is_new_arrival: product?.is_new_arrival ?? false, is_best_seller: product?.is_best_seller ?? false, meta_title: product?.meta_title ?? '', meta_description: product?.meta_description ?? '',
-        images: product?.images.map((image, index) => ({ ...image, image: null, preview: image.image_url, sort_order: image.sort_order ?? index })) ?? [],
-        variants: product?.variants.map((variant) => ({ ...variant, image: null, preview: variant.image_url || null })) ?? [],
+        _method: isEdit ? 'PUT' : 'POST',
+        category_id: product?.category_id ?? '',
+        collection_id: product?.collection_id ?? '',
+        name: product?.name ?? '',
+        slug: product?.slug ?? '',
+        sku: product?.sku ?? '',
+        brand_name: product?.brand_name ?? 'Axegear',
+        regular_price: product?.regular_price ?? '',
+        sale_price: product?.sale_price ?? '',
+        short_description: product?.short_description ?? '',
+        description: product?.description ?? '',
+        stock_status: product?.stock_status ?? 'in_stock',
+        weight: product?.weight ?? 0,
+        length: product?.length ?? '',
+        width: product?.width ?? '',
+        height: product?.height ?? '',
+        status: product?.status ?? 'draft',
+        is_featured: product?.is_featured ?? false,
+        is_new_arrival: product?.is_new_arrival ?? false,
+        is_best_seller: product?.is_best_seller ?? false,
+        meta_title: product?.meta_title ?? '',
+        meta_description: product?.meta_description ?? '',
+        images:
+            product?.images.map((image, index) => ({
+                id: image.id,
+                image: null,
+                preview: image.image_url,
+                sort_order: image.sort_order ?? index,
+                is_primary: image.is_primary,
+            })) ?? [],
+        variants:
+            product?.variants.map((variant) => ({
+                id: variant.id,
+                sku: variant.sku,
+                color_name: variant.color_name,
+                color_hex: variant.color_hex || '#111111',
+                size: variant.size,
+                regular_price: variant.regular_price,
+                sale_price: variant.sale_price,
+                stock: variant.stock,
+                reserved_stock: variant.reserved_stock,
+                weight: variant.weight,
+                length: variant.length,
+                width: variant.width,
+                height: variant.height,
+                image: null,
+                preview: variant.image_url,
+                is_active: variant.is_active,
+            })) ?? [],
     });
-    const nestedError = (key: string) => (errors as Record<string, string | undefined>)[key];
-    const updateImage = (index: number, patch: Partial<ImageRow>) => setData('images', data.images.map((image, current) => current === index ? { ...image, ...patch } : image));
-    const updateVariant = (index: number, patch: Partial<VariantRow>) => setData('variants', data.variants.map((variant, current) => current === index ? { ...variant, ...patch } : variant));
-    const selectImage = (index: number, event: ChangeEvent<HTMLInputElement>) => { const image = event.target.files?.[0] ?? null; updateImage(index, { image, preview: image ? URL.createObjectURL(image) : data.images[index].image_url || null }); };
-    const selectVariantImage = (index: number, event: ChangeEvent<HTMLInputElement>) => { const image = event.target.files?.[0] ?? null; updateVariant(index, { image, preview: image ? URL.createObjectURL(image) : data.variants[index].image_url || null }); };
-    const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); post(isEdit ? `/admin/products/${product.id}` : '/admin/products', { forceFormData: true }); };
-    const imageCount = data.images.filter((image) => image.image || image.image_url).length;
-    const activeVariants = data.variants.filter((variant) => variant.is_active).length;
 
-    return <><Head title={isEdit ? `Edit ${product.name}` : 'Create Product'} /><div className="flex flex-1 flex-col gap-6 p-4 md:p-6"><PageHeader eyebrow="Catalog" title={isEdit ? 'Edit product' : 'Create product'} description="Produk adalah satu model sepatu; warna dan ukuran disimpan sebagai varian unik." action={<Button variant="outline" asChild><Link href="/admin/products">Cancel</Link></Button>} /><form onSubmit={submit} className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]"><div className="space-y-6">
-        <Section title="Product identity" description="Informasi utama untuk katalog dan pencarian."><div className="grid gap-5 md:grid-cols-2"><Field label="Model name" error={errors.name} className="md:col-span-2"><Input className={inputClass} value={data.name} onChange={(event) => { const name = event.target.value; setData('name', name); if (!data.slug || data.slug === slugify(data.name)) setData('slug', slugify(name)); }} required /></Field><Field label="Slug" error={errors.slug}><Input className={inputClass} value={data.slug} onChange={(event) => setData('slug', slugify(event.target.value))} required /></Field><Field label="Parent SKU" error={errors.sku}><Input className={inputClass} value={data.sku} onChange={(event) => setData('sku', event.target.value)} placeholder="Optional model SKU" /></Field><Field label="Brand" error={errors.brand_name}><Input className={inputClass} value={data.brand_name} onChange={(event) => setData('brand_name', event.target.value)} required /></Field><Field label="Category" error={errors.category_id}><select className={`${inputClass} rounded-md px-3 text-sm`} value={data.category_id} onChange={(event) => setData('category_id', event.target.value)}><option value="">No category</option>{options.categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></Field><Field label="Collection" error={errors.collection_id}><select className={`${inputClass} rounded-md px-3 text-sm`} value={data.collection_id} onChange={(event) => setData('collection_id', event.target.value)}><option value="">No collection</option>{options.collections.map((collection) => <option key={collection.id} value={collection.id}>{collection.name}</option>)}</select></Field><Field label="Stock label" error={errors.stock_status}><select className={`${inputClass} rounded-md px-3 text-sm`} value={data.stock_status} onChange={(event) => setData('stock_status', event.target.value)}><option value="in_stock">In stock</option><option value="out_of_stock">Out of stock</option><option value="preorder">Preorder</option></select></Field></div></Section>
-        <Section title="Pricing and shipping" description="Harga dasar dan ukuran pengiriman produk."><div className="grid gap-5 md:grid-cols-2"><Field label="Regular price" error={errors.regular_price}><Input className={inputClass} type="number" min="0" value={data.regular_price} onChange={(event) => setData('regular_price', event.target.value)} required /></Field><Field label="Sale price" error={errors.sale_price}><Input className={inputClass} type="number" min="0" value={data.sale_price} onChange={(event) => setData('sale_price', event.target.value)} placeholder="Optional" /></Field><Field label="Weight (gram)" error={errors.weight}><Input className={inputClass} type="number" min="0" value={data.weight} onChange={(event) => setData('weight', event.target.value)} required /></Field><div className="grid grid-cols-3 gap-3">{(['length', 'width', 'height'] as const).map((key) => <Field key={key} label={`${key[0].toUpperCase()}${key.slice(1)} (cm)`} error={errors[key]}><Input className={inputClass} type="number" min="0" value={data[key]} onChange={(event) => setData(key, event.target.value)} /></Field>)}</div></div></Section>
-        <Section title="Description" description="Tuliskan material, teknologi, penggunaan, fit, dan care guidance di deskripsi lengkap."><div className="grid gap-5"><Field label="Short description" error={errors.short_description}><Textarea className="min-h-24 border-zinc-200" value={data.short_description} onChange={(event) => setData('short_description', event.target.value)} /></Field><Field label="Full description" error={errors.description}><Textarea className="min-h-48 border-zinc-200" value={data.description} onChange={(event) => setData('description', event.target.value)} /></Field></div></Section>
-        <Section title="Product images" description="Produk published membutuhkan gambar utama."><div className="space-y-4">{data.images.map((image, index) => <div key={image.id ?? index} className="grid gap-4 rounded-lg border border-zinc-200 p-4 md:grid-cols-[100px_minmax(0,1fr)_auto]"><label className="flex aspect-square cursor-pointer items-center justify-center overflow-hidden rounded-md border border-dashed border-zinc-300 bg-zinc-50">{image.preview ? <img src={image.preview} alt={image.alt_text || `Product image ${index + 1}`} className="h-full w-full object-cover" /> : <ImageIcon className="size-5 text-zinc-400" />}<input className="sr-only" type="file" accept="image/*" onChange={(event) => selectImage(index, event)} /></label><div className="grid gap-3 md:grid-cols-2"><Field label="Image URL" error={nestedError(`images.${index}.image_url`)}><Input className={inputClass} value={image.image_url} onChange={(event) => updateImage(index, { image_url: event.target.value, preview: event.target.value || image.preview })} /></Field><Field label="Alt text" error={nestedError(`images.${index}.alt_text`)}><Input className={inputClass} value={image.alt_text} onChange={(event) => updateImage(index, { alt_text: event.target.value })} /></Field><Field label="Image color" error={nestedError(`images.${index}.color_name`)}><Input className={inputClass} value={image.color_name} onChange={(event) => updateImage(index, { color_name: event.target.value })} placeholder="Optional" /></Field><div className="flex items-end"><Button type="button" className="h-11" variant={image.is_primary ? 'default' : 'outline'} onClick={() => setData('images', data.images.map((item, current) => ({ ...item, is_primary: current === index })))}>Primary image</Button></div></div><Button type="button" variant="ghost" size="icon" aria-label="Remove image" onClick={() => setData('images', data.images.filter((_, current) => current !== index).map((item, current) => ({ ...item, sort_order: current, is_primary: current === 0 ? item.is_primary || !data.images.some((candidate) => candidate.is_primary) : item.is_primary })))}><Trash2 className="size-4 text-red-600" /></Button></div>)}<InputError message={errors.images} /><Button type="button" variant="outline" onClick={() => setData('images', [...data.images, blankImage(data.images.length)])}><Plus />Add image</Button></div></Section>
-        <Section title="Variants" description="Unique color + size. Available stock = stock - reserved stock."><div className="space-y-4">{data.variants.map((variant, index) => <VariantEditor key={variant.id ?? index} variant={variant} index={index} error={nestedError} update={updateVariant} remove={() => setData('variants', data.variants.filter((_, current) => current !== index))} selectImage={selectVariantImage} />)}<InputError message={errors.variants} /><Button type="button" variant="outline" onClick={() => setData('variants', [...data.variants, blankVariant()])}><Plus />Add variant</Button></div></Section>
-        <Section title="Search metadata" description="Optional metadata untuk halaman produk."><div className="grid gap-5"><Field label="Meta title" error={errors.meta_title}><Input className={inputClass} value={data.meta_title} onChange={(event) => setData('meta_title', event.target.value)} /></Field><Field label="Meta description" error={errors.meta_description}><Textarea className="min-h-24 border-zinc-200" value={data.meta_description} onChange={(event) => setData('meta_description', event.target.value)} /></Field></div></Section>
-    </div><aside className="space-y-4 xl:sticky xl:top-6 xl:self-start"><Section title="Publishing" description="Produk published harus siap dibeli."><div className="grid gap-4"><Field label="Status" error={errors.status}><select className={`${inputClass} rounded-md px-3 text-sm`} value={data.status} onChange={(event) => setData('status', event.target.value)}>{options.statuses.map((status) => <option key={status} value={status}>{status}</option>)}</select></Field>{([{ key: 'is_featured', label: 'Featured' }, { key: 'is_new_arrival', label: 'New arrival' }, { key: 'is_best_seller', label: 'Best seller' }] as const).map(({ key, label }) => <div className="flex items-center justify-between" key={key}><Label>{label}</Label><Switch checked={data[key]} onCheckedChange={(checked) => setData(key, checked)} /></div>)}<div className="rounded-md bg-zinc-50 p-3 text-sm text-zinc-600">{imageCount} image(s), {activeVariants} active variant(s)<br />Base price: {formatPrice(data.regular_price)}</div><Button className="h-11 bg-[#FA5400] hover:bg-[#d94700]" type="submit" disabled={processing}><Save />{processing ? 'Saving…' : isEdit ? 'Save changes' : 'Create product'}</Button></div></Section></aside></form></div></>;
+    const nestedError = (key: string) =>
+        (errors as Record<string, string | undefined>)[key];
+    const imageCount = data.images.length;
+    const activeVariants = data.variants.filter(
+        (variant) => variant.is_active,
+    ).length;
+
+    const updateImage = (index: number, patch: Partial<ImageRow>) =>
+        setData(
+            'images',
+            data.images.map((image, imageIndex) =>
+                imageIndex === index ? { ...image, ...patch } : image,
+            ),
+        );
+    const updateVariant = (index: number, patch: Partial<VariantRow>) =>
+        setData(
+            'variants',
+            data.variants.map((variant, variantIndex) =>
+                variantIndex === index ? { ...variant, ...patch } : variant,
+            ),
+        );
+    const selectImage = (
+        index: number,
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        const image = event.target.files?.[0] ?? null;
+        updateImage(index, {
+            image,
+            preview: image
+                ? URL.createObjectURL(image)
+                : data.images[index].preview,
+        });
+    };
+    const selectVariantImage = (
+        index: number,
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        const image = event.target.files?.[0] ?? null;
+        updateVariant(index, {
+            image,
+            preview: image
+                ? URL.createObjectURL(image)
+                : data.variants[index].preview,
+        });
+    };
+    const setPrimaryImage = (index: number) =>
+        setData(
+            'images',
+            data.images.map((image, imageIndex) => ({
+                ...image,
+                is_primary: imageIndex === index,
+            })),
+        );
+    const submit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        post(isEdit ? `/admin/products/${product.id}` : '/admin/products', {
+            forceFormData: true,
+        });
+    };
+
+    return (
+        <>
+            <Head title={isEdit ? `Edit ${product.name}` : 'Create Product'} />
+            <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+                <PageHeader
+                    eyebrow="Catalog"
+                    title={isEdit ? 'Edit product' : 'Create product'}
+                    description="Produk adalah satu model sepatu; warna dan ukuran disimpan sebagai varian unik."
+                    action={
+                        <Button variant="outline" asChild>
+                            <Link href="/admin/products">Cancel</Link>
+                        </Button>
+                    }
+                />
+                <form
+                    onSubmit={submit}
+                    className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]"
+                >
+                    <div className="space-y-6">
+                        <Section
+                            title="Product identity"
+                            description="Informasi utama untuk katalog dan pencarian."
+                        >
+                            <div className="grid gap-5 md:grid-cols-2">
+                                <Field
+                                    label="Model name"
+                                    error={errors.name}
+                                    className="md:col-span-2"
+                                >
+                                    <Input
+                                        className={inputClass}
+                                        value={data.name}
+                                        placeholder="Contoh: Urban Speed Black"
+                                        onChange={(event) => {
+                                            const name = event.target.value;
+                                            setData('name', name);
+
+                                            if (
+                                                !data.slug ||
+                                                data.slug === slugify(data.name)
+                                            ) {
+                                                setData('slug', slugify(name));
+                                            }
+                                        }}
+                                        required
+                                    />
+                                </Field>
+                                <Field label="Slug" error={errors.slug}>
+                                    <Input
+                                        className={inputClass}
+                                        value={data.slug}
+                                        placeholder="urban-speed-black"
+                                        onChange={(event) =>
+                                            setData(
+                                                'slug',
+                                                slugify(event.target.value),
+                                            )
+                                        }
+                                        required
+                                    />
+                                </Field>
+                                <Field label="Parent SKU" error={errors.sku}>
+                                    <Input
+                                        className={inputClass}
+                                        value={data.sku}
+                                        placeholder="Contoh: USB-001"
+                                        onChange={(event) =>
+                                            setData('sku', event.target.value)
+                                        }
+                                    />
+                                </Field>
+                                <Field label="Brand" error={errors.brand_name}>
+                                    <Input
+                                        className={inputClass}
+                                        value={data.brand_name}
+                                        placeholder="Contoh: NEXSTEP"
+                                        onChange={(event) =>
+                                            setData(
+                                                'brand_name',
+                                                event.target.value,
+                                            )
+                                        }
+                                        required
+                                    />
+                                </Field>
+                                <Field
+                                    label="Category"
+                                    error={errors.category_id}
+                                >
+                                    <select
+                                        className={selectClass}
+                                        value={data.category_id}
+                                        onChange={(event) =>
+                                            setData(
+                                                'category_id',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">No category</option>
+                                        {options.categories.map((category) => (
+                                            <option
+                                                key={category.id}
+                                                value={category.id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </Field>
+                                <Field
+                                    label="Collection"
+                                    error={errors.collection_id}
+                                >
+                                    <select
+                                        className={selectClass}
+                                        value={data.collection_id}
+                                        onChange={(event) =>
+                                            setData(
+                                                'collection_id',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">No collection</option>
+                                        {options.collections.map(
+                                            (collection) => (
+                                                <option
+                                                    key={collection.id}
+                                                    value={collection.id}
+                                                >
+                                                    {collection.name}
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                </Field>
+                                <Field
+                                    label="Stock label"
+                                    error={errors.stock_status}
+                                >
+                                    <select
+                                        className={selectClass}
+                                        value={data.stock_status}
+                                        onChange={(event) =>
+                                            setData(
+                                                'stock_status',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="in_stock">
+                                            In stock
+                                        </option>
+                                        <option value="out_of_stock">
+                                            Out of stock
+                                        </option>
+                                        <option value="preorder">
+                                            Preorder
+                                        </option>
+                                    </select>
+                                </Field>
+                            </div>
+                        </Section>
+
+                        <Section
+                            title="Pricing and shipping"
+                            description="Harga dasar dan ukuran pengiriman produk."
+                        >
+                            <div className="grid gap-5 md:grid-cols-2">
+                                <Field
+                                    label="Regular price"
+                                    error={errors.regular_price}
+                                >
+                                    <Input
+                                        className={inputClass}
+                                        type="number"
+                                        min="0"
+                                        value={data.regular_price}
+                                        placeholder="0"
+                                        onChange={(event) =>
+                                            setData(
+                                                'regular_price',
+                                                event.target.value,
+                                            )
+                                        }
+                                        required
+                                    />
+                                </Field>
+                                <Field
+                                    label="Sale price"
+                                    error={errors.sale_price}
+                                >
+                                    <Input
+                                        className={inputClass}
+                                        type="number"
+                                        min="0"
+                                        value={data.sale_price}
+                                        placeholder="Optional"
+                                        onChange={(event) =>
+                                            setData(
+                                                'sale_price',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                                <Field
+                                    label="Weight (gram)"
+                                    error={errors.weight}
+                                >
+                                    <Input
+                                        className={inputClass}
+                                        type="number"
+                                        min="0"
+                                        value={data.weight}
+                                        placeholder="Contoh: 800"
+                                        onChange={(event) =>
+                                            setData(
+                                                'weight',
+                                                event.target.value,
+                                            )
+                                        }
+                                        required
+                                    />
+                                </Field>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {(
+                                        ['length', 'width', 'height'] as const
+                                    ).map((key) => (
+                                        <Field
+                                            key={key}
+                                            label={`${key[0].toUpperCase()}${key.slice(1)} (cm)`}
+                                            error={errors[key]}
+                                        >
+                                            <Input
+                                                className={inputClass}
+                                                type="number"
+                                                min="0"
+                                                value={data[key]}
+                                                placeholder="0"
+                                                onChange={(event) =>
+                                                    setData(
+                                                        key,
+                                                        event.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </Field>
+                                    ))}
+                                </div>
+                            </div>
+                        </Section>
+
+                        <Section
+                            title="Description"
+                            description="Tuliskan material, teknologi, penggunaan, fit, dan care guidance."
+                        >
+                            <div className="grid gap-5">
+                                <Field
+                                    label="Short description"
+                                    error={errors.short_description}
+                                >
+                                    <Textarea
+                                        className="min-h-24 border-black"
+                                        value={data.short_description}
+                                        placeholder="Ringkasan singkat produk"
+                                        onChange={(event) =>
+                                            setData(
+                                                'short_description',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                                <Field
+                                    label="Full description"
+                                    error={errors.description}
+                                >
+                                    <Textarea
+                                        className="min-h-48 border-black"
+                                        value={data.description}
+                                        placeholder="Jelaskan material, fitur, ukuran, dan perawatan produk"
+                                        onChange={(event) =>
+                                            setData(
+                                                'description',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                            </div>
+                        </Section>
+
+                        <Section
+                            title="Product images"
+                            description="Gambar disimpan otomatis ke Laravel public storage."
+                        >
+                            <div className="space-y-4">
+                                {data.images.map((image, index) => (
+                                    <div
+                                        key={image.id ?? index}
+                                        className="grid gap-4 rounded-lg border border-black/20 p-4 md:grid-cols-[120px_minmax(0,1fr)_auto]"
+                                    >
+                                        <div className="aspect-square overflow-hidden rounded-md border border-black/20 bg-black/[0.04]">
+                                            {image.preview ? (
+                                                <img
+                                                    src={image.preview}
+                                                    alt={`Product preview ${index + 1}`}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full items-center justify-center">
+                                                    <ImageIcon className="size-6 text-black/40" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="grid gap-4 sm:grid-cols-2">
+                                            <Field
+                                                label="Image file"
+                                                error={nestedError(
+                                                    `images.${index}.image`,
+                                                )}
+                                                className="sm:col-span-2"
+                                            >
+                                                <label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-black px-3 text-sm text-black">
+                                                    <ImageIcon className="size-4" />
+                                                    {image.preview
+                                                        ? 'Replace image'
+                                                        : 'Choose image'}
+                                                    <input
+                                                        className="sr-only"
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(event) =>
+                                                            selectImage(
+                                                                index,
+                                                                event,
+                                                            )
+                                                        }
+                                                    />
+                                                </label>
+                                            </Field>
+                                            <Field
+                                                label="Sort order"
+                                                error={nestedError(
+                                                    `images.${index}.sort_order`,
+                                                )}
+                                            >
+                                                <Input
+                                                    className={inputClass}
+                                                    type="number"
+                                                    min="0"
+                                                    value={image.sort_order}
+                                                    placeholder="0"
+                                                    onChange={(event) =>
+                                                        updateImage(index, {
+                                                            sort_order:
+                                                                event.target
+                                                                    .value,
+                                                        })
+                                                    }
+                                                />
+                                            </Field>
+                                            <div className="flex items-center justify-between rounded-md border border-black px-3">
+                                                <Label>Primary image</Label>
+                                                <Switch
+                                                    checked={image.is_primary}
+                                                    onCheckedChange={() =>
+                                                        setPrimaryImage(index)
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            size="icon"
+                                            variant="ghost"
+                                            aria-label="Remove product image"
+                                            onClick={() =>
+                                                setData(
+                                                    'images',
+                                                    data.images.filter(
+                                                        (_, imageIndex) =>
+                                                            imageIndex !==
+                                                            index,
+                                                    ),
+                                                )
+                                            }
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() =>
+                                        setData('images', [
+                                            ...data.images,
+                                            blankImage(data.images.length),
+                                        ])
+                                    }
+                                >
+                                    <Plus /> Add image
+                                </Button>
+                            </div>
+                        </Section>
+
+                        <Section
+                            title="Variants"
+                            description="Setiap kombinasi warna dan ukuran harus memiliki SKU unik."
+                        >
+                            <div className="space-y-4">
+                                {data.variants.map((variant, index) => (
+                                    <VariantEditor
+                                        key={variant.id ?? index}
+                                        variant={variant}
+                                        index={index}
+                                        error={nestedError}
+                                        update={updateVariant}
+                                        selectImage={selectVariantImage}
+                                        remove={() =>
+                                            setData(
+                                                'variants',
+                                                data.variants.filter(
+                                                    (_, variantIndex) =>
+                                                        variantIndex !== index,
+                                                ),
+                                            )
+                                        }
+                                    />
+                                ))}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() =>
+                                        setData('variants', [
+                                            ...data.variants,
+                                            blankVariant(),
+                                        ])
+                                    }
+                                >
+                                    <Plus /> Add variant
+                                </Button>
+                            </div>
+                        </Section>
+
+                        <Section
+                            title="SEO"
+                            description="Metadata opsional untuk mesin pencarian."
+                        >
+                            <div className="grid gap-5">
+                                <Field
+                                    label="Meta title"
+                                    error={errors.meta_title}
+                                >
+                                    <Input
+                                        className={inputClass}
+                                        value={data.meta_title}
+                                        placeholder="Judul halaman untuk mesin pencarian"
+                                        onChange={(event) =>
+                                            setData(
+                                                'meta_title',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                                <Field
+                                    label="Meta description"
+                                    error={errors.meta_description}
+                                >
+                                    <Textarea
+                                        className="min-h-24 border-black"
+                                        value={data.meta_description}
+                                        placeholder="Deskripsi singkat untuk hasil pencarian"
+                                        onChange={(event) =>
+                                            setData(
+                                                'meta_description',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </Field>
+                            </div>
+                        </Section>
+                    </div>
+
+                    <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
+                        <Section
+                            title="Publish"
+                            description="Atur status dan penempatan katalog."
+                        >
+                            <div className="grid gap-4">
+                                <Field label="Status" error={errors.status}>
+                                    <select
+                                        className={selectClass}
+                                        value={data.status}
+                                        onChange={(event) =>
+                                            setData(
+                                                'status',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        {options.statuses.map((status) => (
+                                            <option key={status} value={status}>
+                                                {status}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </Field>
+                                {(
+                                    [
+                                        {
+                                            key: 'is_featured',
+                                            label: 'Featured',
+                                        },
+                                        {
+                                            key: 'is_new_arrival',
+                                            label: 'New arrival',
+                                        },
+                                        {
+                                            key: 'is_best_seller',
+                                            label: 'Best seller',
+                                        },
+                                    ] as const
+                                ).map(({ key, label }) => (
+                                    <div
+                                        className="flex items-center justify-between"
+                                        key={key}
+                                    >
+                                        <Label>{label}</Label>
+                                        <Switch
+                                            checked={data[key]}
+                                            onCheckedChange={(checked) =>
+                                                setData(key, checked)
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                                <div className="rounded-md bg-black/[0.04] p-3 text-sm text-black/70">
+                                    {imageCount} image(s), {activeVariants}{' '}
+                                    active variant(s)
+                                    <br />
+                                    Base price:{' '}
+                                    {formatPrice(data.regular_price)}
+                                </div>
+                                <Button
+                                    className="h-11 bg-black hover:bg-black/[0.84]"
+                                    type="submit"
+                                    disabled={processing}
+                                >
+                                    <Save />
+                                    {processing
+                                        ? 'Saving…'
+                                        : isEdit
+                                          ? 'Save changes'
+                                          : 'Create product'}
+                                </Button>
+                            </div>
+                        </Section>
+                    </aside>
+                </form>
+            </div>
+        </>
+    );
 }
 
-function VariantEditor({ variant, index, error, update, remove, selectImage }: { variant: VariantRow; index: number; error: (key: string) => string | undefined; update: (index: number, patch: Partial<VariantRow>) => void; remove: () => void; selectImage: (index: number, event: ChangeEvent<HTMLInputElement>) => void }) {
-    const available = Math.max(0, Number(variant.stock || 0) - Number(variant.reserved_stock || 0));
-    return <div className="rounded-lg border border-zinc-200 p-4"><div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3"><div className="flex items-center gap-2"><span className="size-3 rounded-full border" style={{ backgroundColor: variant.color_hex || '#fff' }} /><strong className="text-sm">{variant.color_name || 'Color'} / {variant.size || 'Size'}</strong><Badge variant="outline">Available: {available}</Badge></div><div className="flex items-center gap-3"><Label className="text-xs">Active</Label><Switch checked={variant.is_active} onCheckedChange={(is_active) => update(index, { is_active })} /><Button type="button" size="icon" variant="ghost" onClick={remove} aria-label="Remove variant"><Trash2 className="size-4 text-red-600" /></Button></div></div><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><Field label="Variant SKU" error={error(`variants.${index}.sku`)}><Input className={inputClass} value={variant.sku} onChange={(event) => update(index, { sku: event.target.value })} required /></Field><Field label="Color" error={error(`variants.${index}.color_name`)}><Input className={inputClass} value={variant.color_name} onChange={(event) => update(index, { color_name: event.target.value })} required /></Field><Field label="Color hex" error={error(`variants.${index}.color_hex`)}><Input className={inputClass} value={variant.color_hex} onChange={(event) => update(index, { color_hex: event.target.value })} /></Field><Field label="Size" error={error(`variants.${index}.size`)}><Input className={inputClass} value={variant.size} onChange={(event) => update(index, { size: event.target.value })} placeholder="EU 42" required /></Field><Field label="Regular price override" error={error(`variants.${index}.regular_price`)}><Input className={inputClass} type="number" min="0" value={variant.regular_price} onChange={(event) => update(index, { regular_price: event.target.value })} placeholder="Use product price" /></Field><Field label="Sale price override" error={error(`variants.${index}.sale_price`)}><Input className={inputClass} type="number" min="0" value={variant.sale_price} onChange={(event) => update(index, { sale_price: event.target.value })} /></Field><Field label="Stock" error={error(`variants.${index}.stock`)}><Input className={inputClass} type="number" min="0" value={variant.stock} onChange={(event) => update(index, { stock: event.target.value })} required /></Field><Field label="Reserved stock" error={error(`variants.${index}.reserved_stock`)}><Input className={inputClass} type="number" min="0" value={variant.reserved_stock} onChange={(event) => update(index, { reserved_stock: event.target.value })} /></Field>{(['weight', 'length', 'width', 'height'] as const).map((key) => <Field key={key} label={`${key[0].toUpperCase()}${key.slice(1)}${key === 'weight' ? ' (g)' : ' (cm)'}`} error={error(`variants.${index}.${key}`)}><Input className={inputClass} type="number" min="0" value={variant[key]} onChange={(event) => update(index, { [key]: event.target.value })} placeholder="Use product value" /></Field>)}<Field label="Image URL" error={error(`variants.${index}.image_url`)} className="xl:col-span-2"><Input className={inputClass} value={variant.image_url} onChange={(event) => update(index, { image_url: event.target.value, preview: event.target.value || variant.preview })} /></Field><label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 px-3 text-sm text-zinc-600"><ImageIcon className="size-4" />{variant.preview ? 'Replace image' : 'Upload image'}<input className="sr-only" type="file" accept="image/*" onChange={(event) => selectImage(index, event)} /></label></div></div>;
+function VariantEditor({
+    variant,
+    index,
+    error,
+    update,
+    remove,
+    selectImage,
+}: {
+    variant: VariantRow;
+    index: number;
+    error: (key: string) => string | undefined;
+    update: (index: number, patch: Partial<VariantRow>) => void;
+    remove: () => void;
+    selectImage: (index: number, event: ChangeEvent<HTMLInputElement>) => void;
+}) {
+    const available = Math.max(
+        0,
+        Number(variant.stock || 0) - Number(variant.reserved_stock || 0),
+    );
+
+    return (
+        <div className="rounded-lg border border-black/20 p-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-black/10 pb-3">
+                <div className="flex items-center gap-2">
+                    <span
+                        className="size-3 rounded-full border border-black"
+                        style={{ backgroundColor: variant.color_hex }}
+                    />
+                    <strong className="text-sm">
+                        {variant.color_name || 'Color'} /{' '}
+                        {variant.size || 'Size'}
+                    </strong>
+                    <Badge variant="outline">Available: {available}</Badge>
+                </div>
+                <div className="flex items-center gap-3">
+                    <Label className="text-xs">Active</Label>
+                    <Switch
+                        checked={variant.is_active}
+                        onCheckedChange={(isActive) =>
+                            update(index, { is_active: isActive })
+                        }
+                    />
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={remove}
+                        aria-label="Remove variant"
+                    >
+                        <Trash2 className="size-4" />
+                    </Button>
+                </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <Field
+                    label="Variant SKU"
+                    error={error(`variants.${index}.sku`)}
+                >
+                    <Input
+                        className={inputClass}
+                        value={variant.sku}
+                        placeholder="Contoh: USB-BLK-42"
+                        onChange={(event) =>
+                            update(index, { sku: event.target.value })
+                        }
+                        required
+                    />
+                </Field>
+                <Field
+                    label="Color"
+                    error={error(`variants.${index}.color_name`)}
+                >
+                    <Input
+                        className={inputClass}
+                        value={variant.color_name}
+                        placeholder="Contoh: Black"
+                        onChange={(event) =>
+                            update(index, { color_name: event.target.value })
+                        }
+                        required
+                    />
+                </Field>
+                <Field
+                    label="Color hex"
+                    error={error(`variants.${index}.color_hex`)}
+                >
+                    <input
+                        type="color"
+                        aria-label="Variant color"
+                        value={variant.color_hex}
+                        onChange={(event) =>
+                            update(index, { color_hex: event.target.value })
+                        }
+                        className="h-11 w-full cursor-pointer rounded-md border border-black bg-white p-1"
+                    />
+                </Field>
+                <Field label="Size" error={error(`variants.${index}.size`)}>
+                    <Input
+                        className={inputClass}
+                        value={variant.size}
+                        placeholder="EU 42"
+                        onChange={(event) =>
+                            update(index, { size: event.target.value })
+                        }
+                        required
+                    />
+                </Field>
+                <Field
+                    label="Regular price override"
+                    error={error(`variants.${index}.regular_price`)}
+                >
+                    <Input
+                        className={inputClass}
+                        type="number"
+                        min="0"
+                        value={variant.regular_price}
+                        placeholder="Use product price"
+                        onChange={(event) =>
+                            update(index, {
+                                regular_price: event.target.value,
+                            })
+                        }
+                    />
+                </Field>
+                <Field
+                    label="Sale price override"
+                    error={error(`variants.${index}.sale_price`)}
+                >
+                    <Input
+                        className={inputClass}
+                        type="number"
+                        min="0"
+                        value={variant.sale_price}
+                        placeholder="Optional"
+                        onChange={(event) =>
+                            update(index, { sale_price: event.target.value })
+                        }
+                    />
+                </Field>
+                <Field label="Stock" error={error(`variants.${index}.stock`)}>
+                    <Input
+                        className={inputClass}
+                        type="number"
+                        min="0"
+                        value={variant.stock}
+                        placeholder="0"
+                        onChange={(event) =>
+                            update(index, { stock: event.target.value })
+                        }
+                        required
+                    />
+                </Field>
+                <Field
+                    label="Reserved stock"
+                    error={error(`variants.${index}.reserved_stock`)}
+                >
+                    <Input
+                        className={inputClass}
+                        type="number"
+                        min="0"
+                        value={variant.reserved_stock}
+                        placeholder="0"
+                        onChange={(event) =>
+                            update(index, {
+                                reserved_stock: event.target.value,
+                            })
+                        }
+                    />
+                </Field>
+                {(['weight', 'length', 'width', 'height'] as const).map(
+                    (key) => (
+                        <Field
+                            key={key}
+                            label={`${key[0].toUpperCase()}${key.slice(1)}${key === 'weight' ? ' (g)' : ' (cm)'}`}
+                            error={error(`variants.${index}.${key}`)}
+                        >
+                            <Input
+                                className={inputClass}
+                                type="number"
+                                min="0"
+                                value={variant[key]}
+                                placeholder="Use product value"
+                                onChange={(event) =>
+                                    update(index, {
+                                        [key]: event.target.value,
+                                    })
+                                }
+                            />
+                        </Field>
+                    ),
+                )}
+                <Field
+                    label="Variant image"
+                    error={error(`variants.${index}.image`)}
+                    className="xl:col-span-2"
+                >
+                    <label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-black px-3 text-sm text-black">
+                        <ImageIcon className="size-4" />
+                        {variant.preview ? 'Replace image' : 'Choose image'}
+                        <input
+                            className="sr-only"
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => selectImage(index, event)}
+                        />
+                    </label>
+                </Field>
+                {variant.preview && (
+                    <img
+                        src={variant.preview}
+                        alt={`${variant.color_name || 'Variant'} preview`}
+                        className="aspect-square h-20 rounded-md border border-black/20 object-cover"
+                    />
+                )}
+            </div>
+        </div>
+    );
 }

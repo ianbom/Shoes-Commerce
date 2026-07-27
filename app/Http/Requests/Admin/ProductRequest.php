@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ProductRequest extends FormRequest
@@ -52,10 +51,7 @@ class ProductRequest extends FormRequest
             'meta_description' => ['nullable', 'string', 'max:500'],
             'images' => ['nullable', 'array'],
             'images.*.id' => ['nullable', 'integer', $imageIdRule],
-            'images.*.image_url' => ['nullable', 'string', 'max:255', 'not_regex:/^blob:/i'],
             'images.*.image' => ['nullable', 'file', 'image', 'max:4096'],
-            'images.*.alt_text' => ['nullable', 'string', 'max:255'],
-            'images.*.color_name' => ['nullable', 'string', 'max:100'],
             'images.*.sort_order' => ['nullable', 'integer', 'min:0'],
             'images.*.is_primary' => ['sometimes', 'boolean'],
             'variants' => ['nullable', 'array'],
@@ -72,7 +68,6 @@ class ProductRequest extends FormRequest
             'variants.*.length' => ['nullable', 'integer', 'min:0'],
             'variants.*.width' => ['nullable', 'integer', 'min:0'],
             'variants.*.height' => ['nullable', 'integer', 'min:0'],
-            'variants.*.image_url' => ['nullable', 'string', 'max:255', 'not_regex:/^blob:/i'],
             'variants.*.image' => ['nullable', 'file', 'image', 'max:4096'],
             'variants.*.is_active' => ['sometimes', 'boolean'],
         ];
@@ -117,7 +112,7 @@ class ProductRequest extends FormRequest
                 }
 
                 $images = collect($this->input('images', []))
-                    ->filter(fn (array $image, int $index): bool => $this->hasStoredImageUrl($image['image_url'] ?? null) || $this->hasFile("images.{$index}.image"));
+                    ->filter(fn (array $image, int $index): bool => filled($image['id'] ?? null) || $this->hasFile("images.{$index}.image"));
 
                 if ($images->isEmpty()) {
                     $validator->errors()->add('images', 'Produk published minimal memiliki satu gambar.');
@@ -132,10 +127,5 @@ class ProductRequest extends FormRequest
                 }
             },
         ];
-    }
-
-    private function hasStoredImageUrl(?string $imageUrl): bool
-    {
-        return filled($imageUrl) && ! Str::startsWith($imageUrl, 'blob:');
     }
 }

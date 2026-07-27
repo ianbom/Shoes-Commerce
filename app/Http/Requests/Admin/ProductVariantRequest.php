@@ -42,7 +42,6 @@ class ProductVariantRequest extends FormRequest
             'length' => ['nullable', 'integer', 'min:0'],
             'width' => ['nullable', 'integer', 'min:0'],
             'height' => ['nullable', 'integer', 'min:0'],
-            'image_url' => ['nullable', 'string', 'max:255', 'not_regex:/^blob:/i'],
             'image' => ['nullable', 'file', 'image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ];

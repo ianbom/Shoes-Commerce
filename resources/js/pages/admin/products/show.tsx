@@ -1,32 +1,630 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Archive, Copy, Edit3, ImageIcon, Package, Plus, RotateCcw, Trash2 } from 'lucide-react';
+import {
+    Archive,
+    Copy,
+    Edit3,
+    ImageIcon,
+    Package,
+    Plus,
+    Trash2,
+} from 'lucide-react';
 import { useState } from 'react';
 import HTMLRender from '@/components/HTMLRender';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ActiveBadge, PageHeader, StatusBadge, formatPrice } from '@/pages/admin/catalog/shared';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import {
+    ActiveBadge,
+    PageHeader,
+    StatusBadge,
+    formatPrice,
+} from '@/pages/admin/catalog/shared';
 
-type ImageRow = { id: number; image_url: string | null; alt_text: string | null; color_name: string | null; sort_order: number; is_primary: boolean };
-type Variant = { id: number; sku: string; color_name: string | null; color_hex: string | null; size: string | null; regular_price: string | number | null; sale_price: string | number | null; stock: number; reserved_stock: number; available_stock?: number; weight: number | null; length: number | null; width: number | null; height: number | null; image_url: string | null; is_active: boolean; order_items_count?: number };
-type Order = { id: number; order_id: number; quantity: number; subtotal: string | number; created_at: string | null };
-type StockLog = { id: number; variant: string; type: string; quantity: number; stock_before: number; stock_after: number; created_at: string | null };
-type Product = { id: number; category_id: number | null; collection_id: number | null; name: string; slug: string; sku: string | null; brand_name: string | null; short_description: string | null; description: string | null; stock_status: string | null; regular_price: string | number; sale_price: string | number | null; weight: number; length: number | null; width: number | null; height: number | null; status: string; is_featured: boolean; is_new_arrival: boolean; is_best_seller: boolean; meta_title: string | null; meta_description: string | null; category: string | null; collection: string | null; images: ImageRow[]; variants: Variant[]; orders: Order[]; stock_logs: StockLog[] };
+type ImageRow = {
+    id: number;
+    image_url: string | null;
+    alt_text: string | null;
+    color_name: string | null;
+    sort_order: number;
+    is_primary: boolean;
+};
+type Variant = {
+    id: number;
+    sku: string;
+    color_name: string | null;
+    color_hex: string | null;
+    size: string | null;
+    regular_price: string | number | null;
+    sale_price: string | number | null;
+    stock: number;
+    reserved_stock: number;
+    available_stock?: number;
+    weight: number | null;
+    length: number | null;
+    width: number | null;
+    height: number | null;
+    image_url: string | null;
+    is_active: boolean;
+    order_items_count?: number;
+};
+type Order = {
+    id: number;
+    order_id: number;
+    quantity: number;
+    subtotal: string | number;
+    created_at: string | null;
+};
+type StockLog = {
+    id: number;
+    variant: string;
+    type: string;
+    quantity: number;
+    stock_before: number;
+    stock_after: number;
+    created_at: string | null;
+};
+type Product = {
+    id: number;
+    category_id: number | null;
+    collection_id: number | null;
+    name: string;
+    slug: string;
+    sku: string | null;
+    brand_name: string | null;
+    short_description: string | null;
+    description: string | null;
+    stock_status: string | null;
+    regular_price: string | number;
+    sale_price: string | number | null;
+    weight: number;
+    length: number | null;
+    width: number | null;
+    height: number | null;
+    status: string;
+    is_featured: boolean;
+    is_new_arrival: boolean;
+    is_best_seller: boolean;
+    meta_title: string | null;
+    meta_description: string | null;
+    category: string | null;
+    collection: string | null;
+    images: ImageRow[];
+    variants: Variant[];
+    orders: Order[];
+    stock_logs: StockLog[];
+};
 
 export default function ProductShow({ product }: { product: Product }) {
-    const [activeImage, setActiveImage] = useState(product.images.find((image) => image.is_primary) ?? product.images[0] ?? null);
-    const totalStock = product.variants.reduce((sum, variant) => sum + Number(variant.stock), 0);
-    const reservedStock = product.variants.reduce((sum, variant) => sum + Number(variant.reserved_stock), 0);
+    const [activeImage, setActiveImage] = useState(
+        product.images.find((image) => image.is_primary) ??
+            product.images[0] ??
+            null,
+    );
+    const totalStock = product.variants.reduce(
+        (sum, variant) => sum + Number(variant.stock),
+        0,
+    );
+    const reservedStock = product.variants.reduce(
+        (sum, variant) => sum + Number(variant.reserved_stock),
+        0,
+    );
     const availableStock = Math.max(0, totalStock - reservedStock);
-    const activeVariants = product.variants.filter((variant) => variant.is_active).length;
-    const doAction = (url: string, method: 'post' | 'delete' = 'post') => { if (method === 'delete' && !confirm(`Delete or archive ${product.name}?`)) return; router[method](url, {}, { preserveScroll: true }); };
+    const activeVariants = product.variants.filter(
+        (variant) => variant.is_active,
+    ).length;
+    const doAction = (url: string, method: 'post' | 'delete' = 'post') => {
+        if (
+            method === 'delete' &&
+            !confirm(`Delete or archive ${product.name}?`)
+        ) {
+            return;
+        }
 
-    return <><Head title={product.name} /><div className="flex flex-1 flex-col gap-6 p-4 md:p-6"><PageHeader eyebrow="Catalog" title={product.name} description={`${product.brand_name || 'No brand'} · ${product.category || 'No category'} · ${product.collection || 'No collection'} · ${product.sku || 'No parent SKU'}`} action={<div className="flex flex-wrap gap-2"><StatusBadge status={product.status} /><Button variant="outline" asChild><Link href={`/admin/products/${product.id}/edit`}><Edit3 />Edit</Link></Button><Button className="bg-[#FA5400] hover:bg-[#d94700]" asChild><Link href={`/admin/product-variants/create?product_id=${product.id}`}><Plus />Add variant</Link></Button></div>} />
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"><div className="space-y-6"><Card className="overflow-hidden border-zinc-200 shadow-none"><div className="grid md:grid-cols-[minmax(0,1fr)_112px]"><div className="flex min-h-[360px] items-center justify-center bg-zinc-50 p-5">{activeImage?.image_url ? <img src={activeImage.image_url} alt={activeImage.alt_text || product.name} className="max-h-[520px] w-full object-contain" /> : <div className="text-center text-sm text-zinc-400"><ImageIcon className="mx-auto mb-2 size-8" />No product image</div>}</div><div className="flex gap-2 overflow-x-auto p-3 md:flex-col">{product.images.map((image) => <button type="button" key={image.id} onClick={() => setActiveImage(image)} className={`size-20 shrink-0 overflow-hidden rounded-md border ${activeImage?.id === image.id ? 'border-zinc-950' : 'border-zinc-200'}`}><img src={image.image_url || ''} alt={image.alt_text || product.name} className="h-full w-full object-cover" /></button>)}</div></div></Card>
-            <Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Variants</CardTitle><CardDescription>{activeVariants} active of {product.variants.length} variants</CardDescription></CardHeader><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-sm"><thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500"><tr><th className="px-5 py-3">Variant</th><th className="px-5 py-3">Price</th><th className="px-5 py-3">Stock</th><th className="px-5 py-3">Status</th><th className="px-5 py-3 text-right">Action</th></tr></thead><tbody>{product.variants.map((variant) => { const available = variant.available_stock ?? Math.max(0, variant.stock - variant.reserved_stock); const price = variant.sale_price ?? variant.regular_price ?? product.sale_price ?? product.regular_price; return <tr className="border-b border-zinc-100 last:border-0" key={variant.id}><td className="px-5 py-3"><div className="flex items-center gap-2"><span className="size-3 rounded-full border" style={{ backgroundColor: variant.color_hex || '#fff' }} /><div><p className="font-medium">{variant.color_name || 'No color'} / {variant.size || 'No size'}</p><p className="text-xs text-zinc-500">{variant.sku}</p></div></div></td><td className="px-5 py-3">{formatPrice(price)}</td><td className="px-5 py-3"><p className={available <= 5 ? 'font-medium text-amber-700' : 'font-medium text-emerald-700'}>{available} available</p><p className="text-xs text-zinc-400">{variant.reserved_stock} reserved / {variant.stock} total</p></td><td className="px-5 py-3"><ActiveBadge active={variant.is_active} /></td><td className="px-5 py-3 text-right"><Button size="sm" variant="ghost" asChild><Link href={`/admin/product-variants/${variant.id}/edit`}>Edit</Link></Button></td></tr>; })}</tbody></table>{product.variants.length === 0 && <div className="py-12 text-center text-sm text-zinc-500">No variants yet.</div>}</div></CardContent></Card>
-            <Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Description</CardTitle><CardDescription>{product.short_description || 'No short description.'}</CardDescription></CardHeader><CardContent className="prose prose-sm max-w-none text-zinc-700"><HTMLRender html={product.description} emptyFallback={<p>No full description.</p>} /></CardContent></Card>
-        </div><aside className="space-y-6 xl:sticky xl:top-6 xl:self-start"><Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Product summary</CardTitle></CardHeader><CardContent className="grid gap-4"><div><p className="text-xs text-zinc-500">Price</p>{product.sale_price ? <><p className="text-2xl font-semibold">{formatPrice(product.sale_price)}</p><p className="text-sm text-zinc-400 line-through">{formatPrice(product.regular_price)}</p></> : <p className="text-2xl font-semibold">{formatPrice(product.regular_price)}</p>}</div><div className="grid grid-cols-3 gap-2 border-t border-zinc-100 pt-4 text-center"><div><p className="text-xl font-semibold">{availableStock}</p><p className="text-xs text-zinc-500">Available</p></div><div><p className="text-xl font-semibold">{reservedStock}</p><p className="text-xs text-zinc-500">Reserved</p></div><div><p className="text-xl font-semibold">{product.variants.length}</p><p className="text-xs text-zinc-500">Variants</p></div></div><div className="grid gap-2 border-t border-zinc-100 pt-4 text-sm"><p><span className="text-zinc-500">Weight:</span> {product.weight} g</p><p><span className="text-zinc-500">Dimensions:</span> {[product.length, product.width, product.height].every(Boolean) ? `${product.length} × ${product.width} × ${product.height} cm` : '—'}</p><p><span className="text-zinc-500">Stock label:</span> {product.stock_status || '—'}</p></div><div className="flex flex-wrap gap-2">{product.is_featured && <Badge variant="outline">Featured</Badge>}{product.is_new_arrival && <Badge variant="outline">New arrival</Badge>}{product.is_best_seller && <Badge variant="outline">Best seller</Badge>}</div></CardContent></Card><Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Actions</CardTitle></CardHeader><CardContent className="grid gap-2">{product.status === 'published' ? <Button variant="outline" onClick={() => doAction(`/admin/products/${product.id}/archive`)}><Archive />Archive product</Button> : <Button variant="outline" onClick={() => doAction(`/admin/products/${product.id}/publish`)}><Package />Publish product</Button>}<Button variant="outline" onClick={() => doAction(`/admin/products/${product.id}/duplicate`)}><Copy />Duplicate as draft</Button><Button variant="ghost" className="text-red-600 hover:text-red-700" onClick={() => doAction(`/admin/products/${product.id}`, 'delete')}><Trash2 />Delete product</Button></CardContent></Card></aside></div>
-        <Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Recent stock logs</CardTitle><CardDescription>Perubahan stok terakhir untuk produk ini.</CardDescription></CardHeader><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full min-w-[620px] text-sm"><thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500"><tr><th className="px-5 py-3">Variant</th><th className="px-5 py-3">Type</th><th className="px-5 py-3">Change</th><th className="px-5 py-3">Stock</th><th className="px-5 py-3 text-right">Date</th></tr></thead><tbody>{product.stock_logs.map((log) => <tr className="border-b border-zinc-100 last:border-0" key={log.id}><td className="px-5 py-3">{log.variant}</td><td className="px-5 py-3"><Badge variant="outline">{log.type}</Badge></td><td className={`px-5 py-3 font-medium ${log.quantity >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{log.quantity >= 0 ? '+' : ''}{log.quantity}</td><td className="px-5 py-3">{log.stock_before} → {log.stock_after}</td><td className="px-5 py-3 text-right text-zinc-500">{log.created_at || '—'}</td></tr>)}</tbody></table>{product.stock_logs.length === 0 && <div className="py-10 text-center text-sm text-zinc-500">No stock logs yet.</div>}</div></CardContent></Card>
-        <Card className="border-zinc-200 shadow-none"><CardHeader><CardTitle>Recent orders</CardTitle><CardDescription>Order items containing this product.</CardDescription></CardHeader><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full min-w-[560px] text-sm"><thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500"><tr><th className="px-5 py-3">Order</th><th className="px-5 py-3">Quantity</th><th className="px-5 py-3">Subtotal</th><th className="px-5 py-3 text-right">Date</th></tr></thead><tbody>{product.orders.map((order) => <tr className="border-b border-zinc-100 last:border-0" key={order.id}><td className="px-5 py-3">#{order.order_id}</td><td className="px-5 py-3">{order.quantity}</td><td className="px-5 py-3">{formatPrice(order.subtotal)}</td><td className="px-5 py-3 text-right text-zinc-500">{order.created_at || '—'}</td></tr>)}</tbody></table>{product.orders.length === 0 && <div className="py-10 text-center text-sm text-zinc-500">No orders yet.</div>}</div></CardContent></Card>
-    </div></>;
+        router[method](url, {}, { preserveScroll: true });
+    };
+
+    return (
+        <>
+            <Head title={product.name} />
+            <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+                <PageHeader
+                    eyebrow="Catalog"
+                    title={product.name}
+                    description={`${product.brand_name || 'No brand'} · ${product.category || 'No category'} · ${product.collection || 'No collection'} · ${product.sku || 'No parent SKU'}`}
+                    action={
+                        <div className="flex flex-wrap gap-2">
+                            <StatusBadge status={product.status} />
+                            <Button variant="outline" asChild>
+                                <Link
+                                    href={`/admin/products/${product.id}/edit`}
+                                >
+                                    <Edit3 />
+                                    Edit
+                                </Link>
+                            </Button>
+                            <Button
+                                className="bg-black hover:bg-black/[0.84]"
+                                asChild
+                            >
+                                <Link
+                                    href={`/admin/product-variants/create?product_id=${product.id}`}
+                                >
+                                    <Plus />
+                                    Add variant
+                                </Link>
+                            </Button>
+                        </div>
+                    }
+                />
+                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+                    <div className="space-y-6">
+                        <Card className="overflow-hidden border-zinc-200 shadow-none">
+                            <div className="grid md:grid-cols-[minmax(0,1fr)_112px]">
+                                <div className="flex h-[360px] items-center justify-center bg-zinc-50 p-5 md:h-[520px]">
+                                    {activeImage?.image_url ? (
+                                        <img
+                                            src={activeImage.image_url}
+                                            alt={
+                                                activeImage.alt_text ||
+                                                product.name
+                                            }
+                                            className="max-h-[520px] w-full object-contain"
+                                        />
+                                    ) : (
+                                        <div className="text-center text-sm text-zinc-400">
+                                            <ImageIcon className="mx-auto mb-2 size-8" />
+                                            No product image
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex gap-2 overflow-x-auto p-3 md:h-[520px] md:flex-col md:overflow-x-hidden md:overflow-y-auto">
+                                    {product.images.map((image) => (
+                                        <button
+                                            type="button"
+                                            key={image.id}
+                                            aria-label={`View ${image.alt_text || product.name} image`}
+                                            onClick={() =>
+                                                setActiveImage(image)
+                                            }
+                                            className={`size-20 shrink-0 overflow-hidden rounded-md border ${activeImage?.id === image.id ? 'border-zinc-950' : 'border-zinc-200'}`}
+                                        >
+                                            <img
+                                                src={image.image_url || ''}
+                                                alt={
+                                                    image.alt_text ||
+                                                    product.name
+                                                }
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="border-zinc-200 shadow-none">
+                            <CardHeader>
+                                <CardTitle>Variants</CardTitle>
+                                <CardDescription>
+                                    {activeVariants} active of{' '}
+                                    {product.variants.length} variants
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full min-w-[760px] text-sm">
+                                        <thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500">
+                                            <tr>
+                                                <th className="px-5 py-3">
+                                                    Variant
+                                                </th>
+                                                <th className="px-5 py-3">
+                                                    Price
+                                                </th>
+                                                <th className="px-5 py-3">
+                                                    Stock
+                                                </th>
+                                                <th className="px-5 py-3">
+                                                    Status
+                                                </th>
+                                                <th className="px-5 py-3 text-right">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {product.variants.map((variant) => {
+                                                const available =
+                                                    variant.available_stock ??
+                                                    Math.max(
+                                                        0,
+                                                        variant.stock -
+                                                            variant.reserved_stock,
+                                                    );
+                                                const price =
+                                                    variant.sale_price ??
+                                                    variant.regular_price ??
+                                                    product.sale_price ??
+                                                    product.regular_price;
+
+                                                return (
+                                                    <tr
+                                                        className="border-b border-zinc-100 last:border-0"
+                                                        key={variant.id}
+                                                    >
+                                                        <td className="px-5 py-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <span
+                                                                    className="size-3 rounded-full border"
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            variant.color_hex ||
+                                                                            '#fff',
+                                                                    }}
+                                                                />
+                                                                <div>
+                                                                    <p className="font-medium">
+                                                                        {variant.color_name ||
+                                                                            'No color'}{' '}
+                                                                        /{' '}
+                                                                        {variant.size ||
+                                                                            'No size'}
+                                                                    </p>
+                                                                    <p className="text-xs text-zinc-500">
+                                                                        {
+                                                                            variant.sku
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-5 py-3">
+                                                            {formatPrice(price)}
+                                                        </td>
+                                                        <td className="px-5 py-3">
+                                                            <p
+                                                                className={
+                                                                    available <=
+                                                                    5
+                                                                        ? 'font-medium text-black'
+                                                                        : 'font-medium text-black'
+                                                                }
+                                                            >
+                                                                {available}{' '}
+                                                                available
+                                                            </p>
+                                                            <p className="text-xs text-zinc-400">
+                                                                {
+                                                                    variant.reserved_stock
+                                                                }{' '}
+                                                                reserved /{' '}
+                                                                {variant.stock}{' '}
+                                                                total
+                                                            </p>
+                                                        </td>
+                                                        <td className="px-5 py-3">
+                                                            <ActiveBadge
+                                                                active={
+                                                                    variant.is_active
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className="px-5 py-3 text-right">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="ghost"
+                                                                asChild
+                                                            >
+                                                                <Link
+                                                                    href={`/admin/product-variants/${variant.id}/edit`}
+                                                                >
+                                                                    Edit
+                                                                </Link>
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                    {product.variants.length === 0 && (
+                                        <div className="py-12 text-center text-sm text-zinc-500">
+                                            No variants yet.
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="border-zinc-200 shadow-none">
+                            <CardHeader>
+                                <CardTitle>Description</CardTitle>
+                                <CardDescription>
+                                    {product.short_description ||
+                                        'No short description.'}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="prose prose-sm max-w-none text-zinc-700">
+                                <HTMLRender
+                                    html={product.description}
+                                    emptyFallback={<p>No full description.</p>}
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+                        <Card className="border-zinc-200 shadow-none">
+                            <CardHeader>
+                                <CardTitle>Product summary</CardTitle>
+                            </CardHeader>
+                            <CardContent className="grid gap-4">
+                                <div>
+                                    <p className="text-xs text-zinc-500">
+                                        Price
+                                    </p>
+                                    {product.sale_price ? (
+                                        <>
+                                            <p className="text-2xl font-semibold">
+                                                {formatPrice(
+                                                    product.sale_price,
+                                                )}
+                                            </p>
+                                            <p className="text-sm text-zinc-400 line-through">
+                                                {formatPrice(
+                                                    product.regular_price,
+                                                )}
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="text-2xl font-semibold">
+                                            {formatPrice(product.regular_price)}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 border-t border-zinc-100 pt-4 text-center">
+                                    <div>
+                                        <p className="text-xl font-semibold">
+                                            {availableStock}
+                                        </p>
+                                        <p className="text-xs text-zinc-500">
+                                            Available
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xl font-semibold">
+                                            {reservedStock}
+                                        </p>
+                                        <p className="text-xs text-zinc-500">
+                                            Reserved
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xl font-semibold">
+                                            {product.variants.length}
+                                        </p>
+                                        <p className="text-xs text-zinc-500">
+                                            Variants
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="grid gap-2 border-t border-zinc-100 pt-4 text-sm">
+                                    <p>
+                                        <span className="text-zinc-500">
+                                            Weight:
+                                        </span>{' '}
+                                        {product.weight} g
+                                    </p>
+                                    <p>
+                                        <span className="text-zinc-500">
+                                            Dimensions:
+                                        </span>{' '}
+                                        {[
+                                            product.length,
+                                            product.width,
+                                            product.height,
+                                        ].every(Boolean)
+                                            ? `${product.length} × ${product.width} × ${product.height} cm`
+                                            : '—'}
+                                    </p>
+                                    <p>
+                                        <span className="text-zinc-500">
+                                            Stock label:
+                                        </span>{' '}
+                                        {product.stock_status || '—'}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {product.is_featured && (
+                                        <Badge variant="outline">
+                                            Featured
+                                        </Badge>
+                                    )}
+                                    {product.is_new_arrival && (
+                                        <Badge variant="outline">
+                                            New arrival
+                                        </Badge>
+                                    )}
+                                    {product.is_best_seller && (
+                                        <Badge variant="outline">
+                                            Best seller
+                                        </Badge>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="border-zinc-200 shadow-none">
+                            <CardHeader>
+                                <CardTitle>Actions</CardTitle>
+                            </CardHeader>
+                            <CardContent className="grid gap-2">
+                                {product.status === 'published' ? (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() =>
+                                            doAction(
+                                                `/admin/products/${product.id}/archive`,
+                                            )
+                                        }
+                                    >
+                                        <Archive />
+                                        Archive product
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() =>
+                                            doAction(
+                                                `/admin/products/${product.id}/publish`,
+                                            )
+                                        }
+                                    >
+                                        <Package />
+                                        Publish product
+                                    </Button>
+                                )}
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        doAction(
+                                            `/admin/products/${product.id}/duplicate`,
+                                        )
+                                    }
+                                >
+                                    <Copy />
+                                    Duplicate as draft
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    className="text-black hover:text-black"
+                                    onClick={() =>
+                                        doAction(
+                                            `/admin/products/${product.id}`,
+                                            'delete',
+                                        )
+                                    }
+                                >
+                                    <Trash2 />
+                                    Delete product
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </aside>
+                </div>
+                <Card className="border-zinc-200 shadow-none">
+                    <CardHeader>
+                        <CardTitle>Recent stock logs</CardTitle>
+                        <CardDescription>
+                            Perubahan stok terakhir untuk produk ini.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[620px] text-sm">
+                                <thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500">
+                                    <tr>
+                                        <th className="px-5 py-3">Variant</th>
+                                        <th className="px-5 py-3">Type</th>
+                                        <th className="px-5 py-3">Change</th>
+                                        <th className="px-5 py-3">Stock</th>
+                                        <th className="px-5 py-3 text-right">
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {product.stock_logs.map((log) => (
+                                        <tr
+                                            className="border-b border-zinc-100 last:border-0"
+                                            key={log.id}
+                                        >
+                                            <td className="px-5 py-3">
+                                                {log.variant}
+                                            </td>
+                                            <td className="px-5 py-3">
+                                                <Badge variant="outline">
+                                                    {log.type}
+                                                </Badge>
+                                            </td>
+                                            <td
+                                                className={`px-5 py-3 font-medium ${log.quantity >= 0 ? 'text-black' : 'text-black'}`}
+                                            >
+                                                {log.quantity >= 0 ? '+' : ''}
+                                                {log.quantity}
+                                            </td>
+                                            <td className="px-5 py-3">
+                                                {log.stock_before} →{' '}
+                                                {log.stock_after}
+                                            </td>
+                                            <td className="px-5 py-3 text-right text-zinc-500">
+                                                {log.created_at || '—'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {product.stock_logs.length === 0 && (
+                                <div className="py-10 text-center text-sm text-zinc-500">
+                                    No stock logs yet.
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="border-zinc-200 shadow-none">
+                    <CardHeader>
+                        <CardTitle>Recent orders</CardTitle>
+                        <CardDescription>
+                            Order items containing this product.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[560px] text-sm">
+                                <thead className="border-y border-zinc-100 bg-zinc-50 text-left text-xs text-zinc-500">
+                                    <tr>
+                                        <th className="px-5 py-3">Order</th>
+                                        <th className="px-5 py-3">Quantity</th>
+                                        <th className="px-5 py-3">Subtotal</th>
+                                        <th className="px-5 py-3 text-right">
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {product.orders.map((order) => (
+                                        <tr
+                                            className="border-b border-zinc-100 last:border-0"
+                                            key={order.id}
+                                        >
+                                            <td className="px-5 py-3">
+                                                #{order.order_id}
+                                            </td>
+                                            <td className="px-5 py-3">
+                                                {order.quantity}
+                                            </td>
+                                            <td className="px-5 py-3">
+                                                {formatPrice(order.subtotal)}
+                                            </td>
+                                            <td className="px-5 py-3 text-right text-zinc-500">
+                                                {order.created_at || '—'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {product.orders.length === 0 && (
+                                <div className="py-10 text-center text-sm text-zinc-500">
+                                    No orders yet.
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </>
+    );
 }

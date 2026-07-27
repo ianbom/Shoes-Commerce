@@ -115,11 +115,11 @@ type PendingStatusChange = {
 type BadgeVariant = 'green' | 'blue' | 'gray' | 'red' | 'yellow' | 'outline';
 
 const badgeColors: Record<BadgeVariant, string> = {
-    green: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    blue: 'border-blue-200 bg-blue-50 text-blue-700',
+    green: 'border-black/[0.32] bg-black/[0.04] text-black',
+    blue: 'border-black/[0.32] bg-black/[0.04] text-black',
     gray: 'border-zinc-200 bg-zinc-50 text-zinc-700',
-    red: 'border-rose-200 bg-rose-50 text-rose-700',
-    yellow: 'border-amber-200 bg-amber-50 text-amber-700',
+    red: 'border-black/[0.32] bg-black/[0.04] text-black',
+    yellow: 'border-black/[0.32] bg-black/[0.04] text-black',
     outline: 'border-zinc-200 bg-white text-zinc-700',
 };
 
@@ -271,7 +271,7 @@ function ActionButton({
             onClick={onClick}
             className={`group inline-flex h-9 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-medium shadow-sm transition-colors focus:ring-2 focus:outline-none ${
                 danger
-                    ? 'border-rose-200 bg-white text-rose-700 hover:bg-rose-50 focus:ring-rose-500/20'
+                    ? 'border-black/[0.32] bg-white text-black hover:bg-black/[0.04] focus:ring-black/[0.16]'
                     : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 focus:ring-zinc-900/20'
             }`}
         >
@@ -590,7 +590,7 @@ export default function OrderShow({ order }: Props) {
                                                 label="Email"
                                                 value={
                                                     <a
-                                                        className="break-all text-[#3E3222] hover:underline"
+                                                        className="break-all text-black hover:underline"
                                                         href={`mailto:${order.customer_email}`}
                                                     >
                                                         {order.customer_email}
@@ -963,7 +963,7 @@ export default function OrderShow({ order }: Props) {
                                                 label="Email"
                                                 value={
                                                     <a
-                                                        className="break-all text-[#3E3222] hover:underline"
+                                                        className="break-all text-black hover:underline"
                                                         href={`mailto:${order.customer_email}`}
                                                     >
                                                         {order.customer_email}
@@ -1239,7 +1239,7 @@ export default function OrderShow({ order }: Props) {
                                     </div>
                                     <div className="flex items-center justify-between gap-4 text-zinc-500">
                                         <span>Discount</span>
-                                        <span className="font-medium text-rose-600 tabular-nums">
+                                        <span className="font-medium text-black tabular-nums">
                                             -{' '}
                                             {formatPrice(order.discount_amount)}
                                         </span>
@@ -1337,7 +1337,7 @@ export default function OrderShow({ order }: Props) {
                                         onClick={() =>
                                             requestStatusChange('completed')
                                         }
-                                        className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left font-medium text-emerald-700 transition hover:bg-emerald-50"
+                                        className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left font-medium text-black transition hover:bg-black/[0.04]"
                                     >
                                         <span className="flex items-center gap-2">
                                             <CheckCircle2 size={15} /> Mark as
@@ -1350,7 +1350,7 @@ export default function OrderShow({ order }: Props) {
                                         onClick={() =>
                                             requestStatusChange('cancelled')
                                         }
-                                        className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left font-medium text-rose-700 transition hover:bg-rose-50"
+                                        className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left font-medium text-black transition hover:bg-black/[0.04]"
                                     >
                                         <span className="flex items-center gap-2">
                                             <XCircle size={15} /> Cancel order
@@ -1453,7 +1453,7 @@ export default function OrderShow({ order }: Props) {
             >
                 <DialogContent className="border-zinc-200 bg-white text-zinc-900 sm:max-w-md">
                     <DialogHeader>
-                        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-700">
+                        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.04] text-black">
                             <CheckCircle2 size={22} />
                         </div>
                         <DialogTitle>Konfirmasi perubahan status</DialogTitle>
@@ -1464,7 +1464,7 @@ export default function OrderShow({ order }: Props) {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <div className="rounded-lg border border-black/[0.32] bg-black/[0.04] p-4 text-sm text-black">
                         <p className="font-semibold">Status tujuan</p>
                         <p className="mt-1 font-mono text-xs tracking-wide">
                             {pendingStatusChange?.label}

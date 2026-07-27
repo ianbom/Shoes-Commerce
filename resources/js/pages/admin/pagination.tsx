@@ -30,7 +30,7 @@ export function PerPageSelect({ paginator }: { paginator: Paginator }) {
                 );
             }}
         >
-            <SelectTrigger className="h-8 w-[92px] rounded-lg border-zinc-200 bg-white text-xs text-zinc-600 shadow-none">
+            <SelectTrigger className="h-9 w-[92px] rounded-md border-black/[0.16] bg-white text-xs text-black/[0.56] shadow-none dark:border-white/20 dark:bg-[#111111] dark:text-white/64">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent align="end" side="top">

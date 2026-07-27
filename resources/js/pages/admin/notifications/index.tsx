@@ -49,25 +49,25 @@ const getTypeConfig = (type: string) => {
 
     if (safeType.includes('order')) {
         return {
-            dot: 'bg-blue-400',
-            text: 'text-blue-700',
-            bg: 'bg-blue-50 border-blue-100',
+            dot: 'bg-black/[0.48]',
+            text: 'text-black',
+            bg: 'bg-black/[0.04] border-black/[0.16]',
         };
     }
 
     if (safeType.includes('payment')) {
         return {
-            dot: 'bg-emerald-400',
-            text: 'text-emerald-700',
-            bg: 'bg-emerald-50 border-emerald-100',
+            dot: 'bg-black/[0.48]',
+            text: 'text-black',
+            bg: 'bg-black/[0.04] border-black/[0.16]',
         };
     }
 
     if (safeType.includes('promo') || safeType.includes('voucher')) {
         return {
-            dot: 'bg-purple-400',
-            text: 'text-purple-700',
-            bg: 'bg-purple-50 border-purple-100',
+            dot: 'bg-black/[0.48]',
+            text: 'text-black',
+            bg: 'bg-black/[0.04] border-black/[0.16]',
         };
     }
 
@@ -120,7 +120,7 @@ export default function NotificationsIndex({
             icon: Bell,
             iconBg: 'bg-white/20',
             iconColor: 'text-white',
-            cardBg: 'bg-gradient-to-br from-[#151515] to-[#9A6B45]',
+            cardBg: 'bg-black',
             subColor: 'text-white/60',
             valColor: 'text-white',
             titleColor: 'text-white/80',
@@ -132,13 +132,13 @@ export default function NotificationsIndex({
             val: unreadCount,
             sub: 'shown page',
             icon: BellRing,
-            iconBg: 'bg-blue-100',
-            iconColor: 'text-blue-500',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-blue-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-blue-400 to-blue-600',
+            accent: '',
             featured: false,
         },
         {
@@ -146,13 +146,13 @@ export default function NotificationsIndex({
             val: readCount,
             sub: 'shown page',
             icon: CheckCircle2,
-            iconBg: 'bg-emerald-100',
-            iconColor: 'text-emerald-600',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-emerald-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-emerald-400 to-emerald-600',
+            accent: '',
             featured: false,
         },
         {
@@ -160,13 +160,13 @@ export default function NotificationsIndex({
             val: uniqueTypes,
             sub: 'shown page',
             icon: Tag,
-            iconBg: 'bg-purple-100',
-            iconColor: 'text-purple-500',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-purple-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-purple-400 to-purple-600',
+            accent: '',
             featured: false,
         },
         {
@@ -174,13 +174,13 @@ export default function NotificationsIndex({
             val: referencedCount,
             sub: 'has source',
             icon: Send,
-            iconBg: 'bg-amber-100',
-            iconColor: 'text-amber-600',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-amber-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-amber-400 to-amber-600',
+            accent: '',
             featured: false,
         },
     ];
@@ -192,7 +192,7 @@ export default function NotificationsIndex({
             <div className="flex flex-col gap-6 p-6">
                 <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
                     <div>
-                        <p className="mb-1 text-[11px] font-bold tracking-widest text-[#151515]/50 uppercase">
+                        <p className="mb-1 text-[11px] font-bold tracking-widest text-black/50 uppercase">
                             Customer Management
                         </p>
                         <h1 className="font-serif text-3xl leading-tight text-zinc-900">
@@ -205,7 +205,7 @@ export default function NotificationsIndex({
                     </div>
                     <Button
                         asChild
-                        className="bg-[#B98B63] text-white hover:bg-[#9A6B45]"
+                        className="bg-black text-white hover:bg-black/[0.84]"
                     >
                         <Link href="/admin/notifications/create">
                             <Plus className="h-4 w-4" /> Send Notification
@@ -267,7 +267,7 @@ export default function NotificationsIndex({
                             <Button
                                 type="submit"
                                 size="sm"
-                                className="h-9 gap-1.5 bg-[#B98B63] text-white hover:bg-[#9A6B45]"
+                                className="h-9 gap-1.5 bg-black text-white hover:bg-black/[0.84]"
                                 disabled={processing}
                             >
                                 <Search className="h-3.5 w-3.5" /> Search
@@ -452,7 +452,7 @@ function StatsGrid({ stats }: { stats: Array<Record<string, any>> }) {
                     className={[
                         'relative overflow-hidden rounded-2xl border transition-all duration-200 hover:-translate-y-0.5',
                         m.featured
-                            ? 'border-transparent shadow-lg shadow-[#151515]/20'
+                            ? 'border-transparent shadow-lg shadow-black/20'
                             : 'border-zinc-100 shadow-sm hover:shadow-md',
                         m.cardBg,
                     ].join(' ')}
@@ -513,14 +513,14 @@ function ReadPill({ read }: { read: boolean }) {
             className={
                 'inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold ' +
                 (read
-                    ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                    : 'border-blue-100 bg-blue-50 text-blue-700')
+                    ? 'border-black/[0.16] bg-black/[0.04] text-black'
+                    : 'border-black/[0.16] bg-black/[0.04] text-black')
             }
         >
             <span
                 className={
                     'h-1.5 w-1.5 rounded-full ' +
-                    (read ? 'bg-emerald-400' : 'bg-blue-400')
+                    (read ? 'bg-black/[0.48]' : 'bg-black/[0.48]')
                 }
             />
             {read ? 'Read' : 'Unread'}
@@ -575,7 +575,7 @@ function PaginationFooter<T>({
                             className={[
                                 'h-8 min-w-8 rounded-lg px-2.5 text-xs font-medium transition-colors',
                                 link.active
-                                    ? 'bg-[#B98B63] text-white shadow-sm'
+                                    ? 'bg-black text-white shadow-sm'
                                     : !link.url
                                       ? 'cursor-not-allowed text-zinc-300'
                                       : 'text-zinc-500 hover:bg-zinc-100',

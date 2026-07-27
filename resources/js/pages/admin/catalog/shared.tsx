@@ -47,12 +47,12 @@ export function PageHeader({
     action?: ReactNode;
 }) {
     return (
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-5 border-b border-black/15 pb-5 md:flex-row md:items-end dark:border-white/20">
             <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-semibold tracking-[0.12em] text-black/[0.56] uppercase dark:text-white/64">
                     {eyebrow}
                 </p>
-                <h1 className="text-2xl font-semibold tracking-tight">
+                <h1 className="mt-1 text-3xl font-semibold tracking-tight text-black dark:text-white">
                     {title}
                 </h1>
                 <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -74,7 +74,7 @@ export function TableShell({
     children: ReactNode;
 }) {
     return (
-        <Card>
+        <Card className="border-black/15 shadow-none dark:border-white/20">
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
@@ -98,7 +98,7 @@ export function Pagination<T>({ paginator }: { paginator: Paginated<T> }) {
                             key={`${link.label}-${link.url}`}
                             asChild
                             size="sm"
-                            variant={link.active ? 'secondary' : 'outline'}
+                            variant={link.active ? 'default' : 'outline'}
                         >
                             <Link href={link.url}>
                                 {cleanPageLabel(link.label)}
@@ -127,11 +127,11 @@ export function StatusBadge({ status }: { status: string }) {
             variant="outline"
             className={cn(
                 status === 'published' &&
-                    'border-emerald-200 bg-emerald-50 text-emerald-700',
+                    'border-black bg-black text-white',
                 status === 'draft' &&
-                    'border-amber-200 bg-amber-50 text-amber-700',
+                    'border-black/[0.32] bg-black/[0.08] text-black',
                 status === 'archived' &&
-                    'border-zinc-200 bg-zinc-50 text-zinc-600',
+                    'border-black/[0.16] bg-white text-black/[0.56]',
             )}
         >
             {status}
@@ -145,8 +145,8 @@ export function ActiveBadge({ active }: { active: boolean }) {
             variant="outline"
             className={
                 active
-                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                    : 'border-zinc-200 bg-zinc-50 text-zinc-600'
+                    ? 'border-black bg-black text-white'
+                    : 'border-black/[0.16] bg-white text-black/[0.56]'
             }
         >
             {active ? 'Active' : 'Inactive'}

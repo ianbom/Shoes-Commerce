@@ -37,8 +37,8 @@ type Props = {
 function renderCell(value: string | number | boolean | null) {
     if (typeof value === 'boolean') {
         return value ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-black bg-black px-2.5 py-1 text-xs font-semibold text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
                 Active
             </span>
         ) : (
@@ -65,8 +65,8 @@ function renderCell(value: string | number | boolean | null) {
         )
     ) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-black bg-black px-2.5 py-1 text-xs font-semibold text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
                 {value}
             </span>
         );
@@ -74,8 +74,8 @@ function renderCell(value: string | number | boolean | null) {
 
     if (normalized.includes('pending') || normalized.includes('processing')) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-black border-dashed bg-white px-2.5 py-1 text-xs font-semibold text-black">
+                <span className="h-1.5 w-1.5 rounded-full border border-black bg-white" />
                 {value}
             </span>
         );
@@ -87,8 +87,8 @@ function renderCell(value: string | number | boolean | null) {
         normalized.includes('failed')
     ) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+            <span className="inline-flex items-center gap-1 rounded-full border-2 border-black bg-white px-2.5 py-1 text-xs font-semibold text-black">
+                <span className="h-1.5 w-1.5 rounded-full bg-black" />
                 {value}
             </span>
         );
@@ -132,10 +132,10 @@ export default function ResourceIndex({
 
             <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
                 {/* ── Hero header ── */}
-                <div className="anim-fadeinup relative overflow-hidden rounded-2xl border border-white/60 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-700 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.18)] lg:p-8">
+                <div className="anim-fadeinup relative overflow-hidden rounded-2xl border border-black/[0.16] bg-white p-6 lg:p-8">
                     {/* decorative orbs */}
                     <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/5 blur-3xl" />
-                    <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-amber-400/10 blur-2xl" />
+                    <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-black/8 blur-2xl" />
 
                     <div className="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
                         <div>
@@ -177,16 +177,16 @@ export default function ResourceIndex({
                             label: 'Active',
                             value: stats.active,
                             icon: TrendingUp,
-                            color: 'from-emerald-50 to-white',
-                            iconBg: 'bg-emerald-100 text-emerald-600',
+                            color: '',
+                            iconBg: 'bg-black/[0.08] text-black',
                             delay: 'anim-delay-2',
                         },
                         {
                             label: 'Inactive',
                             value: stats.inactive,
                             icon: Layers,
-                            color: 'from-orange-50 to-white',
-                            iconBg: 'bg-orange-100 text-orange-600',
+                            color: '',
+                            iconBg: 'bg-black/[0.08] text-black',
                             delay: 'anim-delay-3',
                         },
                     ].map(

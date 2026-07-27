@@ -66,7 +66,7 @@ export default function ReportIndex({
             <div className="flex flex-1 flex-col gap-8 bg-white p-4 text-zinc-900 md:p-6">
                 <header className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
                     <div>
-                        <p className="mb-2 flex items-center gap-2 text-xs font-bold tracking-widest text-[#151515]/50 uppercase">
+                        <p className="mb-2 flex items-center gap-2 text-xs font-bold tracking-widest text-black/50 uppercase">
                             <BarChart3 className="size-4" strokeWidth={1.7} />
                             Reports
                         </p>
@@ -81,7 +81,7 @@ export default function ReportIndex({
 
                     <Button
                         asChild
-                        className="h-9 rounded-lg bg-[#B98B63] px-4 text-white shadow-none hover:bg-[#9A6B45] active:scale-[0.98]"
+                        className="h-9 rounded-lg bg-black px-4 text-white shadow-none hover:bg-black/[0.84] active:scale-[0.98]"
                     >
                         <a href={`/admin/reports/${type}/export?${query}`}>
                             <Download className="size-4" /> Export CSV
@@ -96,7 +96,7 @@ export default function ReportIndex({
                             href={`/admin/reports/${tab}`}
                             className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                                 tab === type
-                                    ? 'border-[#151515] bg-[#B98B63] text-white'
+                                    ? 'border-black bg-black text-white'
                                     : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'
                             }`}
                         >
@@ -130,7 +130,7 @@ export default function ReportIndex({
                         onChange={(event) =>
                             setData('payment_status', event.target.value)
                         }
-                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-[#151515]"
+                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-black"
                     >
                         <option value="">All payment</option>
                         {options.paymentStatuses.map((status) => (
@@ -144,7 +144,7 @@ export default function ReportIndex({
                         onChange={(event) =>
                             setData('order_status', event.target.value)
                         }
-                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-[#151515]"
+                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-black"
                     >
                         <option value="">All order</option>
                         {options.orderStatuses.map((status) => (
@@ -158,7 +158,7 @@ export default function ReportIndex({
                         onChange={(event) =>
                             setData('category_id', event.target.value)
                         }
-                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-[#151515]"
+                        className="h-9 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 transition-colors outline-none focus:border-black"
                     >
                         <option value="">All categories</option>
                         {options.categories.map((category) => (

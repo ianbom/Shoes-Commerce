@@ -95,7 +95,7 @@ export default function CustomersIndex({ customers, filters }: Props) {
             icon: Users,
             iconBg: 'bg-white/20',
             iconColor: 'text-white',
-            cardBg: 'bg-gradient-to-br from-[#151515] to-[#9A6B45]',
+            cardBg: 'bg-black',
             subColor: 'text-white/60',
             valColor: 'text-white',
             titleColor: 'text-white/80',
@@ -107,13 +107,13 @@ export default function CustomersIndex({ customers, filters }: Props) {
             val: activeCount,
             sub: 'shown page',
             icon: UserCheck,
-            iconBg: 'bg-emerald-100',
-            iconColor: 'text-emerald-600',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-emerald-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-emerald-400 to-emerald-600',
+            accent: '',
             featured: false,
         },
         {
@@ -121,13 +121,13 @@ export default function CustomersIndex({ customers, filters }: Props) {
             val: inactiveCount,
             sub: 'shown page',
             icon: UserX,
-            iconBg: 'bg-rose-100',
-            iconColor: 'text-rose-500',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-rose-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-rose-400 to-red-500',
+            accent: '',
             featured: false,
         },
         {
@@ -135,11 +135,11 @@ export default function CustomersIndex({ customers, filters }: Props) {
             val: orderCount,
             sub: 'shown page',
             icon: CreditCard,
-            iconBg: 'bg-blue-100',
-            iconColor: 'text-blue-500',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-blue-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
             accent: '',
             featured: false,
@@ -149,13 +149,13 @@ export default function CustomersIndex({ customers, filters }: Props) {
             val: addressCount,
             sub: 'shown page',
             icon: MapPin,
-            iconBg: 'bg-purple-100',
-            iconColor: 'text-purple-500',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-purple-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-purple-400 to-purple-600',
+            accent: '',
             featured: false,
         },
         {
@@ -163,13 +163,13 @@ export default function CustomersIndex({ customers, filters }: Props) {
             val: data.is_active || 'All',
             sub: 'current status',
             icon: CalendarDays,
-            iconBg: 'bg-amber-100',
-            iconColor: 'text-amber-600',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-amber-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-amber-400 to-amber-600',
+            accent: '',
             featured: false,
         },
     ];
@@ -181,7 +181,7 @@ export default function CustomersIndex({ customers, filters }: Props) {
             <div className="flex flex-col gap-6 p-6">
                 <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
                     <div>
-                        <p className="mb-1 text-[11px] font-bold tracking-widest text-[#151515]/50 uppercase">
+                        <p className="mb-1 text-[11px] font-bold tracking-widest text-black/50 uppercase">
                             Customer Management
                         </p>
                         <h1 className="font-serif text-3xl leading-tight text-zinc-900">
@@ -298,7 +298,7 @@ export default function CustomersIndex({ customers, filters }: Props) {
                             <Button
                                 type="submit"
                                 size="sm"
-                                className="h-9 gap-1.5 bg-[#B98B63] text-white hover:bg-[#9A6B45]"
+                                className="h-9 gap-1.5 bg-black text-white hover:bg-black/[0.84]"
                                 disabled={processing}
                             >
                                 <Search className="h-3.5 w-3.5" /> Search
@@ -381,7 +381,7 @@ export default function CustomersIndex({ customers, filters }: Props) {
                                             <div className="flex flex-col gap-1">
                                                 <Link
                                                     href={`/admin/customers/${customer.id}`}
-                                                    className="font-medium text-zinc-900 transition-colors hover:text-[#151515]"
+                                                    className="font-medium text-zinc-900 transition-colors hover:text-black"
                                                 >
                                                     {customer.name}
                                                 </Link>
@@ -482,7 +482,7 @@ function StatsGrid({ stats }: { stats: Array<Record<string, any>> }) {
                     className={[
                         'relative overflow-hidden rounded-2xl border transition-all duration-200 hover:-translate-y-0.5',
                         m.featured
-                            ? 'border-transparent shadow-lg shadow-[#151515]/20'
+                            ? 'border-transparent shadow-lg shadow-black/20'
                             : 'border-zinc-100 shadow-sm hover:shadow-md',
                         m.cardBg,
                     ].join(' ')}
@@ -543,14 +543,14 @@ function StatusPill({ active }: { active: boolean }) {
             className={
                 'inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold ' +
                 (active
-                    ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                    : 'border-rose-100 bg-rose-50 text-rose-700')
+                    ? 'border-black/[0.16] bg-black/[0.04] text-black'
+                    : 'border-black/[0.16] bg-black/[0.04] text-black')
             }
         >
             <span
                 className={
                     'h-1.5 w-1.5 rounded-full ' +
-                    (active ? 'bg-emerald-400' : 'bg-rose-400')
+                    (active ? 'bg-black/[0.48]' : 'bg-black/[0.48]')
                 }
             />
             {active ? 'Active' : 'Inactive'}
@@ -605,7 +605,7 @@ function PaginationFooter<T>({
                             className={[
                                 'h-8 min-w-8 rounded-lg px-2.5 text-xs font-medium transition-colors',
                                 link.active
-                                    ? 'bg-[#B98B63] text-white shadow-sm'
+                                    ? 'bg-black text-white shadow-sm'
                                     : !link.url
                                       ? 'cursor-not-allowed text-zinc-300'
                                       : 'text-zinc-500 hover:bg-zinc-100',

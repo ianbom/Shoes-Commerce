@@ -254,7 +254,7 @@ function DashboardHeader({ filters }: { filters: DashboardFilters }) {
     return (
         <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="min-w-0">
-                <p className="mb-2 flex items-center gap-2 text-xs font-bold tracking-widest text-[#151515]/50 uppercase">
+                <p className="mb-2 flex items-center gap-2 text-xs font-bold tracking-widest text-black/50 uppercase">
                     <Shirt className="size-4" strokeWidth={1.7} />
                     Modest Fashion Admin
                 </p>
@@ -280,7 +280,7 @@ function DashboardHeader({ filters }: { filters: DashboardFilters }) {
                                 className={[
                                     'h-8 rounded-md px-2 text-xs font-semibold transition-colors sm:px-3',
                                     range === item.value
-                                        ? 'bg-[#151515] text-white'
+                                        ? 'bg-black text-white'
                                         : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900',
                                 ].join(' ')}
                             >
@@ -297,7 +297,7 @@ function DashboardHeader({ filters }: { filters: DashboardFilters }) {
                                 onChange={(event) =>
                                     setDateFrom(event.target.value)
                                 }
-                                className="h-9 w-full cursor-pointer rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-none outline-none focus:border-[#B98B63] focus:ring-2 focus:ring-[#B98B63]/20 sm:min-w-[150px]"
+                                className="h-9 w-full cursor-pointer rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-none outline-none focus:border-black focus:ring-2 focus:ring-black/[0.16] sm:min-w-[150px]"
                             />
                             <input
                                 type="date"
@@ -305,7 +305,7 @@ function DashboardHeader({ filters }: { filters: DashboardFilters }) {
                                 onChange={(event) =>
                                     setDateTo(event.target.value)
                                 }
-                                className="h-9 w-full cursor-pointer rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-none outline-none focus:border-[#B98B63] focus:ring-2 focus:ring-[#B98B63]/20 sm:min-w-[150px]"
+                                className="h-9 w-full cursor-pointer rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-none outline-none focus:border-black focus:ring-2 focus:ring-black/[0.16] sm:min-w-[150px]"
                             />
                             <Button
                                 type="submit"
@@ -323,7 +323,7 @@ function DashboardHeader({ filters }: { filters: DashboardFilters }) {
                 </form>
                 <Button
                     asChild
-                    className="h-9 w-full rounded-lg bg-[#B98B63] px-4 text-white shadow-none hover:bg-[#9A6B45] active:scale-[0.98] sm:w-auto"
+                    className="h-9 w-full rounded-lg bg-black px-4 text-white shadow-none hover:bg-black/[0.84] active:scale-[0.98] sm:w-auto"
                 >
                     <Link href="/admin/orders">
                         View Orders
@@ -479,7 +479,7 @@ function SalesTrendCard({ data }: { data: ChartPoint[] }) {
                         />
                         <Bar
                             dataKey="revenue"
-                            fill="#151515"
+                            fill="#000000"
                             radius={[12, 12, 4, 4]}
                         />
                     </BarChart>
@@ -508,7 +508,7 @@ function OrdersNeedAttention({ orders }: { orders: AttentionOrder[] }) {
                             <div>
                                 <Link
                                     href={`/admin/orders/${order.id}`}
-                                    className="text-sm font-semibold text-zinc-900 transition-colors hover:text-[#151515]"
+                                    className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black"
                                 >
                                     {order.order_number}
                                 </Link>
@@ -517,7 +517,7 @@ function OrdersNeedAttention({ orders }: { orders: AttentionOrder[] }) {
                                     {order.user_id ? (
                                         <Link
                                             href={`/admin/customers/${order.user_id}`}
-                                            className="transition-colors hover:text-[#151515]"
+                                            className="transition-colors hover:text-black"
                                         >
                                             {order.customer_name}
                                         </Link>
@@ -601,7 +601,7 @@ function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
                                     {order.id ? (
                                         <Link
                                             href={`/admin/orders/${order.id}`}
-                                            className="transition-colors hover:text-[#151515]"
+                                            className="transition-colors hover:text-black"
                                         >
                                             {order.order_number}
                                         </Link>
@@ -613,7 +613,7 @@ function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
                                     {order.user_id ? (
                                         <Link
                                             href={`/admin/customers/${order.user_id}`}
-                                            className="transition-colors hover:text-[#151515]"
+                                            className="transition-colors hover:text-black"
                                         >
                                             {order.customer_name}
                                         </Link>
@@ -694,7 +694,7 @@ function LowStockProductsCard({ products }: { products: LowStockVariant[] }) {
                                 {product.product_id ? (
                                     <Link
                                         href={`/admin/products/${product.product_id}`}
-                                        className="block truncate text-sm font-semibold text-zinc-900 transition-colors hover:text-[#151515]"
+                                        className="block truncate text-sm font-semibold text-zinc-900 transition-colors hover:text-black"
                                     >
                                         {product.product_name ??
                                             'Unnamed Product'}
@@ -718,7 +718,7 @@ function LowStockProductsCard({ products }: { products: LowStockVariant[] }) {
                                 {product.id ? (
                                     <Link
                                         href={`/admin/product-variants/${product.id}/stock-adjustment`}
-                                        className="text-sm font-semibold text-zinc-900 transition-colors hover:text-[#151515]"
+                                        className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black"
                                     >
                                         Stock: {product.available_stock}
                                     </Link>
@@ -757,7 +757,7 @@ function SectionHeader({
         <div>
             <div className="flex items-center gap-2">
                 {Icon && (
-                    <Icon className="size-4 text-[#151515]" strokeWidth={1.7} />
+                    <Icon className="size-4 text-black" strokeWidth={1.7} />
                 )}
                 <h2 className="text-lg font-semibold tracking-tight text-zinc-900">
                     {title}
@@ -771,11 +771,11 @@ function SectionHeader({
 function StatusBadge({ label }: { label: string }) {
     const tone = badgeTone(label);
     const toneClasses: Record<BadgeTone, string> = {
-        danger: 'border-red-100 bg-red-50 text-red-600',
-        info: 'border-blue-200 bg-blue-50 text-blue-700',
+        danger: 'border-black/[0.16] bg-black/[0.04] text-black',
+        info: 'border-black/[0.32] bg-black/[0.04] text-black',
         neutral: 'border-zinc-200 bg-zinc-50 text-zinc-500',
-        success: 'border-emerald-100 bg-emerald-50 text-emerald-700',
-        warning: 'border-amber-200 bg-amber-50 text-amber-700',
+        success: 'border-black/[0.16] bg-black/[0.04] text-black',
+        warning: 'border-black/[0.32] bg-black/[0.04] text-black',
     };
 
     return (

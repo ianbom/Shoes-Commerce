@@ -28,8 +28,8 @@ export function ReadBadge({ read }: { read: boolean }) {
             variant="outline"
             className={
                 read
-                    ? 'border-zinc-200 bg-zinc-50 text-zinc-600'
-                    : 'border-blue-200 bg-blue-50 text-blue-700'
+                    ? 'border-black/[0.16] bg-white text-black/[0.56]'
+                    : 'border-black bg-black text-white'
             }
         >
             {read ? 'Read' : 'Unread'}
@@ -47,7 +47,7 @@ export function MetricCard({
     detail?: string;
 }) {
     return (
-        <div className="rounded-xl border bg-card p-4 shadow-xs">
+        <div className="rounded-lg border border-black/15 bg-card p-4 shadow-none dark:border-white/20">
             <p className="text-sm text-muted-foreground">{label}</p>
             <div className="mt-2 text-2xl font-semibold tracking-tight">
                 {value}

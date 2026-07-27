@@ -307,3 +307,254 @@
         background-clip: content-box;
     }
 }
+
+@layer components {
+    .admin-ui {
+        --admin-ink: #000000;
+        --admin-body: rgba(0, 0, 0, 0.78);
+        --admin-muted: rgba(0, 0, 0, 0.56);
+        --admin-muted-soft: rgba(0, 0, 0, 0.4);
+        --admin-border: rgba(0, 0, 0, 0.16);
+        --admin-border-strong: rgba(0, 0, 0, 0.32);
+        --admin-surface-soft: rgba(0, 0, 0, 0.04);
+        --admin-surface-strong: rgba(0, 0, 0, 0.08);
+        @apply min-h-screen bg-white text-black;
+    }
+
+    .admin-ui > header {
+        border-color: var(--admin-border);
+        background: #ffffff;
+    }
+
+    .admin-ui [data-slot='card'] {
+        border-color: var(--admin-border);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: none;
+    }
+
+    .admin-ui [data-slot='button'][class*='bg-primary'],
+    .admin-ui [class*='bg-[#B98B63]'],
+    .admin-ui [class*='bg-[#9A6B45]'],
+    .admin-ui [class*='bg-[#FA5400]'] {
+        border-color: #000000 !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+    }
+
+    .admin-ui [data-slot='button'][class*='bg-primary']:hover,
+    .admin-ui [class*='hover:bg-[#9A6B45]']:hover,
+    .admin-ui [class*='hover:bg-[#B98B63]']:hover,
+    .admin-ui [class*='hover:bg-[#d94700]']:hover {
+        background-color: rgba(0, 0, 0, 0.84) !important;
+    }
+
+    .admin-ui [data-slot='button'][class*='border-input'],
+    .admin-ui [data-slot='button'][class*='bg-background'] {
+        border-color: #000000;
+        background: #ffffff;
+        color: #000000;
+        box-shadow: none;
+    }
+
+    .admin-ui [data-slot='button'][class*='border-input']:hover,
+    .admin-ui [data-slot='button'][class*='bg-background']:hover {
+        background: #000000;
+        color: #ffffff;
+    }
+
+    .admin-ui [data-slot='button'],
+    .admin-ui input:not([type='checkbox']):not([type='radio']),
+    .admin-ui select,
+    .admin-ui textarea {
+        border-radius: 4px;
+    }
+
+    .admin-ui input:not([type='checkbox']):not([type='radio']),
+    .admin-ui select,
+    .admin-ui textarea,
+    .admin-ui [data-slot='select-trigger'] {
+        border-color: var(--admin-border) !important;
+        background-color: #ffffff !important;
+        color: #000000;
+        box-shadow: none !important;
+    }
+
+    .admin-ui input:not([type='checkbox']):not([type='radio']),
+    .admin-ui select,
+    .admin-ui [data-slot='select-trigger'] {
+        min-height: 44px;
+    }
+
+    .admin-ui .admin-form-select {
+        border-color: #000000 !important;
+    }
+
+    .admin-ui input:focus,
+    .admin-ui select:focus,
+    .admin-ui textarea:focus,
+    .admin-ui [data-slot='select-trigger']:focus-visible {
+        border-color: #000000 !important;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    .admin-ui [class*='rounded-2xl'],
+    .admin-ui [class*='rounded-3xl'] {
+        border-radius: 12px !important;
+    }
+
+    .admin-ui [class*='shadow-lg'],
+    .admin-ui [class*='shadow-xl'],
+    .admin-ui [class*='shadow-2xl'],
+    .admin-ui [class*='shadow-['] {
+        box-shadow: none !important;
+    }
+
+    .admin-ui [class*='bg-gradient'] {
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #000000;
+    }
+
+    .admin-ui [class*='bg-gradient'] [class*='text-white'],
+    .admin-ui [class*='bg-gradient'] [class*='text-stone-'] {
+        color: #000000 !important;
+    }
+
+    .admin-ui [class*='bg-emerald-'],
+    .admin-ui [class*='bg-amber-'],
+    .admin-ui [class*='bg-blue-'],
+    .admin-ui [class*='bg-red-'],
+    .admin-ui [class*='bg-orange-'],
+    .admin-ui [class*='bg-purple-'],
+    .admin-ui [class*='bg-rose-'],
+    .admin-ui [class*='bg-yellow-'],
+    .admin-ui [class*='bg-sky-'],
+    .admin-ui [class*='bg-cyan-'],
+    .admin-ui [class*='bg-teal-'],
+    .admin-ui [class*='bg-indigo-'],
+    .admin-ui [class*='bg-violet-'],
+    .admin-ui [class*='bg-lime-'] {
+        background-color: var(--admin-surface-strong) !important;
+    }
+
+    .admin-ui [class*='border-emerald-'],
+    .admin-ui [class*='border-amber-'],
+    .admin-ui [class*='border-blue-'],
+    .admin-ui [class*='border-red-'],
+    .admin-ui [class*='border-orange-'],
+    .admin-ui [class*='border-purple-'],
+    .admin-ui [class*='border-rose-'],
+    .admin-ui [class*='border-yellow-'],
+    .admin-ui [class*='border-sky-'],
+    .admin-ui [class*='border-cyan-'],
+    .admin-ui [class*='border-teal-'],
+    .admin-ui [class*='border-indigo-'],
+    .admin-ui [class*='border-violet-'],
+    .admin-ui [class*='border-lime-'] {
+        border-color: #000000 !important;
+    }
+
+    .admin-ui [class*='text-emerald-'],
+    .admin-ui [class*='text-amber-'],
+    .admin-ui [class*='text-blue-'],
+    .admin-ui [class*='text-red-'],
+    .admin-ui [class*='text-orange-'],
+    .admin-ui [class*='text-purple-'],
+    .admin-ui [class*='text-rose-'],
+    .admin-ui [class*='text-yellow-'],
+    .admin-ui [class*='text-sky-'],
+    .admin-ui [class*='text-cyan-'],
+    .admin-ui [class*='text-teal-'],
+    .admin-ui [class*='text-indigo-'],
+    .admin-ui [class*='text-violet-'],
+    .admin-ui [class*='text-lime-'],
+    .admin-ui [class*='text-[#3E3222]'],
+    .admin-ui [class*='text-[#151515]'] {
+        color: #000000 !important;
+    }
+
+    .admin-ui [class*='ring-emerald-'],
+    .admin-ui [class*='ring-amber-'],
+    .admin-ui [class*='ring-blue-'],
+    .admin-ui [class*='ring-red-'],
+    .admin-ui [class*='ring-orange-'],
+    .admin-ui [class*='ring-purple-'],
+    .admin-ui [class*='ring-rose-'] {
+        --tw-ring-color: var(--admin-border-strong) !important;
+    }
+
+    .admin-ui [class*='fill-emerald-'],
+    .admin-ui [class*='fill-amber-'],
+    .admin-ui [class*='fill-blue-'],
+    .admin-ui [class*='fill-red-'],
+    .admin-ui [class*='fill-orange-'],
+    .admin-ui [class*='fill-purple-'] {
+        fill: #000000 !important;
+    }
+
+    .admin-ui [class*='stroke-emerald-'],
+    .admin-ui [class*='stroke-amber-'],
+    .admin-ui [class*='stroke-blue-'],
+    .admin-ui [class*='stroke-red-'],
+    .admin-ui [class*='stroke-orange-'],
+    .admin-ui [class*='stroke-purple-'] {
+        stroke: #000000 !important;
+    }
+
+    .admin-ui [style*='#B98B63'],
+    .admin-ui [style*='#9A6B45'],
+    .admin-ui [style*='#FA5400'],
+    .admin-ui [style*='#3E3222'] {
+        color: #000000 !important;
+        border-color: #000000 !important;
+        background-color: #000000 !important;
+    }
+
+    .admin-ui table thead {
+        background: var(--admin-surface-soft);
+        color: var(--admin-muted);
+    }
+
+    .admin-ui table tr {
+        border-color: var(--admin-border);
+    }
+
+    .dark .admin-ui {
+        --admin-ink: #ffffff;
+        --admin-body: rgba(255, 255, 255, 0.78);
+        --admin-muted: rgba(255, 255, 255, 0.64);
+        --admin-muted-soft: rgba(255, 255, 255, 0.48);
+        --admin-border: rgba(255, 255, 255, 0.2);
+        --admin-border-strong: rgba(255, 255, 255, 0.4);
+        --admin-surface-soft: rgba(255, 255, 255, 0.08);
+        --admin-surface-strong: rgba(255, 255, 255, 0.14);
+        background: #111111;
+        color: #ffffff;
+    }
+
+    .dark .admin-ui > header,
+    .dark .admin-ui [data-slot='card'],
+    .dark .admin-ui input:not([type='checkbox']):not([type='radio']),
+    .dark .admin-ui select,
+    .dark .admin-ui textarea,
+    .dark .admin-ui [data-slot='select-trigger'] {
+        border-color: var(--admin-border) !important;
+        background: #111111 !important;
+        color: #ffffff;
+    }
+
+    .dark .admin-ui [data-slot='button'][class*='border-input'],
+    .dark .admin-ui [data-slot='button'][class*='bg-background'] {
+        border-color: #ffffff;
+        background: #111111;
+        color: #ffffff;
+    }
+
+    .dark .admin-ui [data-slot='button'][class*='border-input']:hover,
+    .dark .admin-ui [data-slot='button'][class*='bg-background']:hover {
+        background: #ffffff;
+        color: #000000;
+    }
+}

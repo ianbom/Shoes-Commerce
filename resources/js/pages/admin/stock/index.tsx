@@ -70,9 +70,9 @@ const statusConfig: Record<
 > = {
     active: {
         label: 'Active',
-        dot: 'bg-emerald-400',
-        text: 'text-emerald-700',
-        bg: 'bg-emerald-50 border-emerald-100',
+        dot: 'bg-black/[0.48]',
+        text: 'text-black',
+        bg: 'bg-black/[0.04] border-black/[0.16]',
     },
     inactive: {
         label: 'Inactive',
@@ -112,7 +112,7 @@ export default function StockIndex({
             icon: Package,
             iconBg: 'bg-white/20',
             iconColor: 'text-white',
-            cardBg: 'bg-gradient-to-br from-[#151515] to-[#9A6B45]',
+            cardBg: 'bg-black',
             subColor: 'text-white/60',
             valColor: 'text-white',
             titleColor: 'text-white/80',
@@ -124,13 +124,13 @@ export default function StockIndex({
             val: totals.in_stock,
             sub: 'healthy levels',
             icon: CheckCircle2,
-            iconBg: 'bg-emerald-100',
-            iconColor: 'text-emerald-600',
+            iconBg: 'bg-black/[0.08]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-emerald-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-emerald-400 to-emerald-600',
+            accent: '',
             featured: false,
         },
         {
@@ -138,13 +138,13 @@ export default function StockIndex({
             val: totals.low_stock,
             sub: 'need restocking',
             icon: TrendingDown,
-            iconBg: 'bg-amber-50',
-            iconColor: 'text-amber-600',
+            iconBg: 'bg-black/[0.04]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-amber-600',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-amber-400 to-orange-400',
+            accent: '',
             featured: false,
         },
         {
@@ -152,13 +152,13 @@ export default function StockIndex({
             val: totals.sold_out,
             sub: 'unavailable',
             icon: Ban,
-            iconBg: 'bg-red-50',
-            iconColor: 'text-red-500',
+            iconBg: 'bg-black/[0.04]',
+            iconColor: 'text-black',
             cardBg: 'bg-white',
             subColor: 'text-zinc-400',
-            valColor: 'text-red-500',
+            valColor: 'text-black',
             titleColor: 'text-zinc-700',
-            accent: 'from-red-400 to-rose-500',
+            accent: '',
             featured: false,
         },
     ];
@@ -170,7 +170,7 @@ export default function StockIndex({
                 {/* Header */}
                 <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
                     <div>
-                        <p className="mb-1 text-[11px] font-bold tracking-widest text-[#151515]/50 uppercase">
+                        <p className="mb-1 text-[11px] font-bold tracking-widest text-black/50 uppercase">
                             Catalog Management
                         </p>
                         <h1 className="font-serif text-3xl leading-tight text-zinc-900">
@@ -202,7 +202,7 @@ export default function StockIndex({
                             className={[
                                 'relative overflow-hidden rounded-2xl border transition-all duration-200 hover:-translate-y-0.5',
                                 m.featured
-                                    ? 'border-transparent shadow-lg shadow-[#151515]/20'
+                                    ? 'border-transparent shadow-lg shadow-black/20'
                                     : 'border-zinc-100 shadow-sm hover:shadow-md',
                                 m.cardBg,
                             ].join(' ')}
@@ -302,7 +302,7 @@ export default function StockIndex({
                             <Button
                                 type="submit"
                                 size="sm"
-                                className="h-9 gap-1.5 bg-[#B98B63] text-white hover:bg-[#9A6B45]"
+                                className="h-9 gap-1.5 bg-black text-white hover:bg-black/[0.84]"
                             >
                                 <Search className="h-3.5 w-3.5" /> Search
                             </Button>
@@ -398,7 +398,7 @@ export default function StockIndex({
                                                             ? `/admin/products/${v.product_id}`
                                                             : '#'
                                                     }
-                                                    className="flex flex-col rounded-md transition-colors hover:text-[#151515] focus-visible:ring-2 focus-visible:ring-[#151515]/30 focus-visible:outline-none"
+                                                    className="flex flex-col rounded-md transition-colors hover:text-black focus-visible:ring-2 focus-visible:ring-black/[0.16] focus-visible:outline-none"
                                                     aria-disabled={
                                                         !v.product_id
                                                     }
@@ -433,21 +433,21 @@ export default function StockIndex({
                                                         className={
                                                             'text-sm font-semibold ' +
                                                             (isOutOfStock
-                                                                ? 'text-red-500'
+                                                                ? 'text-black'
                                                                 : isLowStock
-                                                                  ? 'text-amber-600'
+                                                                  ? 'text-black'
                                                                   : 'text-zinc-800')
                                                         }
                                                     >
                                                         {v.available_stock}
                                                     </span>
                                                     {isOutOfStock && (
-                                                        <span className="text-[10px] font-medium text-red-400">
+                                                        <span className="text-[10px] font-medium text-black">
                                                             Sold Out
                                                         </span>
                                                     )}
                                                     {isLowStock && (
-                                                        <span className="text-[10px] font-medium text-amber-500">
+                                                        <span className="text-[10px] font-medium text-black">
                                                             Low
                                                         </span>
                                                     )}
@@ -478,7 +478,7 @@ export default function StockIndex({
                                                     asChild
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-8 w-8 rounded-lg text-zinc-400 hover:bg-[#fdfaf8] hover:text-[#151515]"
+                                                    className="h-8 w-8 rounded-lg text-zinc-400 hover:bg-[#fdfaf8] hover:text-black"
                                                 >
                                                     <Link
                                                         href={
@@ -542,7 +542,7 @@ export default function StockIndex({
                                         className={[
                                             'h-8 min-w-8 rounded-lg px-2.5 text-xs font-medium transition-colors',
                                             link.active
-                                                ? 'bg-[#B98B63] text-white shadow-sm'
+                                                ? 'bg-black text-white shadow-sm'
                                                 : !link.url
                                                   ? 'cursor-not-allowed text-zinc-300'
                                                   : 'text-zinc-500 hover:bg-zinc-100',

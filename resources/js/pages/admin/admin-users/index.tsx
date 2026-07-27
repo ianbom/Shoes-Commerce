@@ -170,7 +170,7 @@ export default function AdminUsersIndex({ admins, filters }: Props) {
                                                     variant="outline"
                                                     className={
                                                         admin.is_active
-                                                            ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300'
+                                                            ? 'border-black/[0.32] bg-black/[0.04] text-black dark:border-white/[0.32] dark:bg-black/[0.08] dark:text-black'
                                                             : 'border-zinc-200 bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300'
                                                     }
                                                 >

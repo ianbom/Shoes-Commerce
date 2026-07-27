@@ -42,9 +42,9 @@ export default function ResourceForm({ definition, mode, record }: Props) {
 
             <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
                 {/* ── Hero header ── */}
-                <div className="anim-fadeinup relative overflow-hidden rounded-2xl border border-white/60 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-700 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.18)] lg:p-8">
+                <div className="anim-fadeinup relative overflow-hidden rounded-2xl border border-white/60 bg-black p-6 shadow-[0_20px_60px_rgba(0,0,0,0.18)] lg:p-8">
                     <div className="pointer-events-none absolute -top-10 -right-10 h-44 w-44 rounded-full bg-white/5 blur-3xl" />
-                    <div className="pointer-events-none absolute right-1/3 -bottom-6 h-28 w-28 rounded-full bg-amber-300/10 blur-2xl" />
+                    <div className="pointer-events-none absolute right-1/3 -bottom-6 h-28 w-28 rounded-full bg-black/[0.08] blur-2xl" />
 
                     <div className="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
                         <div>

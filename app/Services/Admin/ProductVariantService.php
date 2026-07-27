@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class ProductVariantService
 {
-    use StoresUploadedFiles;
     use ResolvesAdminPagination;
+    use StoresUploadedFiles;
 
     public function __construct(private readonly StockLogService $stockLogs) {}
 
@@ -135,8 +135,9 @@ class ProductVariantService
         unset($validated['image']);
 
         if ($request->hasFile('image')) {
+            $storedImageUrl = $this->storePublicFile($request->file('image'), 'images/variants');
             $this->deletePublicFile($variant?->image_url);
-            $validated['image_url'] = $this->storePublicFile($request->file('image'), 'images/variants');
+            $validated['image_url'] = $storedImageUrl;
         }
 
         return $validated;

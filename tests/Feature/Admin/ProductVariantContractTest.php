@@ -3,6 +3,8 @@
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function () {
@@ -12,7 +14,9 @@ beforeEach(function () {
     ]);
 });
 
-it('creates a standalone variant with db sql pricing dimensions and image url fields', function () {
+it('creates a standalone variant with an automatically stored image', function () {
+    Storage::fake('public');
+
     $product = adminProduct('runner-one');
 
     $this->actingAs($this->admin)
@@ -30,7 +34,8 @@ it('creates a standalone variant with db sql pricing dimensions and image url fi
             'length' => 34,
             'width' => 24,
             'height' => 13,
-            'image_url' => '/storage/products/runner-one/black.webp',
+            'image_url' => '/storage/ignored-by-request.jpg',
+            'image' => UploadedFile::fake()->image('runner-black.jpg', 800, 1067),
             'is_active' => true,
         ])
         ->assertRedirect();
@@ -44,7 +49,8 @@ it('creates a standalone variant with db sql pricing dimensions and image url fi
         ->and($variant->length)->toBe(34)
         ->and($variant->width)->toBe(24)
         ->and($variant->height)->toBe(13)
-        ->and($variant->image_url)->toBe('/storage/products/runner-one/black.webp');
+        ->and($variant->image_url)->toStartWith('/storage/images/variants/');
+    Storage::disk('public')->assertExists(str($variant->image_url)->after('/storage/')->toString());
 });
 
 it('rejects invalid standalone variant prices and reserved stock', function () {

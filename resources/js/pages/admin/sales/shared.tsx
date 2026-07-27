@@ -57,13 +57,13 @@ export function StatusBadge({
             variant="outline"
             className={cn(
                 resolvedTone === 'good' &&
-                    'border-emerald-200 bg-emerald-50 text-emerald-700',
+                    'border-black bg-black text-white',
                 resolvedTone === 'warn' &&
-                    'border-amber-200 bg-amber-50 text-amber-700',
+                    'border-black/[0.32] bg-black/[0.08] text-black',
                 resolvedTone === 'bad' &&
-                    'border-red-200 bg-red-50 text-red-700',
+                    'border-black border-dashed bg-white text-black',
                 resolvedTone === 'info' &&
-                    'border-blue-200 bg-blue-50 text-blue-700',
+                    'border-black/[0.16] bg-white text-black/[0.56]',
             )}
         >
             {value}
