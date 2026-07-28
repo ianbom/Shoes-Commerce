@@ -1,6 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ImageIcon, Plus, Save, Trash2 } from 'lucide-react';
+import { ImageIcon, Plus, Save, Trash2, WandSparkles } from 'lucide-react';
 import type { ChangeEvent, FormEvent, ReactNode } from 'react';
+import { useState } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -95,12 +96,15 @@ const inputClass =
     'h-11 border-black bg-white focus-visible:border-black focus-visible:ring-black';
 const selectClass =
     'admin-form-select h-11 rounded-md border border-black bg-white px-3 text-sm focus:border-black focus:ring-2 focus:ring-black/20 focus:outline-none';
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024;
 const slugify = (value: string) =>
     value
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
+const hasNumber = (value: string | number) =>
+    value !== '' && Number.isFinite(Number(value));
 const blankImage = (sortOrder: number): ImageRow => ({
     image: null,
     preview: null,
@@ -167,6 +171,9 @@ function Field({
 
 export default function ProductForm({ mode, product, options }: Props) {
     const isEdit = mode === 'edit' && product !== null;
+    const [clientErrors, setClientErrors] = useState<Record<string, string>>(
+        {},
+    );
     const { data, setData, post, processing, errors } = useForm<FormData>({
         _method: isEdit ? 'PUT' : 'POST',
         category_id: product?.category_id ?? '',
@@ -221,6 +228,18 @@ export default function ProductForm({ mode, product, options }: Props) {
 
     const nestedError = (key: string) =>
         (errors as Record<string, string | undefined>)[key];
+    const fieldError = (key: string) => clientErrors[key] ?? nestedError(key);
+    const setClientError = (key: string, message?: string) =>
+        setClientErrors((current) => {
+            if (!message) {
+                const remaining = { ...current };
+                delete remaining[key];
+
+                return remaining;
+            }
+
+            return { ...current, [key]: message };
+        });
     const imageCount = data.images.length;
     const activeVariants = data.variants.filter(
         (variant) => variant.is_active,
@@ -240,11 +259,74 @@ export default function ProductForm({ mode, product, options }: Props) {
                 variantIndex === index ? { ...variant, ...patch } : variant,
             ),
         );
+    const updateBasePrice = (
+        field: 'regular_price' | 'sale_price',
+        value: string,
+    ) => {
+        const nextRegular =
+            field === 'regular_price' ? value : data.regular_price;
+        const nextSale = field === 'sale_price' ? value : data.sale_price;
+
+        if (
+            hasNumber(nextRegular) &&
+            hasNumber(nextSale) &&
+            Number(nextSale) > Number(nextRegular)
+        ) {
+            setClientError(
+                field,
+                'Sale price tidak boleh lebih besar dari regular price.',
+            );
+
+            return;
+        }
+
+        setClientError('regular_price');
+        setClientError('sale_price');
+        setData(field, value);
+    };
+    const updateVariantPrice = (
+        index: number,
+        field: 'regular_price' | 'sale_price',
+        value: string,
+    ) => {
+        const variant = data.variants[index];
+        const nextRegular =
+            field === 'regular_price' ? value : variant.regular_price;
+        const nextSale = field === 'sale_price' ? value : variant.sale_price;
+        const errorKey = 'variants.' + index + '.' + field;
+
+        if (
+            hasNumber(nextRegular) &&
+            hasNumber(nextSale) &&
+            Number(nextSale) > Number(nextRegular)
+        ) {
+            setClientError(
+                errorKey,
+                'Sale price tidak boleh lebih besar dari regular price.',
+            );
+
+            return;
+        }
+
+        setClientError('variants.' + index + '.regular_price');
+        setClientError('variants.' + index + '.sale_price');
+        updateVariant(index, { [field]: value });
+    };
     const selectImage = (
         index: number,
         event: ChangeEvent<HTMLInputElement>,
     ) => {
         const image = event.target.files?.[0] ?? null;
+        const errorKey = 'images.' + index + '.image';
+
+        if (image && image.size > MAX_IMAGE_SIZE) {
+            setClientError(errorKey, 'Ukuran gambar maksimal 4 MB.');
+            event.target.value = '';
+
+            return;
+        }
+
+        setClientError(errorKey);
         updateImage(index, {
             image,
             preview: image
@@ -257,6 +339,16 @@ export default function ProductForm({ mode, product, options }: Props) {
         event: ChangeEvent<HTMLInputElement>,
     ) => {
         const image = event.target.files?.[0] ?? null;
+        const errorKey = 'variants.' + index + '.image';
+
+        if (image && image.size > MAX_IMAGE_SIZE) {
+            setClientError(errorKey, 'Ukuran gambar maksimal 4 MB.');
+            event.target.value = '';
+
+            return;
+        }
+
+        setClientError(errorKey);
         updateVariant(index, {
             image,
             preview: image
@@ -274,6 +366,11 @@ export default function ProductForm({ mode, product, options }: Props) {
         );
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (Object.keys(clientErrors).length > 0) {
+            return;
+        }
+
         post(isEdit ? `/admin/products/${product.id}` : '/admin/products', {
             forceFormData: true,
         });
@@ -327,18 +424,33 @@ export default function ProductForm({ mode, product, options }: Props) {
                                     />
                                 </Field>
                                 <Field label="Slug" error={errors.slug}>
-                                    <Input
-                                        className={inputClass}
-                                        value={data.slug}
-                                        placeholder="urban-speed-black"
-                                        onChange={(event) =>
-                                            setData(
-                                                'slug',
-                                                slugify(event.target.value),
-                                            )
-                                        }
-                                        required
-                                    />
+                                    <div className="flex gap-2">
+                                        <Input
+                                            className={inputClass}
+                                            value={data.slug}
+                                            placeholder="urban-speed-black"
+                                            onChange={(event) =>
+                                                setData(
+                                                    'slug',
+                                                    slugify(event.target.value),
+                                                )
+                                            }
+                                            required
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() =>
+                                                setData(
+                                                    'slug',
+                                                    slugify(data.name),
+                                                )
+                                            }
+                                            aria-label="Generate slug from product name"
+                                        >
+                                            <WandSparkles /> Generate
+                                        </Button>
+                                    </div>
                                 </Field>
                                 <Field label="Parent SKU" error={errors.sku}>
                                     <Input
@@ -451,7 +563,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                             <div className="grid gap-5 md:grid-cols-2">
                                 <Field
                                     label="Regular price"
-                                    error={errors.regular_price}
+                                    error={fieldError('regular_price')}
                                 >
                                     <Input
                                         className={inputClass}
@@ -460,7 +572,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                                         value={data.regular_price}
                                         placeholder="0"
                                         onChange={(event) =>
-                                            setData(
+                                            updateBasePrice(
                                                 'regular_price',
                                                 event.target.value,
                                             )
@@ -470,7 +582,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                                 </Field>
                                 <Field
                                     label="Sale price"
-                                    error={errors.sale_price}
+                                    error={fieldError('sale_price')}
                                 >
                                     <Input
                                         className={inputClass}
@@ -479,7 +591,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                                         value={data.sale_price}
                                         placeholder="Optional"
                                         onChange={(event) =>
-                                            setData(
+                                            updateBasePrice(
                                                 'sale_price',
                                                 event.target.value,
                                             )
@@ -598,8 +710,8 @@ export default function ProductForm({ mode, product, options }: Props) {
                                         </div>
                                         <div className="grid gap-4 sm:grid-cols-2">
                                             <Field
-                                                label="Image file"
-                                                error={nestedError(
+                                                label="Image file (Max 4 MB)"
+                                                error={fieldError(
                                                     `images.${index}.image`,
                                                 )}
                                                 className="sm:col-span-2"
@@ -658,7 +770,8 @@ export default function ProductForm({ mode, product, options }: Props) {
                                             size="icon"
                                             variant="ghost"
                                             aria-label="Remove product image"
-                                            onClick={() =>
+                                            onClick={() => {
+                                                setClientErrors({});
                                                 setData(
                                                     'images',
                                                     data.images.filter(
@@ -666,8 +779,8 @@ export default function ProductForm({ mode, product, options }: Props) {
                                                             imageIndex !==
                                                             index,
                                                     ),
-                                                )
-                                            }
+                                                );
+                                            }}
                                         >
                                             <Trash2 className="size-4" />
                                         </Button>
@@ -698,18 +811,20 @@ export default function ProductForm({ mode, product, options }: Props) {
                                         key={variant.id ?? index}
                                         variant={variant}
                                         index={index}
-                                        error={nestedError}
+                                        error={fieldError}
                                         update={updateVariant}
+                                        updatePrice={updateVariantPrice}
                                         selectImage={selectVariantImage}
-                                        remove={() =>
+                                        remove={() => {
+                                            setClientErrors({});
                                             setData(
                                                 'variants',
                                                 data.variants.filter(
                                                     (_, variantIndex) =>
                                                         variantIndex !== index,
                                                 ),
-                                            )
-                                        }
+                                            );
+                                        }}
                                     />
                                 ))}
                                 <Button
@@ -854,6 +969,7 @@ function VariantEditor({
     index,
     error,
     update,
+    updatePrice,
     remove,
     selectImage,
 }: {
@@ -861,6 +977,11 @@ function VariantEditor({
     index: number;
     error: (key: string) => string | undefined;
     update: (index: number, patch: Partial<VariantRow>) => void;
+    updatePrice: (
+        index: number,
+        field: 'regular_price' | 'sale_price',
+        value: string,
+    ) => void;
     remove: () => void;
     selectImage: (index: number, event: ChangeEvent<HTMLInputElement>) => void;
 }) {
@@ -967,9 +1088,11 @@ function VariantEditor({
                         value={variant.regular_price}
                         placeholder="Use product price"
                         onChange={(event) =>
-                            update(index, {
-                                regular_price: event.target.value,
-                            })
+                            updatePrice(
+                                index,
+                                'regular_price',
+                                event.target.value,
+                            )
                         }
                     />
                 </Field>
@@ -984,7 +1107,7 @@ function VariantEditor({
                         value={variant.sale_price}
                         placeholder="Optional"
                         onChange={(event) =>
-                            update(index, { sale_price: event.target.value })
+                            updatePrice(index, 'sale_price', event.target.value)
                         }
                     />
                 </Field>
@@ -1041,7 +1164,7 @@ function VariantEditor({
                     ),
                 )}
                 <Field
-                    label="Variant image"
+                    label="Variant image (Max 4 MB)"
                     error={error(`variants.${index}.image`)}
                     className="xl:col-span-2"
                 >

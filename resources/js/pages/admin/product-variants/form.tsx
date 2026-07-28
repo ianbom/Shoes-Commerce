@@ -45,6 +45,9 @@ type Props = {
 };
 const inputClass =
     'h-11 border-black bg-white focus-visible:border-black focus-visible:ring-black';
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024;
+const hasNumber = (value: string | number) =>
+    value !== '' && Number.isFinite(Number(value));
 const selectClass =
     'admin-form-select h-11 rounded-md border border-black bg-white px-3 text-sm focus:border-black focus:ring-2 focus:ring-black/20 focus:outline-none disabled:bg-black/[0.04]';
 
@@ -73,6 +76,9 @@ export default function ProductVariantForm({
     selectedProductId,
 }: Props) {
     const isEdit = mode === 'edit' && variant !== null;
+    const [clientErrors, setClientErrors] = useState<Record<string, string>>(
+        {},
+    );
     const [preview, setPreview] = useState<string | null>(
         variant?.image_url ?? null,
     );
@@ -99,8 +105,56 @@ export default function ProductVariantForm({
         Number(data.stock) - Number(data.reserved_stock),
     );
     const label = `${data.color_name || 'Color'} / ${data.size || 'Size'}`;
+    const fieldError = (key: string) =>
+        clientErrors[key] ??
+        (errors as Record<string, string | undefined>)[key];
+    const setClientError = (key: string, message?: string) =>
+        setClientErrors((current) => {
+            if (!message) {
+                const remaining = { ...current };
+                delete remaining[key];
+
+                return remaining;
+            }
+
+            return { ...current, [key]: message };
+        });
+    const updatePrice = (
+        field: 'regular_price' | 'sale_price',
+        value: string,
+    ) => {
+        const nextRegular =
+            field === 'regular_price' ? value : data.regular_price;
+        const nextSale = field === 'sale_price' ? value : data.sale_price;
+
+        if (
+            hasNumber(nextRegular) &&
+            hasNumber(nextSale) &&
+            Number(nextSale) > Number(nextRegular)
+        ) {
+            setClientError(
+                field,
+                'Sale price tidak boleh lebih besar dari regular price.',
+            );
+
+            return;
+        }
+
+        setClientError('regular_price');
+        setClientError('sale_price');
+        setData(field, value);
+    };
     const selectImage = (event: ChangeEvent<HTMLInputElement>) => {
         const image = event.target.files?.[0] ?? null;
+
+        if (image && image.size > MAX_IMAGE_SIZE) {
+            setClientError('image', 'Ukuran gambar maksimal 4 MB.');
+            event.target.value = '';
+
+            return;
+        }
+
+        setClientError('image');
         setData('image', image);
         setPreview(
             image ? URL.createObjectURL(image) : (variant?.image_url ?? null),
@@ -108,6 +162,11 @@ export default function ProductVariantForm({
     };
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (Object.keys(clientErrors).length > 0) {
+            return;
+        }
+
         post(
             isEdit
                 ? `/admin/product-variants/${variant.id}`
@@ -216,7 +275,7 @@ export default function ProductVariantForm({
                             <div className="hidden md:block" />
                             <Field
                                 label="Regular price override"
-                                error={errors.regular_price}
+                                error={fieldError('regular_price')}
                             >
                                 <Input
                                     className={inputClass}
@@ -224,7 +283,7 @@ export default function ProductVariantForm({
                                     min="0"
                                     value={data.regular_price}
                                     onChange={(event) =>
-                                        setData(
+                                        updatePrice(
                                             'regular_price',
                                             event.target.value,
                                         )
@@ -234,7 +293,7 @@ export default function ProductVariantForm({
                             </Field>
                             <Field
                                 label="Sale price override"
-                                error={errors.sale_price}
+                                error={fieldError('sale_price')}
                             >
                                 <Input
                                     className={inputClass}
@@ -242,7 +301,7 @@ export default function ProductVariantForm({
                                     min="0"
                                     value={data.sale_price}
                                     onChange={(event) =>
-                                        setData(
+                                        updatePrice(
                                             'sale_price',
                                             event.target.value,
                                         )
@@ -304,7 +363,10 @@ export default function ProductVariantForm({
                                     />
                                 </Field>
                             ))}
-                            <Field label="Upload image" error={errors.image}>
+                            <Field
+                                label="Upload image (Max 4 MB)"
+                                error={fieldError('image')}
+                            >
                                 <label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 text-sm text-zinc-600">
                                     <ImageIcon className="size-4" />
                                     Choose image
