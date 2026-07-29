@@ -14,19 +14,22 @@ use RuntimeException;
 
 class SepatuSeeder extends Seeder
 {
-    private const BASE_URL = 'https://www.flightkickz.club';
+    private const BASE_URL = 'https://dummyjson.com';
 
-    private const LIMIT = 24;
+    private const CATEGORIES = ['mens-shoes', 'womens-shoes'];
 
     private const USD_TO_IDR = 16000;
 
     public function run(): void
     {
-        $products = collect($this->productUrls())
-            ->take(self::LIMIT)
-            ->map(fn (string $url, int $index): array => $this->scrapeProduct($url, $index))
-            ->filter(fn (array $product): bool => count($product['images']) > 1)
+        $products = collect($this->catalog())
+            ->map(fn (array $product, int $index): ?array => $this->mapProduct($product, $index))
+            ->filter()
             ->values();
+
+        if ($products->isEmpty()) {
+            throw new RuntimeException('DummyJSON tidak menghasilkan produk sepatu yang valid.');
+        }
 
         DB::transaction(function () use ($products): void {
             $category = $this->category();
@@ -42,19 +45,19 @@ class SepatuSeeder extends Seeder
                         'sku' => $product['sku'],
                         'brand_name' => $product['brand_name'],
                         'regular_price' => $product['regular_price'],
-                        'sale_price' => null,
+                        'sale_price' => $product['sale_price'],
                         'short_description' => Str::limit($product['description'], 150),
                         'description' => $product['description'],
                         'stock_status' => $product['stock_status'],
                         'status' => 'published',
-                        'weight' => 1000,
-                        'length' => 35,
-                        'width' => 25,
-                        'height' => 15,
+                        'weight' => $product['weight'],
+                        'length' => $product['length'],
+                        'width' => $product['width'],
+                        'height' => $product['height'],
                         'is_featured' => $product['index'] % 5 === 0,
                         'is_new_arrival' => $product['index'] < 10,
                         'is_best_seller' => $product['index'] % 3 === 0,
-                        'meta_title' => $product['name'].' | Flightkickz',
+                        'meta_title' => $product['name'].' | '.$product['brand_name'],
                         'meta_description' => Str::limit($product['description'], 160),
                     ],
                 );
@@ -65,160 +68,93 @@ class SepatuSeeder extends Seeder
 
                 $record->collections()->sync($collectionIds);
                 $this->syncImages($record, $product['images']);
-                $this->syncVariants($record, $product);
+                $this->syncVariant($record, $product);
 
                 $seededSkus[] = $product['sku'];
             }
 
             Product::query()
-                ->where('sku', 'like', 'FKZ-%')
+                ->where('sku', 'like', 'SHOE-%')
                 ->whereNotIn('sku', $seededSkus)
                 ->delete();
         });
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, array<string, mixed>>
      */
-    private function productUrls(): array
+    private function catalog(): array
     {
-        $html = Http::retry([100, 300])
-            ->timeout(20)
-            ->connectTimeout(5)
-            ->withUserAgent('Mozilla/5.0 Seeder')
-            ->get(self::BASE_URL.'/')
-            ->throw()
-            ->body();
+        $products = [];
 
-        preg_match_all('/href=["\']([^"\']+-p\d+\.html)["\']/i', $html, $matches);
+        foreach (self::CATEGORIES as $category) {
+            $response = Http::acceptJson()
+                ->retry([100, 300], throw: false)
+                ->timeout(20)
+                ->connectTimeout(5)
+                ->get(self::BASE_URL."/products/category/{$category}", ['limit' => 0]);
 
-        return collect($matches[1] ?? [])
-            ->map(fn (string $url): string => $this->absoluteUrl(html_entity_decode($url)))
-            ->unique()
-            ->values()
-            ->all();
+            if (! $response->successful()) {
+                throw new RuntimeException("DummyJSON {$category} gagal diakses (HTTP {$response->status()}).");
+            }
+
+            $categoryProducts = $response->json('products');
+
+            if (! is_array($categoryProducts)) {
+                throw new RuntimeException("Response DummyJSON {$category} tidak valid.");
+            }
+
+            $products = [...$products, ...$categoryProducts];
+        }
+
+        return $products;
     }
 
     /**
-     * @return array<string, mixed>
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>|null
      */
-    private function scrapeProduct(string $url, int $index): array
+    private function mapProduct(array $data, int $index): ?array
     {
-        $html = Http::retry([100, 300])
-            ->timeout(20)
-            ->connectTimeout(5)
-            ->withUserAgent('Mozilla/5.0 Seeder')
-            ->get($url)
-            ->throw()
-            ->body();
+        $name = trim((string) ($data['title'] ?? ''));
+        $sourceId = (string) ($data['id'] ?? '');
+        $regularPrice = $this->rupiah($data['price'] ?? 0);
+        $images = collect($data['images'] ?? [])
+            ->filter(fn (mixed $image): bool => is_string($image) && filter_var($image, FILTER_VALIDATE_URL) !== false)
+            ->unique()
+            ->values()
+            ->all();
 
-        $data = $this->jsonLdProduct($html);
-        $name = trim((string) ($data['name'] ?? ''));
-        $sku = $this->sku((string) ($data['sku'] ?? $data['mpn'] ?? $this->productId($url)));
-        $images = $this->images($data['image'] ?? []);
-
-        if ($name === '' || $images === []) {
-            throw new RuntimeException("Data Flightkickz tidak lengkap: {$url}");
+        if ($name === '' || $sourceId === '' || $regularPrice <= 0 || $images === []) {
+            return null;
         }
+
+        $discountPercentage = max(0, min(100, (float) ($data['discountPercentage'] ?? 0)));
+        $salePrice = $discountPercentage > 0
+            ? (int) round($regularPrice * (1 - ($discountPercentage / 100)))
+            : null;
+        $stock = max(0, (int) ($data['stock'] ?? 0));
+        $brand = trim((string) ($data['brand'] ?? '')) ?: 'Generic';
 
         return [
             'index' => $index,
             'name' => $name,
-            'slug' => Str::slug($name).'-'.$this->productId($url),
-            'sku' => $sku,
-            'brand_name' => (string) data_get($data, 'brand.name', 'Flightkickz'),
-            'description' => trim((string) ($data['description'] ?? $name)),
-            'regular_price' => $this->rupiah((string) data_get($data, 'offers.price', '0')),
-            'stock_status' => Str::contains((string) data_get($data, 'offers.availability', ''), 'OutOfStock') ? 'out_of_stock' : 'in_stock',
-            'source_url' => $url,
-            'source_id' => $this->productId($url),
+            'slug' => Str::slug($name).'-'.$sourceId,
+            'sku' => $this->sku((string) ($data['sku'] ?? $sourceId)),
+            'brand_name' => $brand,
+            'description' => trim((string) ($data['description'] ?? '')) ?: $name,
+            'regular_price' => $regularPrice,
+            'sale_price' => $salePrice,
+            'stock' => $stock,
+            'stock_status' => $stock === 0 || Str::contains((string) ($data['availabilityStatus'] ?? ''), 'Out of Stock', true)
+                ? 'out_of_stock'
+                : 'in_stock',
+            'weight' => max(1, (int) round(((float) ($data['weight'] ?? 1)) * 1000)),
+            'length' => max(1, (int) round((float) data_get($data, 'dimensions.depth', 35))),
+            'width' => max(1, (int) round((float) data_get($data, 'dimensions.width', 25))),
+            'height' => max(1, (int) round((float) data_get($data, 'dimensions.height', 15))),
             'images' => $images,
-            'variants' => $this->variants($html),
         ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function jsonLdProduct(string $html): array
-    {
-        preg_match_all('/<script[^>]+type=["\']application\/ld\+json["\'][^>]*>(.*?)<\/script>/is', $html, $matches);
-
-        foreach ($matches[1] ?? [] as $script) {
-            $decoded = json_decode(html_entity_decode(trim($script)), true);
-            $product = $this->findProductSchema($decoded);
-
-            if ($product !== []) {
-                return $product;
-            }
-        }
-
-        throw new RuntimeException('JSON-LD Product tidak ditemukan.');
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function findProductSchema(mixed $value): array
-    {
-        if (! is_array($value)) {
-            return [];
-        }
-
-        $type = $value['@type'] ?? null;
-
-        if ($type === 'Product' || (is_array($type) && in_array('Product', $type, true))) {
-            return $value;
-        }
-
-        foreach ($value as $child) {
-            $product = $this->findProductSchema($child);
-
-            if ($product !== []) {
-                return $product;
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private function images(mixed $images): array
-    {
-        return collect(is_array($images) ? $images : [$images])
-            ->filter(fn (mixed $image): bool => is_string($image) && str_starts_with($image, 'http'))
-            ->unique()
-            ->values()
-            ->all();
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function variants(string $html): array
-    {
-        if (! preg_match('/var\s+skulist_str\s*=\s*\'(.*?)\';/s', $html, $match)) {
-            return [['code' => 'DEFAULT', 'name' => 'Default Title', 'size' => 'One Size', 'stock' => 24]];
-        }
-
-        $items = json_decode(stripslashes($match[1]), true);
-
-        if (! is_array($items) || $items === []) {
-            return [['code' => 'DEFAULT', 'name' => 'Default Title', 'size' => 'One Size', 'stock' => 24]];
-        }
-
-        return collect($items)
-            ->take(20)
-            ->map(fn (array $item): array => [
-                'code' => (string) ($item['sku_code'] ?? Str::slug((string) ($item['sku_value_short'] ?? 'default'))),
-                'name' => (string) ($item['sku_value'] ?? $item['sku_value_short'] ?? 'Default Title'),
-                'size' => (string) ($item['sku_value_short'] ?? 'One Size'),
-                'stock' => max(0, min(99, (int) ($item['stock_nums'] ?? 24))),
-            ])
-            ->values()
-            ->all();
     }
 
     /**
@@ -254,42 +190,36 @@ class SepatuSeeder extends Seeder
     /**
      * @param  array<string, mixed>  $productData
      */
-    private function syncVariants(Product $product, array $productData): void
+    private function syncVariant(Product $product, array $productData): void
     {
-        $keptSkus = [];
+        $sku = $productData['sku'].'-DEFAULT';
+        $record = ProductVariant::query()->withTrashed()->updateOrCreate(
+            ['sku' => $sku],
+            [
+                'product_id' => $product->id,
+                'color_name' => 'Default',
+                'color_hex' => null,
+                'size' => 'One Size',
+                'regular_price' => $productData['regular_price'],
+                'sale_price' => $productData['sale_price'],
+                'stock' => $productData['stock'],
+                'reserved_stock' => 0,
+                'weight' => $productData['weight'],
+                'length' => $productData['length'],
+                'width' => $productData['width'],
+                'height' => $productData['height'],
+                'image_url' => $productData['images'][0],
+                'is_active' => true,
+            ],
+        );
 
-        foreach ($productData['variants'] as $variant) {
-            $sku = Str::limit($productData['sku'].'-'.Str::upper(Str::slug($variant['code'])), 100, '');
-            $record = ProductVariant::query()->withTrashed()->updateOrCreate(
-                ['sku' => $sku],
-                [
-                    'product_id' => $product->id,
-                    'color_name' => $variant['name'],
-                    'color_hex' => null,
-                    'size' => $variant['size'],
-                    'regular_price' => $productData['regular_price'],
-                    'sale_price' => null,
-                    'stock' => $productData['stock_status'] === 'out_of_stock' ? 0 : $variant['stock'],
-                    'reserved_stock' => 0,
-                    'weight' => 1000,
-                    'length' => 35,
-                    'width' => 25,
-                    'height' => 15,
-                    'image_url' => $productData['images'][0],
-                    'is_active' => true,
-                ],
-            );
-
-            if ($record->trashed()) {
-                $record->restore();
-            }
-
-            $keptSkus[] = $sku;
+        if ($record->trashed()) {
+            $record->restore();
         }
 
         ProductVariant::query()
             ->where('product_id', $product->id)
-            ->whereNotIn('sku', $keptSkus)
+            ->where('sku', '!=', $sku)
             ->delete();
     }
 
@@ -299,7 +229,7 @@ class SepatuSeeder extends Seeder
             ['slug' => 'sneakers'],
             [
                 'name' => 'Sepatu Sneakers',
-                'description' => 'Koleksi sepatu sneakers dari Flightkickz.',
+                'description' => 'Koleksi sepatu pria dan wanita dari DummyJSON.',
                 'sort_order' => 10,
                 'is_active' => true,
             ],
@@ -324,29 +254,13 @@ class SepatuSeeder extends Seeder
             ->all();
     }
 
-    private function absoluteUrl(string $url): string
-    {
-        if (str_starts_with($url, 'http')) {
-            return $url;
-        }
-
-        return self::BASE_URL.'/'.ltrim($url, '/');
-    }
-
-    private function productId(string $url): string
-    {
-        preg_match('/-p(\d+)\.html/i', $url, $match);
-
-        return $match[1] ?? md5($url);
-    }
-
     private function sku(string $value): string
     {
-        return Str::limit('FKZ-'.Str::upper(Str::slug($value)), 100, '');
+        return Str::limit('SHOE-'.Str::upper(Str::slug($value)), 100, '');
     }
 
-    private function rupiah(string $usd): int
+    private function rupiah(mixed $usd): int
     {
-        return (int) round(((float) str_replace(['US$', '$', ','], '', $usd)) * self::USD_TO_IDR);
+        return (int) round(((float) $usd) * self::USD_TO_IDR);
     }
 }

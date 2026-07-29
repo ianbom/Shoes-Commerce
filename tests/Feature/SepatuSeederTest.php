@@ -9,12 +9,29 @@ use Illuminate\Support\Facades\Http;
 
 uses(RefreshDatabase::class);
 
-it('seeds flightkickz products with multiple images and variants', function () {
+it('seeds DummyJSON shoe products idempotently', function () {
     Http::preventStrayRequests();
 
     Http::fake([
-        'https://www.flightkickz.club/' => Http::response('<a href="/Air-Jordan-12-Stealth-sneakers-p29290158.html">Jordan</a>'),
-        'https://www.flightkickz.club/Air-Jordan-12-Stealth-sneakers-p29290158.html' => Http::response(flightkickzProductHtml()),
+        'https://dummyjson.com/products/category/mens-shoes?limit=0' => Http::response([
+            'products' => [dummyJsonShoe()],
+        ]),
+        'https://dummyjson.com/products/category/womens-shoes?limit=0' => Http::response([
+            'products' => [
+                dummyJsonShoe([
+                    'id' => 91,
+                    'title' => 'Classic Women Shoes',
+                    'sku' => 'WOMEN-001',
+                    'brand' => 'FashionCo',
+                ]),
+                dummyJsonShoe([
+                    'id' => 92,
+                    'title' => '',
+                    'sku' => 'INVALID',
+                    'images' => [],
+                ]),
+            ],
+        ]),
     ]);
 
     (new SepatuSeeder)->run();
@@ -22,70 +39,81 @@ it('seeds flightkickz products with multiple images and variants', function () {
 
     $product = Product::query()
         ->with(['category', 'images', 'variants'])
-        ->where('sku', 'FKZ-CT8013-015')
+        ->where('sku', 'SHOE-MEN-001')
         ->firstOrFail();
 
-    expect($product)
-        ->name->toBe('Air Jordan 12 Stealth sneakers')
-        ->brand_name->toBe('Air Jordan')
-        ->stock_status->toBe('in_stock')
-        ->category->slug->toBe('sneakers')
-        ->and((float) $product->regular_price)->toBe(2048000.00);
+    expect(Product::query()->where('sku', 'like', 'SHOE-%')->count())->toBe(2)
+        ->and($product->name)->toBe('Nike Air Jordan 1 Red And Black')
+        ->and($product->brand_name)->toBe('Nike')
+        ->and($product->stock_status)->toBe('in_stock')
+        ->and($product->category->slug)->toBe('sneakers')
+        ->and((float) $product->regular_price)->toBe(2048000.00)
+        ->and((float) $product->sale_price)->toBe(1843200.00)
+        ->and($product->weight)->toBe(900)
+        ->and($product->length)->toBe(35)
+        ->and($product->width)->toBe(24)
+        ->and($product->height)->toBe(14);
 
     expect($product->images)->toHaveCount(3)
         ->and($product->images->first()->is_primary)->toBeTrue()
         ->and(ProductImage::query()->where('product_id', $product->id)->count())->toBe(3);
 
-    expect(ProductVariant::query()->where('product_id', $product->id)->count())->toBe(2)
-        ->and($product->variants->pluck('size')->all())->toBe(['US7/UK6/EU40', 'US8/UK7/EU41']);
-
+    expect(ProductVariant::query()->where('product_id', $product->id)->count())->toBe(1)
+        ->and($product->variants->first()->size)->toBe('One Size')
+        ->and($product->variants->first()->stock)->toBe(7)
+        ->and((float) $product->variants->first()->sale_price)->toBe(1843200.00);
 });
 
-function flightkickzProductHtml(): string
+it('preserves seeded products when the remote catalog fails', function () {
+    Http::preventStrayRequests();
+
+    Http::fake([
+        'https://dummyjson.com/products/category/mens-shoes?limit=0' => Http::sequence()
+            ->push(['products' => [dummyJsonShoe()]])
+            ->push([], 403)
+            ->push([], 403)
+            ->push([], 403),
+        'https://dummyjson.com/products/category/womens-shoes?limit=0' => Http::response([
+            'products' => [],
+        ]),
+    ]);
+
+    (new SepatuSeeder)->run();
+
+    expect(fn () => (new SepatuSeeder)->run())
+        ->toThrow(RuntimeException::class, 'DummyJSON mens-shoes gagal diakses (HTTP 403)');
+
+    expect(Product::query()->where('sku', 'SHOE-MEN-001')->exists())->toBeTrue();
+});
+
+/**
+ * @param  array<string, mixed>  $overrides
+ * @return array<string, mixed>
+ */
+function dummyJsonShoe(array $overrides = []): array
 {
-    $json = json_encode([
-        '@context' => 'http://schema.org/',
-        '@type' => 'Product',
-        'name' => 'Air Jordan 12 Stealth sneakers',
-        'image' => [
+    return array_replace([
+        'id' => 90,
+        'title' => 'Nike Air Jordan 1 Red And Black',
+        'description' => 'High quality basketball shoes.',
+        'category' => 'mens-shoes',
+        'price' => 128,
+        'discountPercentage' => 10,
+        'stock' => 7,
+        'brand' => 'Nike',
+        'sku' => 'MEN-001',
+        'weight' => 0.9,
+        'dimensions' => [
+            'width' => 24,
+            'height' => 14,
+            'depth' => 35,
+        ],
+        'availabilityStatus' => 'In Stock',
+        'images' => [
             'https://cdn.example.com/1.jpg',
             'https://cdn.example.com/2.jpg',
             'https://cdn.example.com/3.jpg',
         ],
-        'description' => 'Style CT8013-015 Colorway Stealth White Cool Grey',
-        'mpn' => 'CT8013-015',
-        'sku' => 'CT8013-015',
-        'brand' => [
-            '@type' => 'Brand',
-            'name' => 'Air Jordan',
-        ],
-        'offers' => [
-            '@type' => 'Offer',
-            'priceCurrency' => 'USD',
-            'price' => '128',
-            'availability' => 'http://schema.org/InStock',
-        ],
-    ], JSON_THROW_ON_ERROR);
-
-    $skus = json_encode([
-        [
-            'sku_code' => '152264683',
-            'sku_value' => 'Nike Men:US7/UK6/EU40',
-            'sku_value_short' => 'US7/UK6/EU40',
-            'stock_nums' => '7',
-        ],
-        [
-            'sku_code' => '152264685',
-            'sku_value' => 'Nike Men:US8/UK7/EU41',
-            'sku_value_short' => 'US8/UK7/EU41',
-            'stock_nums' => '8',
-        ],
-    ], JSON_THROW_ON_ERROR);
-
-    return <<<HTML
-<html>
-<head><script type="application/ld+json">{$json}</script></head>
-<body><script>var skulist_str='{$skus}';</script></body>
-</html>
-HTML;
+        'thumbnail' => 'https://cdn.example.com/thumb.jpg',
+    ], $overrides);
 }
