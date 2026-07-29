@@ -107,7 +107,7 @@ export default function Login({
 
                             <Button
                                 type="submit"
-                                className="mt-1 h-[52px] w-full rounded-none bg-[#F58220] text-[12px] font-extrabold tracking-[0.16em] text-white uppercase shadow-none hover:bg-[#E67312] focus-visible:ring-0"
+                                className="mt-1 h-[52px] w-full rounded-none bg-[#1A1A1A] text-[12px] font-extrabold tracking-[0.16em] text-white uppercase shadow-none hover:bg-black focus-visible:ring-0"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -176,8 +176,6 @@ Login.layout = {
     ],
     heroImage: {
         src: '/img/login-image.png',
-        alt: 'AxeGear athlete wearing mirrored performance eyewear',
-        className: 'object-[76%_center]',
+        alt: 'GodKillerGoods athlete wearing mirrored performance eyewear',
     },
-    heroVariant: 'card',
 };

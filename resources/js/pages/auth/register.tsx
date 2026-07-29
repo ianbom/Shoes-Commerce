@@ -107,7 +107,7 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-1 h-[52px] w-full rounded-none bg-[#F58220] text-[12px] font-extrabold tracking-[0.16em] text-white uppercase shadow-none hover:bg-[#E67312] focus-visible:ring-0"
+                                className="mt-1 h-[52px] w-full rounded-none bg-[#1A1A1A] text-[12px] font-extrabold tracking-[0.16em] text-white uppercase shadow-none hover:bg-black focus-visible:ring-0"
                                 tabIndex={5}
                                 disabled={processing}
                                 data-test="register-user-button"
@@ -136,7 +136,7 @@ export default function Register() {
 
 Register.layout = {
     title: 'Create Account',
-    description: 'Set up your AxeGear account with your details below.',
+    description: 'Set up your GodKillerGoods account with your details below.',
     breadcrumbs: [
         { label: 'Home', href: home() },
         { label: 'Account' },
@@ -144,6 +144,6 @@ Register.layout = {
     ],
     heroImage: {
         src: '/img/login-image.png',
-        alt: 'AxeGear athlete wearing mirrored performance eyewear',
+        alt: 'GodKillerGoods athlete wearing mirrored performance eyewear',
     },
 };
