@@ -7,8 +7,8 @@ type AuthLayoutProps = {
     title?: string;
     description?: string;
     breadcrumbs?: Array<{ label: string; href?: string }>;
-    heroImage?: { src: string; alt: string };
-    heroOverlay?: ReactNode;
+    heroImage?: { src: string; alt: string; className?: string };
+    heroVariant?: 'full' | 'card';
     contentClassName?: string;
     children: ReactNode;
 };
@@ -18,7 +18,7 @@ export default function AuthLayout({
     description,
     breadcrumbs,
     heroImage,
-    heroOverlay,
+    heroVariant = 'full',
     contentClassName,
     children,
 }: AuthLayoutProps) {
@@ -30,13 +30,29 @@ export default function AuthLayout({
     return (
         <div className="min-h-svh bg-white text-[#1A1A1A]">
             <div className="grid min-h-svh bg-white lg:grid-cols-[minmax(0,1.16fr)_minmax(420px,0.84fr)]">
-                <div className="relative order-2 hidden min-h-[320px] overflow-hidden bg-[#1A1A1A] lg:order-1 lg:block lg:min-h-full">
-                    <img
-                        src={resolvedHeroImage.src}
-                        alt={resolvedHeroImage.alt}
-                        className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/38 via-black/16 to-transparent" />
+                <div
+                    className={[
+                        'order-2 hidden min-h-[320px] lg:order-1 lg:block lg:min-h-full',
+                        heroVariant === 'card' ? 'bg-white p-3 xl:p-4' : '',
+                    ].join(' ')}
+                >
+                    <div
+                        className={[
+                            'relative h-full min-h-[320px] overflow-hidden',
+                            heroVariant === 'card'
+                                ? 'rounded-[2rem] lg:min-h-[calc(100svh-1.5rem)] xl:min-h-[calc(100svh-2rem)] xl:rounded-[2.5rem]'
+                                : 'lg:min-h-full',
+                        ].join(' ')}
+                    >
+                        <img
+                            src={resolvedHeroImage.src}
+                            alt={resolvedHeroImage.alt}
+                            className={[
+                                'absolute inset-0 h-full w-full object-cover',
+                                resolvedHeroImage.className ?? '',
+                            ].join(' ')}
+                        />
+                    </div>
                 </div>
 
                 <div className="order-1 flex min-h-svh flex-col bg-white lg:order-2 lg:min-h-full">
@@ -68,7 +84,7 @@ export default function AuthLayout({
                                                 <span
                                                     className={
                                                         index ===
-                                                            breadcrumbs.length - 1
+                                                        breadcrumbs.length - 1
                                                             ? 'text-[#1A1A1A]'
                                                             : undefined
                                                     }

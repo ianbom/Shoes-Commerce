@@ -168,7 +168,7 @@ export default function Login({
 Login.layout = {
     title: 'Log In',
     description:
-        'Welcome back. Enter your details below to access your AxeGear account.',
+        'Welcome back. Enter your details below to access your GodKillerGoods account.',
     breadcrumbs: [
         { label: 'Home', href: home() },
         { label: 'Account' },
@@ -177,5 +177,7 @@ Login.layout = {
     heroImage: {
         src: '/img/login-image.png',
         alt: 'AxeGear athlete wearing mirrored performance eyewear',
+        className: 'object-[76%_center]',
     },
+    heroVariant: 'card',
 };

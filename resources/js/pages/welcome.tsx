@@ -402,21 +402,7 @@ export default function Welcome({
                         </div>
 
                         <div className="z-10 grid gap-3 sm:grid-cols-3 md:grid-cols-1 lg:gap-4">
-                            <HeroTrustCard
-                                icon={ShieldCheck}
-                                title="100% Authentic"
-                                text="Guaranteed original"
-                            />
-                            <HeroTrustCard
-                                icon={Globe2}
-                                title="Fast Worldwide Shipping"
-                                text="On all orders"
-                            />
-                            <HeroTrustCard
-                                icon={RotateCcw}
-                                title="Easy Returns"
-                                text="Hassle-free returns"
-                            />
+   
                             <div className="mt-4 hidden items-center gap-3 rounded-full bg-white px-3 py-3 shadow-dropdown md:flex lg:mt-6 lg:px-4">
                                 <div className="flex -space-x-2">
                                     {['AR', 'DM', 'SL', 'JP'].map(
@@ -498,6 +484,18 @@ export default function Welcome({
                         </div>
                     </section>
 
+                    <section
+                        aria-label="Basketball campaign banner"
+                        className="h-[200px] overflow-hidden rounded-[14px] sm:h-[260px] lg:h-[430px]"
+                    >
+                        <img
+                            src="/img/banner.png"
+                            alt="Basketball athlete wearing performance sneakers"
+                            loading="lazy"
+                            className="h-full w-full object-cover object-center"
+                        />
+                    </section>
+
                     <section>
                         <SectionHeader
                             title="New Arrivals"
@@ -542,33 +540,6 @@ export default function Welcome({
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/35 to-transparent" />
                             </Link>
                         ))}
-                    </section>
-
-                    <section>
-                        <h2 className="mb-4 text-[26px] leading-none text-ink uppercase">
-                            Technology For Your Every Step
-                        </h2>
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
-                            {technologies.map(
-                                ({ title, description, icon: Icon }) => (
-                                    <article
-                                        key={title}
-                                        className="flex min-h-[190px] flex-col items-center justify-center rounded-[12px] border border-hairline bg-surface-subtle px-5 py-6 text-center"
-                                    >
-                                        <Icon
-                                            className="size-10 text-ink"
-                                            strokeWidth={1.3}
-                                        />
-                                        <h3 className="mt-5 text-[17px] leading-none text-ink uppercase">
-                                            {title}
-                                        </h3>
-                                        <p className="mt-3 text-[11px] leading-4 text-body">
-                                            {description}
-                                        </p>
-                                    </article>
-                                ),
-                            )}
-                        </div>
                     </section>
 
                     <section className="relative overflow-hidden rounded-[14px] bg-[linear-gradient(105deg,#121212_0%,#050505_55%,#161616_100%)] px-7 py-8 text-white sm:px-10 md:grid md:min-h-[190px] md:grid-cols-[210px_1fr_170px] md:items-center md:gap-5 lg:grid-cols-[250px_1fr_230px] lg:gap-8">

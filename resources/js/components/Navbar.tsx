@@ -1,6 +1,8 @@
 import { Link } from '@inertiajs/react';
-import { Heart, Menu, Search, ShoppingBag, X } from 'lucide-react';
+import { Heart, Menu, ShoppingBag, X } from 'lucide-react';
 import { useState } from 'react';
+
+import { list, login } from '@/routes';
 
 type NavbarProps = {
     cartCount?: number;
@@ -22,10 +24,13 @@ const navItems = [
 export default function Navbar({
     cartCount = 0,
     currentUrl = '/',
+    isAuthenticated = false,
     logoSrc = '/logo-shay/gods-hitam.webp',
 }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const cartBadge = cartCount > 99 ? '99+' : String(cartCount);
+    const ctaHref = isAuthenticated ? list() : login();
+    const ctaLabel = isAuthenticated ? 'Shop Now' : 'Login';
     const isActive = (href: string) => currentUrl === href;
 
     return (
@@ -56,13 +61,6 @@ export default function Navbar({
                 </nav>
 
                 <div className="flex items-center gap-1 text-ink sm:gap-2">
-                    <button
-                        type="button"
-                        aria-label="Search"
-                        className="hidden h-10 w-10 items-center justify-center hover:text-primary sm:inline-flex"
-                    >
-                        <Search className="h-5 w-5" />
-                    </button>
                     <Link
                         href="/wishlist"
                         aria-label="Open wishlist"
@@ -83,10 +81,10 @@ export default function Navbar({
                         ) : null}
                     </Link>
                     <Link
-                        href="/list"
+                        href={ctaHref}
                         className="ml-2 hidden h-11 items-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover md:inline-flex"
                     >
-                        Shop Now
+                        {ctaLabel}
                     </Link>
                     <button
                         type="button"
@@ -135,11 +133,11 @@ export default function Navbar({
                         </Link>
                     ))}
                     <Link
-                        href="/list"
+                        href={ctaHref}
                         onClick={() => setIsOpen(false)}
                         className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
                     >
-                        Shop Now
+                        {ctaLabel}
                     </Link>
                 </nav>
             </aside>
