@@ -141,11 +141,7 @@ const cleanQuery = (filters: FilterState) =>
         }),
     );
 
-export default function ListProduct({
-    products,
-    filters,
-    options,
-}: Props) {
+export default function ListProduct({ products, filters, options }: Props) {
     const { auth } = usePage<SharedProps>().props;
     const isAuthenticated = Boolean(auth.user);
     const initialFilters = useMemo<FilterState>(
@@ -192,13 +188,23 @@ export default function ListProduct({
         });
     };
 
+    const setSearch = (search: string) => {
+        setForm({
+            ...defaultFilters,
+            search,
+        });
+    };
+
     const resetFilters = () => {
         visit(defaultFilters);
     };
 
     const submitSearch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        visit(form);
+        visit({
+            ...defaultFilters,
+            search: form.search,
+        });
     };
 
     const pageTitle = 'All Products';
@@ -274,7 +280,11 @@ export default function ListProduct({
                         className="flex items-center gap-3 text-[17px] text-ink"
                     >
                         <Link
-                            href="/"
+                            href={list.url()}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                resetFilters();
+                            }}
                             className="font-normal hover:text-primary"
                         >
                             Shop
@@ -303,10 +313,7 @@ export default function ListProduct({
                                 type="search"
                                 value={form.search}
                                 onChange={(event) =>
-                                    setForm((current) => ({
-                                        ...current,
-                                        search: event.target.value,
-                                    }))
+                                    setSearch(event.target.value)
                                 }
                                 placeholder="Search products"
                                 className="h-11 w-full border border-hairline-strong bg-canvas pr-4 pl-10 text-[14px] text-ink placeholder:text-muted-foreground focus:border-ink focus:ring-0 focus:outline-none"
@@ -342,12 +349,7 @@ export default function ListProduct({
                             setFilter={setFilter}
                             resetFilters={resetFilters}
                             submitSearch={submitSearch}
-                            setSearch={(value) =>
-                                setForm((current) => ({
-                                    ...current,
-                                    search: value,
-                                }))
-                            }
+                            setSearch={setSearch}
                         />
                     </aside>
 
@@ -530,7 +532,6 @@ function FilterPanel({
                     ))}
                 </div>
             </FilterSection>
-
         </div>
     );
 }
@@ -707,10 +708,7 @@ const ProductTile = memo(function ProductTile({
             <Link href={productHref} className="block">
                 <div className="relative aspect-square overflow-hidden bg-white p-5 sm:p-6">
                     <img
-                        src={
-                            product.image ??
-                            '/img/all-product.webp'
-                        }
+                        src={product.image ?? '/img/all-product.webp'}
                         alt={product.title}
                         loading="lazy"
                         decoding="async"

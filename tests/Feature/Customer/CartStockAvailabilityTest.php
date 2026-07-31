@@ -44,6 +44,19 @@ it('marks cart item available when quantity fits available stock', function () {
             ->where('cartItems.0.is_available', true));
 });
 
+it('removes a cart item owned by the current user', function () {
+    $user = User::factory()->create();
+    [$product, $variant] = createCartStockProduct(stock: 2, reservedStock: 0);
+    $item = createCartStockItem($user, $product, $variant, quantity: 1);
+
+    $this->actingAs($user)
+        ->from(route('cart'))
+        ->delete(route('cart.items.destroy', $item))
+        ->assertRedirect(route('cart'));
+
+    $this->assertDatabaseMissing('cart_items', ['id' => $item->id]);
+});
+
 it('redirects checkout to cart when cart is empty', function () {
     $user = User::factory()->create();
     createCartStockAddress($user);

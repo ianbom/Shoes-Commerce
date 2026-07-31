@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 
 import { addProductVariantToCart } from '@/actions/App/Http/Controllers/Customer/CartController';
 import ShopLayout from '@/layouts/shop-layout';
-import { checkout, login } from '@/routes';
+import { cart, login } from '@/routes';
 
 type ProductVariant = {
     id: number;
@@ -131,7 +131,7 @@ export default function DetailProduct({
                 preserveScroll: true,
                 onSuccess: () => {
                     if (buyNow) {
-                        router.visit(checkout.url());
+                        router.visit(cart.url());
                     }
                 },
                 onError: (errors) => {

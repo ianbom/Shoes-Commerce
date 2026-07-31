@@ -17,7 +17,6 @@ const navItems = [
     { label: 'Best Sellers', href: '/list?type=best_seller' },
     { label: 'Sneakers', href: '/list?search=sneakers' },
     { label: 'Streetwear', href: '/list?search=streetwear' },
-    { label: 'Reviews', href: '/#reviews' },
     { label: 'About', href: '/about' },
 ];
 
@@ -80,12 +79,22 @@ export default function Navbar({
                             </span>
                         ) : null}
                     </Link>
-                    <Link
-                        href={ctaHref}
-                        className="ml-2 hidden h-11 items-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover md:inline-flex"
-                    >
-                        {ctaLabel}
-                    </Link>
+                    {isAuthenticated ? (
+                        <Link
+                            href={myProfile()}
+                            aria-label="Open profile"
+                            className="ml-2 hidden h-11 w-11 items-center justify-center rounded bg-primary text-white hover:bg-primary-hover md:inline-flex"
+                        >
+                            <User className="h-5 w-5" />
+                        </Link>
+                    ) : (
+                        <Link
+                            href={ctaHref}
+                            className="ml-2 hidden h-11 items-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover md:inline-flex"
+                        >
+                            {ctaLabel}
+                        </Link>
+                    )}
                     <button
                         type="button"
                         aria-label="Open menu"

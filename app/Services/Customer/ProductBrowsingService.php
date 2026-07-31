@@ -30,9 +30,8 @@ class ProductBrowsingService
             'ctaBanner' => $this->bannerCard($ctaBanner),
             'collectionBanners' => $collectionBanners->map(fn ($banner) => $this->bannerCard($banner))->toArray(),
             'collections' => Collection::query()->where('is_active', true)->orderBy('sort_order')->get(['name', 'slug', 'banner_mobile_url']),
-            'hajjSeries' => $this->productsForSection('hajj', 3),
-            'wePresent' => $this->productsForSection('new_arrival', 5),
-            'recentAdditions' => $this->productsForSection('new', 6),
+            'flashDeals' => $this->productsForSection('sale', 5),
+            'newArrivals' => $this->productsForSection('new_arrival', 6),
             'mostLoved' => $this->productsForSection('best_seller', 4),
             'journalPosts' => $this->journalPosts(),
         ];
@@ -142,7 +141,7 @@ class ProductBrowsingService
 
         $products = $query->get();
 
-        if ($products->count() < $limit && ! in_array($section, ['new_arrival', 'best_seller'], true)) {
+        if ($products->count() < $limit && ! in_array($section, ['sale', 'new_arrival', 'best_seller'], true)) {
             $fallback = Product::query()
                 ->with($this->productRelations())
                 ->where('status', 'published')

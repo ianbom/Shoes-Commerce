@@ -191,18 +191,18 @@ export default function MyProfile() {
                 { label: 'Pengaturan Profil' },
             ]}
         >
-            <div className="mb-5 flex flex-col gap-5 border-b border-[#D8D8D8] pb-5 md:flex-row md:items-center md:justify-between">
+            <div className="mb-5 flex flex-col gap-5 border-b border-black/16 pb-5 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-8">
                     <AvatarFrame avatarSrc={avatarSrc} name={user.name} />
                     <div>
-                        <h2 className="text-[30px] leading-none font-black tracking-normal text-[#1A1A1A]">
+                        <h2 className="text-[30px] leading-none font-black tracking-normal text-black">
                             {user.name}
                         </h2>
-                        <p className="mt-2 text-base font-medium text-[#1A1A1A]">
+                        <p className="mt-2 text-base font-medium text-black">
                             {user.email}
                         </p>
                         {user.member_since && (
-                            <p className="mt-2 text-sm font-medium text-[#707070]">
+                            <p className="mt-2 text-sm font-medium text-black/60">
                                 Member sejak {user.member_since}
                             </p>
                         )}
@@ -212,7 +212,7 @@ export default function MyProfile() {
                 {isAdmin && (
                     <Link
                         href={adminDashboard()}
-                        className="inline-flex h-10 items-center justify-center border border-[#1A1A1A] px-5 text-sm font-black uppercase hover:bg-[#1A1A1A] hover:text-white"
+                        className="inline-flex h-10 items-center justify-center border border-black px-5 text-sm font-black uppercase hover:bg-black hover:text-white"
                     >
                         Dashboard
                     </Link>
@@ -260,12 +260,12 @@ function AvatarFrame({
     name: string;
 }) {
     return (
-        <div className="flex h-24 w-24 items-center justify-center rounded-full border border-[#CFCFCF] bg-[#F8F8F8] text-[#1A1A1A]">
+        <div className="flex h-24 w-24 items-center justify-center border border-black/16 bg-black/5 text-black">
             {avatarSrc ? (
                 <img
                     src={avatarSrc}
                     alt={name}
-                    className="h-full w-full rounded-full object-cover"
+                    className="h-full w-full object-cover"
                 />
             ) : (
                 <User size={48} strokeWidth={1.5} />
@@ -305,7 +305,7 @@ function ProfileInfoCard({
     return (
         <form
             onSubmit={submitProfile}
-            className="border border-[#D8D8D8] bg-white px-8 py-6"
+            className="border border-black/16 bg-white px-8 py-6"
         >
             <SectionTitle icon={User} title="Informasi Pribadi" />
 
@@ -354,13 +354,13 @@ function ProfileInfoCard({
                         <button
                             type="button"
                             onClick={() => avatarInputRef.current?.click()}
-                            className="grid min-h-[76px] place-items-center border border-dashed border-[#1A1A1A] bg-white px-5 text-center transition-colors hover:border-[#F58220] hover:text-[#F58220]"
+                            className="grid min-h-[76px] place-items-center border border-dashed border-black bg-white px-5 text-center transition-colors hover:bg-black/5"
                         >
                             <span className="flex items-center gap-3 text-sm font-black">
                                 <Upload size={24} strokeWidth={1.7} />
                                 Klik untuk mengunggah
                             </span>
-                            <span className="text-xs font-medium text-[#707070]">
+                            <span className="text-xs font-medium text-black/60">
                                 atau seret file ke sini
                             </span>
                         </button>
@@ -375,11 +375,11 @@ function ProfileInfoCard({
                         className="sr-only"
                     />
                     {profileForm.errors.avatar_url && (
-                        <p className="mt-2 text-xs font-bold text-[#C81E1E]">
+                        <p className="mt-2 text-xs font-bold text-black">
                             {profileForm.errors.avatar_url}
                         </p>
                     )}
-                    <p className="mt-2 text-sm font-medium text-[#707070]">
+                    <p className="mt-2 text-sm font-medium text-black/60">
                         JPG, PNG, atau WEBP. Maks 2MB.
                     </p>
                 </div>
@@ -388,7 +388,7 @@ function ProfileInfoCard({
                     <button
                         type="submit"
                         disabled={profileForm.processing}
-                        className="inline-flex h-12 items-center justify-center gap-2 bg-[#F58220] px-6 text-sm font-black text-white transition-colors hover:bg-[#E67312] disabled:bg-[#CFCFCF] disabled:text-[#707070]"
+                        className="inline-flex h-12 items-center justify-center gap-2 bg-black px-6 text-sm font-black text-white transition-colors hover:bg-black/80 disabled:bg-black/16 disabled:text-black/48"
                     >
                         {profileForm.processing && (
                             <Loader2 size={16} className="animate-spin" />
@@ -398,7 +398,7 @@ function ProfileInfoCard({
                     <button
                         type="button"
                         onClick={() => profileForm.reset()}
-                        className="h-12 border border-[#1A1A1A] bg-white px-6 text-sm font-black hover:bg-[#1A1A1A] hover:text-white"
+                        className="h-12 border border-black bg-white px-6 text-sm font-black hover:bg-black hover:text-white"
                     >
                         Batal
                     </button>
@@ -450,7 +450,7 @@ function PasswordCard({
     return (
         <form
             onSubmit={submitPassword}
-            className="border border-[#D8D8D8] bg-white px-8 py-6"
+            className="border border-black/16 bg-white px-8 py-6"
         >
             <SectionTitle icon={Lock} title="Ubah Kata Sandi" />
             <div className="mt-5 grid gap-4">
@@ -511,7 +511,7 @@ function PasswordCard({
                 <button
                     type="submit"
                     disabled={passwordForm.processing}
-                    className="mt-1 inline-flex h-12 items-center justify-center gap-2 bg-[#F58220] px-6 text-sm font-black text-white transition-colors hover:bg-[#E67312] disabled:bg-[#CFCFCF] disabled:text-[#707070]"
+                    className="mt-1 inline-flex h-12 items-center justify-center gap-2 bg-black px-6 text-sm font-black text-white transition-colors hover:bg-black/80 disabled:bg-black/16 disabled:text-black/48"
                 >
                     {passwordForm.processing && (
                         <Loader2 size={16} className="animate-spin" />
@@ -529,13 +529,13 @@ function AddressCard({
     defaultAddress: AddressProp | null;
 }) {
     return (
-        <section className="border border-[#D8D8D8] bg-white px-8 py-6">
+        <section className="border border-black/16 bg-white px-8 py-6">
             <SectionTitle icon={MapPin} title="Alamat Utama" />
             <div className="mt-4 sm:items-center">
                 <div>
                     {defaultAddress ? (
-                        <div className="text-sm font-medium text-[#2E2E2E]">
-                            <p className="font-black text-[#1A1A1A]">
+                        <div className="text-sm font-medium text-black/72">
+                            <p className="font-black text-black">
                                 {defaultAddress.recipient_name}
                             </p>
                             <p className="mt-1">
@@ -556,14 +556,14 @@ function AddressCard({
                             </p>
                         </div>
                     ) : (
-                        <p className="text-sm leading-6 font-medium text-[#707070]">
+                        <p className="text-sm leading-6 font-medium text-black/60">
                             Belum ada alamat utama. Tambahkan alamat untuk
                             checkout lebih cepat.
                         </p>
                     )}
                     <Link
                         href="/address"
-                        className="mt-4 inline-flex h-10 min-w-[160px] items-center justify-center border border-[#1A1A1A] bg-white px-5 text-sm font-black transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                        className="mt-4 inline-flex h-10 min-w-[160px] items-center justify-center border border-black bg-white px-5 text-sm font-black transition-colors hover:bg-black hover:text-white"
                     >
                         {defaultAddress ? 'Kelola Alamat' : 'Tambah Alamat'}
                     </Link>
@@ -583,7 +583,7 @@ function SectionTitle({
     return (
         <div className="flex items-center gap-4">
             <Icon size={27} strokeWidth={1.7} />
-            <h3 className="text-2xl font-black tracking-normal text-[#1A1A1A]">
+            <h3 className="text-2xl font-black tracking-normal text-black">
                 {title}
             </h3>
         </div>
@@ -609,7 +609,7 @@ function TextField({
 }) {
     return (
         <div className="grid gap-2 sm:grid-cols-[120px_1fr] sm:items-center">
-            <label className="text-sm font-black text-[#1A1A1A]">{label}</label>
+            <label className="text-sm font-black text-black">{label}</label>
             <div>
                 <input
                     type={type}
@@ -617,14 +617,12 @@ function TextField({
                     value={value}
                     onChange={(event) => onChange(event.target.value)}
                     placeholder={placeholder}
-                    className={`h-10 w-full border bg-white px-4 text-sm font-medium text-[#1A1A1A] transition-colors outline-none focus:border-[#1A1A1A] ${
-                        error ? 'border-[#C81E1E]' : 'border-[#9A9A9A]'
+                    className={`h-10 w-full border bg-white px-4 text-sm font-medium text-black transition-colors outline-none focus:border-black ${
+                        error ? 'border-black' : 'border-black/48'
                     }`}
                 />
                 {error && (
-                    <p className="mt-1 text-xs font-bold text-[#C81E1E]">
-                        {error}
-                    </p>
+                    <p className="mt-1 text-xs font-bold text-black">{error}</p>
                 )}
             </div>
         </div>
@@ -650,7 +648,7 @@ function PasswordField({
 }) {
     return (
         <div className="grid gap-2 sm:grid-cols-[140px_1fr] sm:items-center">
-            <label className="text-sm font-black text-[#1A1A1A]">{label}</label>
+            <label className="text-sm font-black text-black">{label}</label>
             <div>
                 <div className="relative">
                     <input
@@ -658,23 +656,21 @@ function PasswordField({
                         value={value}
                         onChange={(event) => onChange(event.target.value)}
                         autoComplete={autoComplete}
-                        className={`h-10 w-full border bg-white px-4 pr-11 text-sm font-medium text-[#1A1A1A] transition-colors outline-none focus:border-[#1A1A1A] ${
-                            error ? 'border-[#C81E1E]' : 'border-[#9A9A9A]'
+                        className={`h-10 w-full border bg-white px-4 pr-11 text-sm font-medium text-black transition-colors outline-none focus:border-black ${
+                            error ? 'border-black' : 'border-black/48'
                         }`}
                     />
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-[#1A1A1A] transition-colors hover:text-[#F58220]"
+                        className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-black transition-colors hover:text-black/60"
                         aria-label={show ? 'Hide password' : 'Show password'}
                     >
                         {show ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 </div>
                 {error && (
-                    <p className="mt-1 text-xs font-bold text-[#C81E1E]">
-                        {error}
-                    </p>
+                    <p className="mt-1 text-xs font-bold text-black">{error}</p>
                 )}
             </div>
         </div>

@@ -29,14 +29,13 @@ import ShopLayout from '@/layouts/shop-layout';
 type ProductCard = {
     id: number;
     slug: string;
-    name?: string;
-    title?: string;
+    name: string;
     price: number;
     sale_price: number | null;
-    label?: string | null;
-    badge?: string | null;
+    label: string | null;
+    badge: string | null;
     image: string | null;
-    category?: string | null;
+    category: string | null;
 };
 
 type BannerCard = {
@@ -58,50 +57,10 @@ type CollectionCard = {
 type Props = {
     heroBanners?: BannerCard[];
     collections?: CollectionCard[];
-    hajjSeries?: ProductCard[];
-    wePresent?: ProductCard[];
-    recentAdditions?: ProductCard[];
+    flashDeals?: ProductCard[];
+    newArrivals?: ProductCard[];
     mostLoved?: ProductCard[];
 };
-
-const shoeImages = [
-    'https://ssl.images-ssl-jupiter.com/82023/2025/09/11/9/0/901bde9fdb7a964b.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2025/01/19/6/0/60ab2f7423e1f43c.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2024/12/06/0/3/03521cd2daf8e18a.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/29/3/8/38785d0746d1a325.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/07/02/e/d/ed784d7a5873b3b5.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/07/02/2/8/281df476c0b5e543.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/29/5/d/5df67c56443a8d00.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/10/1/3/13f5923199c6bde2.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/08/b/0/b071095333628466.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/06/7/0/701b29ca8c8ccf2e.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/04/c/1/c190a794178b01de.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-    'https://us03-imgcdn.ymcart.com/82023/2026/06/03/4/e/4ec8bba9e9f8607f.jpg?x-oss-process=image/resize,m_lfit,w_500,h_500/interlace,0/auto-orient,0',
-];
-
-const fallbackProducts: ProductCard[] = shoeImages.map((image, index) => ({
-    id: index + 1,
-    slug: `nexstep-sneaker-${index + 1}`,
-    name: [
-        'Nike Air Force 1 Low Retro QS Kobe Bryant',
-        'Jordan 4 Retro Nigel Sylvester Brick',
-        'Air Jordan 3 OG True Blue 2026',
-        'Nike Air Force 1 Low Kobe Lakers Away',
-        'Nike Air Force 1 Low Kobe Lakers Home',
-        'Off White Virgil Abloh Archive X Air Jordan 1',
-        'Nike Air Force 1 Low Court Purple',
-        'Nike Air Force 1 Low Bryant Lakers Away',
-        'Nike Air Force 1 Low Bryant Lakers Home',
-        'Nina Chanel Abney X WMNS Jordan 3 Retro SP',
-        'Air Jordan 3 Retro Spring',
-        'Nike Kobe 8 Protro Mambacurial',
-    ][index],
-    price: 1097600 + index * 37200,
-    sale_price: index < 5 ? 1449000 + index * 145000 : null,
-    label:
-        index < 5 ? ['New', 'New', 'Featured', '-26%', '-20%'][index] : 'New',
-    image,
-}));
 
 const categoryCards = [
     {
@@ -177,35 +136,6 @@ function money(value: number) {
     }).format(value);
 }
 
-function productName(product: ProductCard) {
-    return product.name ?? product.title ?? 'GodKillerGoods Sneaker';
-}
-
-function mergeProducts(
-    products: ProductCard[] | undefined,
-    start: number,
-    count: number,
-) {
-    const seen = new Set<number | string>();
-
-    return [
-        ...(products ?? []),
-        ...fallbackProducts.slice(start),
-        ...fallbackProducts,
-    ]
-        .filter((product) => {
-            const key = product.id ?? product.slug;
-
-            if (seen.has(key)) {
-                return false;
-            }
-
-            seen.add(key);
-            return true;
-        })
-        .slice(0, count);
-}
-
 function SectionHeader({
     title,
     href,
@@ -231,27 +161,20 @@ function SectionHeader({
     );
 }
 
-function ProductTile({
-    product,
-    featured = false,
-}: {
-    product: ProductCard;
-    featured?: boolean;
-}) {
+function ProductTile({ product }: { product: ProductCard }) {
     const currentPrice = product.sale_price ?? product.price;
     const oldPrice = product.sale_price !== null ? product.price : null;
     const discount =
         oldPrice && oldPrice > currentPrice
             ? Math.round((1 - currentPrice / oldPrice) * 100)
             : null;
-    const label = product.label ?? product.badge ?? (featured ? 'New' : null);
-    const image = product.image ?? shoeImages[product.id % shoeImages.length];
+    const label = product.label ?? product.badge;
 
     return (
         <article className="group relative min-w-0 overflow-hidden rounded-[12px] border border-hairline bg-surface-subtle">
             <Link
                 href={`/detail?product=${product.slug}`}
-                aria-label={`View ${productName(product)}`}
+                aria-label={`View ${product.name}`}
                 className="block"
             >
                 <div className="relative h-[155px] overflow-hidden sm:h-[180px] lg:h-[195px]">
@@ -264,20 +187,18 @@ function ProductTile({
                         className="absolute top-3 right-3 z-10 size-5 fill-white text-ink"
                         strokeWidth={1.7}
                     />
-                    <img
-                        src={image}
-                        alt={productName(product)}
-                        onError={(event) => {
-                            event.currentTarget.src =
-                                shoeImages[product.id % shoeImages.length];
-                        }}
-                        className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
-                        loading="lazy"
-                    />
+                    {product.image ? (
+                        <img
+                            src={product.image}
+                            alt={product.name}
+                            className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                    ) : null}
                 </div>
                 <div className="px-3 pb-4">
                     <h3 className="line-clamp-2 min-h-10 text-[16px] leading-5 text-ink uppercase">
-                        {productName(product)}
+                        {product.name}
                     </h3>
                     <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                         <span className="text-[14px] font-extrabold text-ink">
@@ -326,12 +247,9 @@ function HeroTrustCard({
 
 export default function Welcome({
     collections = [],
-    hajjSeries = [],
-    wePresent = [],
-    recentAdditions = [],
+    flashDeals = [],
+    newArrivals = [],
 }: Props) {
-    const flashDeals = mergeProducts(hajjSeries, 0, 5);
-    const arrivals = mergeProducts([...wePresent, ...recentAdditions], 5, 6);
     const categoryLinks = [
         { label: 'New Arrivals', href: '/list?type=new_arrival', icon: Star },
         {
@@ -402,7 +320,6 @@ export default function Welcome({
                         </div>
 
                         <div className="z-10 grid gap-3 sm:grid-cols-3 md:grid-cols-1 lg:gap-4">
-   
                             <div className="mt-4 hidden items-center gap-3 rounded-full bg-white px-3 py-3 shadow-dropdown md:flex lg:mt-6 lg:px-4">
                                 <div className="flex -space-x-2">
                                     {['AR', 'DM', 'SL', 'JP'].map(
@@ -503,11 +420,10 @@ export default function Welcome({
                             label="View All New Arrivals"
                         />
                         <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
-                            {arrivals.map((product) => (
+                            {newArrivals.map((product) => (
                                 <ProductTile
                                     key={product.slug}
                                     product={product}
-                                    featured
                                 />
                             ))}
                         </div>

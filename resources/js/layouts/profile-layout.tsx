@@ -72,7 +72,7 @@ export default function ProfileLayout({
         <ShopLayout>
             <Head title={`${pageTitle} - AxeGear`} />
 
-            <section className="relative min-h-[190px] overflow-hidden border-b border-[#D8D8D8] bg-white md:min-h-[230px]">
+            <section className="relative min-h-[190px] overflow-hidden border-b border-black/16 bg-white md:min-h-[230px]">
                 <div className="absolute inset-y-0 right-0 hidden w-[48%] md:block">
                     <img
                         src={heroImage}
@@ -82,7 +82,7 @@ export default function ProfileLayout({
                     <div className="absolute inset-0 bg-gradient-to-r from-white via-white/45 to-white/10" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-[1760px] px-5 py-9 md:px-12 md:py-11">
-                    <nav className="mb-5 flex flex-wrap items-center gap-3 text-sm font-medium text-[#1A1A1A]">
+                    <nav className="mb-5 flex flex-wrap items-center gap-3 text-sm font-medium text-black">
                         {breadcrumbs.map((breadcrumb, index) => (
                             <React.Fragment
                                 key={`${breadcrumb.label}-${index}`}
@@ -90,7 +90,7 @@ export default function ProfileLayout({
                                 {breadcrumb.href ? (
                                     <Link
                                         href={breadcrumb.href}
-                                        className="transition-colors hover:text-[#F58220]"
+                                        className="transition-colors hover:text-black"
                                     >
                                         {breadcrumb.label}
                                     </Link>
@@ -100,24 +100,24 @@ export default function ProfileLayout({
                                     </span>
                                 )}
                                 {index < breadcrumbs.length - 1 && (
-                                    <span className="text-[#707070]">/</span>
+                                    <span className="text-black/48">/</span>
                                 )}
                             </React.Fragment>
                         ))}
                     </nav>
-                    <h1 className="max-w-[760px] text-[46px] leading-[0.92] font-black tracking-normal text-[#1A1A1A] uppercase italic md:text-[64px] lg:text-[76px]">
+                    <h1 className="max-w-[760px] text-[46px] leading-[0.92] font-black tracking-normal text-black uppercase italic md:text-[64px] lg:text-[76px]">
                         {title}
                     </h1>
-                    <p className="mt-5 max-w-[520px] text-base font-medium text-[#2E2E2E]">
+                    <p className="mt-5 max-w-[520px] text-base font-medium text-black/72">
                         {subtitle}
                     </p>
-                    <span className="mt-6 block h-1 w-11 bg-[#F58220]" />
+                    <span className="mt-6 block h-1 w-11 bg-black" />
                 </div>
             </section>
 
-            <main className="bg-white text-[#1A1A1A]">
+            <main className="bg-white text-black">
                 <div className="mx-auto grid max-w-[1760px] grid-cols-1 lg:grid-cols-[360px_1fr]">
-                    <aside className="border-b border-[#D8D8D8] px-5 py-6 md:px-12 lg:border-r lg:border-b-0 lg:px-16 lg:py-8">
+                    <aside className="border-b border-black/16 px-5 py-6 md:px-12 lg:border-r lg:border-b-0 lg:px-16 lg:py-8">
                         <h2 className="mb-5 text-2xl font-black uppercase">
                             Akun Saya
                         </h2>
@@ -131,16 +131,16 @@ export default function ProfileLayout({
                                     <Link
                                         key={item.id}
                                         href={item.href}
-                                        className={`relative flex min-w-fit items-center gap-4 border-b border-[#D8D8D8] px-2 py-4 text-base font-medium transition-colors lg:min-w-0 lg:px-0 lg:pl-7 ${
+                                        className={`relative flex min-w-fit items-center gap-4 border-b border-black/16 px-2 py-4 text-base font-medium transition-colors lg:min-w-0 lg:px-0 lg:pl-7 ${
                                             isActive
-                                                ? 'text-[#F58220]'
-                                                : 'text-[#1A1A1A] hover:text-[#F58220]'
+                                                ? 'text-black'
+                                                : 'text-black/72 hover:text-black'
                                         }`}
                                     >
                                         <span
                                             className={`absolute top-1/2 left-0 hidden h-12 w-1 -translate-y-1/2 lg:block ${
                                                 isActive
-                                                    ? 'bg-[#F58220]'
+                                                    ? 'bg-black'
                                                     : 'bg-transparent'
                                             }`}
                                         />
@@ -153,7 +153,7 @@ export default function ProfileLayout({
                                 href="/logout"
                                 method="post"
                                 as="button"
-                                className="relative flex min-w-fit items-center gap-4 border-b border-[#D8D8D8] px-2 py-4 text-base font-medium text-[#1A1A1A] transition-colors hover:text-[#F58220] lg:min-w-0 lg:px-0 lg:pl-7"
+                                className="relative flex min-w-fit items-center gap-4 border-b border-black/16 px-2 py-4 text-base font-medium text-black/72 transition-colors hover:text-black lg:min-w-0 lg:px-0 lg:pl-7"
                             >
                                 <LogOut size={26} strokeWidth={1.8} />
                                 <span>Keluar</span>

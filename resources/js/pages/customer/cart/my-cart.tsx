@@ -184,13 +184,13 @@ export default function MyCart({
         <ShopLayout>
             <Head title="My Cart - AxeGear" />
 
-            <main className="bg-white px-4 py-5 text-[#1A1A1A] md:px-9 md:py-7">
+            <main className="bg-white px-4 py-5 text-[#000000] md:px-9 md:py-7">
                 <div className="mx-auto max-w-[1760px]">
                     <div className="mb-8 flex items-center gap-2 text-sm font-medium">
-                        <Link href="/" className="hover:text-[#F58220]">
+                        <Link href="/" className="hover:text-[#000000]">
                             Home
                         </Link>
-                        <span className="text-[#707070]">/</span>
+                        <span className="text-[rgba(0,0,0,0.72)]">/</span>
                         <span className="font-extrabold">My Cart</span>
                     </div>
 
@@ -201,16 +201,16 @@ export default function MyCart({
                                     <h1 className="text-[36px] leading-none font-black tracking-normal md:text-[46px]">
                                         My Cart
                                     </h1>
-                                    <p className="mt-3 text-base font-medium text-[#2E2E2E]">
+                                    <p className="mt-3 text-base font-medium text-[rgba(0,0,0,0.72)]">
                                         Review your items before checkout.
                                     </p>
                                     <Link
                                         href={list.url()}
-                                        className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold hover:text-[#F58220]"
+                                        className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold hover:text-[#000000]"
                                     >
                                         <ChevronLeft
                                             size={18}
-                                            className="text-[#F58220]"
+                                            className="text-[#000000]"
                                         />
                                         Continue Shopping
                                     </Link>
@@ -218,7 +218,7 @@ export default function MyCart({
                             </div>
 
                             {(errorMessage || hasStockIssues) && (
-                                <div className="mb-8 border border-[#F7B06A] bg-[#FFF3E8] px-4 py-3 text-sm font-bold text-[#1A1A1A]">
+                                <div className="mb-8 border border-[rgba(0,0,0,0.16)] bg-[rgba(0,0,0,0.04)] px-4 py-3 text-sm font-bold text-[#000000]">
                                     {errorMessage ||
                                         'Some items are out of stock or unavailable. Update your cart before checkout.'}
                                 </div>
@@ -226,13 +226,12 @@ export default function MyCart({
 
                             <div className="mb-12 grid gap-9 lg:grid-cols-[minmax(0,1fr)_minmax(320px,430px)] lg:items-start">
                                 <section className="min-w-0">
-                                    <div className="overflow-hidden border border-[#CFCFCF]">
-                                        <div className="hidden grid-cols-[1fr_170px_190px_170px_50px] border-b border-[#CFCFCF] bg-white px-6 py-4 text-xs font-black tracking-[0.04em] uppercase lg:grid">
+                                    <div className="overflow-hidden border border-[rgba(0,0,0,0.16)]">
+                                        <div className="hidden grid-cols-[1fr_170px_240px_170px] border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-4 text-xs font-black tracking-[0.04em] uppercase lg:grid">
                                             <span>Product</span>
                                             <span>Price</span>
                                             <span>Quantity</span>
                                             <span>Subtotal</span>
-                                            <span />
                                         </div>
 
                                         {cartItems.map((item, index) => {
@@ -270,7 +269,7 @@ export default function MyCart({
                                             return (
                                                 <article
                                                     key={item.id}
-                                                    className="grid gap-4 border-b border-[#D8D8D8] bg-white p-4 last:border-b-0 lg:grid-cols-[1fr_170px_190px_170px_50px] lg:items-center lg:px-6 lg:py-3"
+                                                    className="grid gap-4 border-b border-[rgba(0,0,0,0.16)] bg-white p-4 last:border-b-0 lg:grid-cols-[1fr_170px_240px_170px] lg:items-center lg:px-6 lg:py-3"
                                                 >
                                                     <div className="grid grid-cols-[118px_1fr] items-center gap-4 md:grid-cols-[260px_1fr]">
                                                         {productHref ? (
@@ -278,7 +277,7 @@ export default function MyCart({
                                                                 href={
                                                                     productHref
                                                                 }
-                                                                className="block h-[110px] bg-[#F8F8F8] p-2 md:h-[118px]"
+                                                                className="block h-[110px] bg-[rgba(0,0,0,0.04)] p-2 md:h-[118px]"
                                                             >
                                                                 <img
                                                                     src={image}
@@ -291,7 +290,7 @@ export default function MyCart({
                                                                 />
                                                             </Link>
                                                         ) : (
-                                                            <div className="h-[110px] bg-[#F8F8F8] p-2 md:h-[118px]">
+                                                            <div className="h-[110px] bg-[rgba(0,0,0,0.04)] p-2 md:h-[118px]">
                                                                 <img
                                                                     src={image}
                                                                     alt={
@@ -309,7 +308,7 @@ export default function MyCart({
                                                                     href={
                                                                         productHref
                                                                     }
-                                                                    className="text-base font-black tracking-normal uppercase hover:text-[#F58220]"
+                                                                    className="text-base font-black tracking-normal uppercase hover:text-[#000000]"
                                                                 >
                                                                     {item.title}
                                                                 </Link>
@@ -318,16 +317,16 @@ export default function MyCart({
                                                                     {item.title}
                                                                 </h2>
                                                             )}
-                                                            <p className="mt-2 text-sm font-medium text-[#2E2E2E]">
+                                                            <p className="mt-2 text-sm font-medium text-[rgba(0,0,0,0.72)]">
                                                                 {itemMeta(item)}
                                                             </p>
-                                                            <p className="mt-1 text-sm font-medium text-[#2E2E2E]">
+                                                            <p className="mt-1 text-sm font-medium text-[rgba(0,0,0,0.72)]">
                                                                 {item.variant
                                                                     .sku ??
                                                                     'AxeGear'}
                                                             </p>
                                                             {!item.is_available && (
-                                                                <p className="mt-2 text-xs font-extrabold text-[#C81E1E]">
+                                                                <p className="mt-2 text-xs font-extrabold text-[#000000]">
                                                                     {stockIssueMessage(
                                                                         item,
                                                                     )}
@@ -337,7 +336,7 @@ export default function MyCart({
                                                     </div>
 
                                                     <div className="flex items-center justify-between lg:block">
-                                                        <span className="text-xs font-black text-[#707070] uppercase lg:hidden">
+                                                        <span className="text-xs font-black text-[rgba(0,0,0,0.72)] uppercase lg:hidden">
                                                             Price
                                                         </span>
                                                         <span className="font-black tabular-nums">
@@ -347,8 +346,8 @@ export default function MyCart({
                                                         </span>
                                                     </div>
 
-                                                    <div className="flex items-center justify-between lg:block">
-                                                        <span className="text-xs font-black text-[#707070] uppercase lg:hidden">
+                                                    <div className="flex items-center justify-between gap-3 lg:justify-start">
+                                                        <span className="text-xs font-black text-[rgba(0,0,0,0.72)] uppercase lg:hidden">
                                                             Quantity
                                                         </span>
                                                         <QuantityControl
@@ -376,10 +375,28 @@ export default function MyCart({
                                                                 )
                                                             }
                                                         />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                removeItem(item)
+                                                            }
+                                                            disabled={
+                                                                itemDisabled
+                                                            }
+                                                            className="flex h-10 w-10 shrink-0 items-center justify-center border border-[rgba(0,0,0,0.16)] text-[#000000] transition-colors hover:border-[#000000] hover:bg-[#000000] hover:text-white disabled:opacity-40"
+                                                            aria-label="Remove item"
+                                                        >
+                                                            <Trash2
+                                                                size={18}
+                                                                strokeWidth={
+                                                                    1.8
+                                                                }
+                                                            />
+                                                        </button>
                                                     </div>
 
                                                     <div className="flex items-center justify-between lg:block">
-                                                        <span className="text-xs font-black text-[#707070] uppercase lg:hidden">
+                                                        <span className="text-xs font-black text-[rgba(0,0,0,0.72)] uppercase lg:hidden">
                                                             Subtotal
                                                         </span>
                                                         <span className="font-black tabular-nums">
@@ -388,21 +405,6 @@ export default function MyCart({
                                                             )}
                                                         </span>
                                                     </div>
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            removeItem(item)
-                                                        }
-                                                        disabled={itemDisabled}
-                                                        className="flex h-10 w-10 items-center justify-center justify-self-end text-[#1A1A1A] transition-colors hover:text-[#F58220] disabled:opacity-40"
-                                                        aria-label="Remove item"
-                                                    >
-                                                        <Trash2
-                                                            size={18}
-                                                            strokeWidth={1.8}
-                                                        />
-                                                    </button>
                                                 </article>
                                             );
                                         })}
@@ -446,12 +448,12 @@ function QuantityControl({
     onIncrease: () => void;
 }) {
     return (
-        <div className="inline-grid h-10 grid-cols-3 border border-[#CFCFCF] bg-white text-sm font-black">
+        <div className="inline-grid h-10 grid-cols-3 border border-[rgba(0,0,0,0.16)] bg-white text-sm font-black">
             <button
                 type="button"
                 onClick={onDecrease}
                 disabled={disabled || quantity <= 1}
-                className="flex w-10 items-center justify-center transition-colors hover:bg-[#F8F8F8] disabled:opacity-35"
+                className="flex w-10 items-center justify-center transition-colors hover:bg-[rgba(0,0,0,0.04)] disabled:opacity-35"
                 aria-label="Decrease quantity"
             >
                 <Minus size={16} strokeWidth={2} />
@@ -463,7 +465,7 @@ function QuantityControl({
                 type="button"
                 onClick={onIncrease}
                 disabled={disabled || !canIncrease}
-                className="flex w-10 items-center justify-center text-[#F58220] transition-colors hover:bg-[#FFF3E8] disabled:opacity-35"
+                className="flex w-10 items-center justify-center text-[#000000] transition-colors hover:bg-[rgba(0,0,0,0.04)] disabled:opacity-35"
                 aria-label="Increase quantity"
             >
                 <Plus size={17} strokeWidth={2.4} />
@@ -484,7 +486,7 @@ function OrderSummary({
     onCheckout: () => void;
 }) {
     return (
-        <aside className="min-w-0 border border-[#CFCFCF] bg-white p-6 lg:p-7">
+        <aside className="min-w-0 border border-[rgba(0,0,0,0.16)] bg-white p-6 lg:p-7">
             <h2 className="mb-5 text-2xl font-black tracking-normal uppercase">
                 Order Summary
             </h2>
@@ -504,21 +506,21 @@ function OrderSummary({
                     accent
                 />
             </div>
-            <div className="my-6 border-t border-[#CFCFCF]" />
+            <div className="my-6 border-t border-[rgba(0,0,0,0.16)]" />
             <div className="mb-3 flex items-end justify-between gap-4">
                 <span className="text-2xl font-black uppercase">Total</span>
-                <span className="text-[30px] leading-none font-black text-[#F58220] tabular-nums">
+                <span className="text-[30px] leading-none font-black text-[#000000] tabular-nums">
                     {formatPrice(summary.total)}
                 </span>
             </div>
-            <p className="mb-7 text-sm font-medium text-[#2E2E2E]">
+            <p className="mb-7 text-sm font-medium text-[rgba(0,0,0,0.72)]">
                 Taxes and shipping calculated at checkout.
             </p>
             <button
                 type="button"
                 onClick={onCheckout}
                 disabled={hasStockIssues || checkoutProcessing}
-                className="h-12 w-full bg-[#F58220] text-sm font-black tracking-[0.06em] text-white uppercase transition-colors hover:bg-[#E67312] disabled:bg-[#CFCFCF] disabled:text-[#707070]"
+                className="h-12 w-full bg-[#000000] text-sm font-black tracking-[0.06em] text-white uppercase transition-colors hover:bg-[rgba(0,0,0,0.84)] disabled:bg-[rgba(0,0,0,0.16)] disabled:text-[rgba(0,0,0,0.72)]"
             >
                 {checkoutProcessing
                     ? 'Opening Checkout...'
@@ -546,7 +548,7 @@ function SummaryRow({
 }) {
     return (
         <div
-            className={`flex items-start justify-between gap-4 ${accent ? 'font-black text-[#F58220]' : ''}`}
+            className={`flex items-start justify-between gap-4 ${accent ? 'font-black text-[#000000]' : ''}`}
         >
             <span className="flex min-w-0 items-center gap-2">
                 {label}
@@ -583,9 +585,9 @@ function SuggestedProducts({ products }: { products: SuggestedProduct[] }) {
                     <Link
                         key={product.id}
                         href={detail.url({ query: { product: product.slug } })}
-                        className="grid min-h-[132px] grid-cols-[180px_1fr] border border-[#E5E5E5] bg-white p-4 transition-colors hover:border-[#1A1A1A]"
+                        className="grid min-h-[132px] grid-cols-[180px_1fr] border border-[rgba(0,0,0,0.16)] bg-white p-4 transition-colors hover:border-[#000000]"
                     >
-                        <div className="bg-[#F8F8F8] p-2">
+                        <div className="bg-[rgba(0,0,0,0.04)] p-2">
                             <img
                                 src={
                                     product.image ??
@@ -603,13 +605,13 @@ function SuggestedProducts({ products }: { products: SuggestedProduct[] }) {
                             <h3 className="text-base leading-tight font-black uppercase">
                                 {product.title}
                             </h3>
-                            <p className="mt-1 text-sm font-medium text-[#2E2E2E]">
+                            <p className="mt-1 text-sm font-medium text-[rgba(0,0,0,0.72)]">
                                 AxeGear Performance
                             </p>
                             <p className="mt-1 text-sm font-black">
                                 {formatPrice(product.price)}
                             </p>
-                            <span className="mt-auto flex h-8 items-center justify-center border border-[#F58220] text-xs font-black tracking-[0.05em] text-[#F58220] uppercase hover:bg-[#F58220] hover:text-white">
+                            <span className="mt-auto flex h-8 items-center justify-center border border-[#000000] text-xs font-black tracking-[0.05em] text-[#000000] uppercase hover:bg-[#000000] hover:text-white">
                                 {index === 2 ? 'View Product' : 'Quick Add'}
                             </span>
                         </div>
@@ -622,17 +624,17 @@ function SuggestedProducts({ products }: { products: SuggestedProduct[] }) {
 
 function EmptyCart() {
     return (
-        <section className="flex min-h-[520px] flex-col items-center justify-center border border-[#CFCFCF] bg-white px-6 py-20 text-center">
+        <section className="flex min-h-[520px] flex-col items-center justify-center border border-[rgba(0,0,0,0.16)] bg-white px-6 py-20 text-center">
             <h1 className="text-[40px] leading-none font-black uppercase md:text-[56px]">
                 Your cart is empty
             </h1>
-            <p className="mt-4 max-w-md text-base font-medium text-[#707070]">
+            <p className="mt-4 max-w-md text-base font-medium text-[rgba(0,0,0,0.72)]">
                 Add performance eyewear, goggles, and race-day essentials before
                 checkout.
             </p>
             <Link
                 href={list.url()}
-                className="mt-8 inline-flex h-12 items-center justify-center bg-[#F58220] px-8 text-sm font-black tracking-[0.06em] text-white uppercase hover:bg-[#E67312]"
+                className="mt-8 inline-flex h-12 items-center justify-center bg-[#000000] px-8 text-sm font-black tracking-[0.06em] text-white uppercase hover:bg-[rgba(0,0,0,0.84)]"
             >
                 Continue Shopping
             </Link>

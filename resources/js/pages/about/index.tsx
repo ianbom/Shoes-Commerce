@@ -235,15 +235,15 @@ export default function AboutPage() {
 
 function HeroSection() {
     return (
-        <section className="border-b border-[#D9D9D9] bg-white">
-            <div className="mx-auto grid max-w-[1600px] grid-cols-1 lg:grid-cols-[0.98fr_1.02fr]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white">
+            <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[0.98fr_1.02fr]">
                 <div className="flex items-center px-6 py-10 md:px-10 lg:px-14 lg:py-16">
                     <div className="max-w-[650px]">
                         <SectionTag>About AxeGear Shop</SectionTag>
-                        <h1 className="mt-6 text-[52px] leading-[0.9] font-black text-[#1A1A1A] uppercase italic md:text-[74px] xl:text-[92px]">
+                        <h1 className="mt-6 text-[52px] leading-[0.9] font-black text-[#000000] uppercase italic md:text-[74px] xl:text-[92px]">
                             Built for speed. Designed for clarity.
                         </h1>
-                        <p className="mt-6 max-w-[600px] text-[18px] leading-8 font-medium text-[#2E2E2E]">
+                        <p className="mt-6 max-w-[600px] text-[18px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
                             At AxeGear Shop, we create premium performance
                             eyewear and gear for athletes who demand clarity,
                             durability, and confidence on every ride, run, and
@@ -252,13 +252,13 @@ function HeroSection() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/list"
-                                className="inline-flex h-13 items-center justify-center bg-[#F58220] px-9 text-[14px] font-black tracking-[0.06em] text-white uppercase hover:bg-[#E67312]"
+                                className="inline-flex h-13 items-center justify-center bg-[#000000] px-9 text-[14px] font-black tracking-[0.06em] text-white uppercase hover:bg-[rgba(0,0,0,0.84)]"
                             >
                                 Shop Collection
                             </Link>
                             <a
                                 href="#our-story"
-                                className="inline-flex h-13 items-center justify-center border border-[#1A1A1A] bg-white px-9 text-[14px] font-black tracking-[0.06em] text-[#1A1A1A] uppercase hover:bg-[#1A1A1A] hover:text-white"
+                                className="inline-flex h-13 items-center justify-center border border-[#000000] bg-white px-9 text-[14px] font-black tracking-[0.06em] text-[#000000] uppercase hover:bg-[#000000] hover:text-white"
                             >
                                 Our Story
                             </a>
@@ -282,22 +282,22 @@ function WhoWeAreSection() {
     return (
         <section
             id="our-story"
-            className="border-b border-[#E5E5E5] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-12"
+            className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-12"
         >
-            <div className="mx-auto grid max-w-[1600px] gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+            <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
                 <div className="max-w-[560px]">
                     <SectionTag>Who We Are</SectionTag>
-                    <h2 className="mt-5 text-[46px] leading-[0.92] font-black text-[#1A1A1A] uppercase italic md:text-[56px]">
+                    <h2 className="mt-5 text-[46px] leading-[0.92] font-black text-[#000000] uppercase italic md:text-[56px]">
                         Built different.
                     </h2>
-                    <p className="mt-5 text-[17px] leading-8 font-medium text-[#2E2E2E]">
+                    <p className="mt-5 text-[17px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
                         AxeGear Shop was built on a simple belief: athletes
                         deserve gear that keeps up with their drive. We design
                         high-performance eyewear and accessories that combine
                         precision engineering, athlete feedback, and modern
                         style to help you perform at your best.
                     </p>
-                    <p className="mt-8 text-[17px] leading-8 font-black text-[#1A1A1A]">
+                    <p className="mt-8 text-[17px] leading-8 font-black text-[#000000]">
                         Built Different. Built for You.
                     </p>
                 </div>
@@ -306,7 +306,7 @@ function WhoWeAreSection() {
                     <img
                         src={storyImage}
                         alt="AxeGear performance eyewear on rock surface"
-                        className="aspect-[16/7] w-full border border-[#E5E5E5] object-cover"
+                        className="aspect-[16/7] w-full border border-[rgba(0,0,0,0.16)] object-cover"
                     />
                 </div>
             </div>
@@ -316,29 +316,29 @@ function WhoWeAreSection() {
 
 function ValuesSection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-10">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-10">
+            <div className="mx-auto max-w-[1440px]">
                 <div className="mb-8 flex justify-center lg:justify-start">
                     <SectionTag>What Drives Us</SectionTag>
                 </div>
-                <div className="grid grid-cols-1 border-y border-[#E5E5E5] sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 border-y border-[rgba(0,0,0,0.16)] sm:grid-cols-2 lg:grid-cols-4">
                     {values.map((item, index) => {
                         const Icon = item.icon;
 
                         return (
                             <article
                                 key={item.title}
-                                className={`flex flex-col items-center px-6 py-7 text-center ${index > 0 ? 'lg:border-l lg:border-[#E5E5E5]' : ''} ${index > 1 ? 'sm:border-t sm:border-[#E5E5E5] lg:border-t-0' : ''}`}
+                                className={`flex flex-col items-center px-6 py-7 text-center ${index > 0 ? 'lg:border-l lg:border-[rgba(0,0,0,0.16)]' : ''} ${index > 1 ? 'sm:border-t sm:border-[rgba(0,0,0,0.16)] lg:border-t-0' : ''}`}
                             >
                                 <Icon
                                     size={56}
                                     strokeWidth={1.5}
-                                    className="text-[#1A1A1A]"
+                                    className="text-[#000000]"
                                 />
-                                <h3 className="mt-5 text-[24px] leading-tight font-black text-[#1A1A1A] uppercase">
+                                <h3 className="mt-5 text-[24px] leading-tight font-black text-[#000000] uppercase">
                                     {item.title}
                                 </h3>
-                                <p className="mt-3 max-w-[270px] text-[15px] leading-7 font-medium text-[#2E2E2E]">
+                                <p className="mt-3 max-w-[270px] text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
                                     {item.body}
                                 </p>
                             </article>
@@ -352,14 +352,14 @@ function ValuesSection() {
 
 function DisciplinesSection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
+            <div className="mx-auto max-w-[1440px]">
                 <CenteredTag>Engineered for every discipline</CenteredTag>
                 <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
                     {disciplines.map((item) => (
                         <article
                             key={item.title}
-                            className="relative aspect-[1.55] overflow-hidden border border-[#E5E5E5]"
+                            className="relative aspect-[1.55] overflow-hidden border border-[rgba(0,0,0,0.16)]"
                         >
                             <img
                                 src={item.image}
@@ -380,33 +380,33 @@ function DisciplinesSection() {
 
 function JourneySection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
+            <div className="mx-auto max-w-[1440px]">
                 <CenteredTag>Join Journey</CenteredTag>
 
                 <div className="mt-9 hidden items-center px-6 lg:flex">
-                    <div className="h-[2px] flex-1 bg-[#F58220]" />
+                    <div className="h-[2px] flex-1 bg-[#000000]" />
                     {timeline.map((item) => (
                         <div key={item.year} className="relative flex-1">
-                            <div className="mx-auto h-3 w-3 rounded-full bg-[#F58220]" />
+                            <div className="mx-auto h-3 w-3 rounded-full bg-[#000000]" />
                         </div>
                     ))}
-                    <div className="h-[2px] flex-1 bg-[#F58220]" />
+                    <div className="h-[2px] flex-1 bg-[#000000]" />
                 </div>
 
                 <div className="mt-8 grid gap-6 lg:grid-cols-5 lg:gap-8">
                     {timeline.map((item) => (
                         <article
                             key={item.year}
-                            className="border-t border-[#E5E5E5] pt-5 lg:border-t-0 lg:pt-0"
+                            className="border-t border-[rgba(0,0,0,0.16)] pt-5 lg:border-t-0 lg:pt-0"
                         >
-                            <p className="text-[18px] font-black text-[#F58220]">
+                            <p className="text-[18px] font-black text-[#000000]">
                                 {item.year}
                             </p>
-                            <h3 className="mt-3 text-[24px] leading-tight font-black text-[#1A1A1A] uppercase">
+                            <h3 className="mt-3 text-[24px] leading-tight font-black text-[#000000] uppercase">
                                 {item.title}
                             </h3>
-                            <p className="mt-3 text-[15px] leading-7 font-medium text-[#2E2E2E]">
+                            <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
                                 {item.body}
                             </p>
                         </article>
@@ -419,14 +419,14 @@ function JourneySection() {
 
 function FeaturesSection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
+            <div className="mx-auto max-w-[1440px]">
                 <CenteredTag>Designed for Performance</CenteredTag>
                 <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                     {features.map((item) => (
                         <article
                             key={item.title}
-                            className="border border-[#E5E5E5] bg-white"
+                            className="border border-[rgba(0,0,0,0.16)] bg-white"
                         >
                             <img
                                 src={item.image}
@@ -434,10 +434,10 @@ function FeaturesSection() {
                                 className="aspect-[1.5] w-full object-cover"
                             />
                             <div className="p-5">
-                                <h3 className="text-[22px] leading-tight font-black text-[#1A1A1A] uppercase">
+                                <h3 className="text-[22px] leading-tight font-black text-[#000000] uppercase">
                                     {item.title}
                                 </h3>
-                                <p className="mt-3 text-[15px] leading-7 font-medium text-[#2E2E2E]">
+                                <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
                                     {item.body}
                                 </p>
                             </div>
@@ -451,14 +451,14 @@ function FeaturesSection() {
 
 function AthletesSection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
+            <div className="mx-auto max-w-[1440px]">
                 <CenteredTag>Inspired by Athletes</CenteredTag>
                 <div className="mt-7 grid gap-4 lg:grid-cols-3">
                     {athletes.map((item) => (
                         <article
                             key={item.title}
-                            className="grid min-h-[216px] border border-[#E5E5E5] bg-white md:grid-cols-[0.95fr_1.05fr]"
+                            className="grid min-h-[216px] border border-[rgba(0,0,0,0.16)] bg-white md:grid-cols-[0.95fr_1.05fr]"
                         >
                             {item.image && (
                                 <img
@@ -469,17 +469,17 @@ function AthletesSection() {
                             )}
                             <div className="flex flex-col justify-between p-5">
                                 <div>
-                                    <h3 className="text-[24px] leading-tight font-black text-[#1A1A1A] uppercase">
+                                    <h3 className="text-[24px] leading-tight font-black text-[#000000] uppercase">
                                         {item.title}
                                     </h3>
-                                    <p className="mt-3 text-[15px] leading-7 font-medium text-[#2E2E2E]">
+                                    <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
                                         {item.body}
                                     </p>
                                 </div>
                                 {item.cta && item.href && (
                                     <Link
                                         href={item.href}
-                                        className="mt-5 inline-flex items-center gap-2 text-[13px] font-black tracking-[0.06em] text-[#F58220] uppercase hover:text-[#E67312]"
+                                        className="mt-5 inline-flex items-center gap-2 text-[13px] font-black tracking-[0.06em] text-[#000000] uppercase hover:text-[rgba(0,0,0,0.84)]"
                                     >
                                         {item.cta}{' '}
                                         <span aria-hidden="true">-&gt;</span>
@@ -496,15 +496,15 @@ function AthletesSection() {
 
 function CollectionsSection() {
     return (
-        <section className="border-b border-[#E5E5E5] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1600px]">
+        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
+            <div className="mx-auto max-w-[1440px]">
                 <CenteredTag>Featured Collections</CenteredTag>
                 <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
                     {collections.map((item) => (
                         <Link
                             key={item.title}
                             href={item.href}
-                            className="border border-[#E5E5E5] bg-white hover:border-[#1A1A1A]"
+                            className="border border-[rgba(0,0,0,0.16)] bg-white hover:border-[#000000]"
                         >
                             <img
                                 src={item.image}
@@ -512,10 +512,10 @@ function CollectionsSection() {
                                 className="aspect-[1.5] w-full object-cover"
                             />
                             <div className="p-4 text-center">
-                                <h3 className="text-[21px] leading-tight font-black text-[#1A1A1A] uppercase">
+                                <h3 className="text-[21px] leading-tight font-black text-[#000000] uppercase">
                                     {item.title}
                                 </h3>
-                                <p className="mt-2 text-[13px] font-black tracking-[0.05em] text-[#F58220] uppercase">
+                                <p className="mt-2 text-[13px] font-black tracking-[0.05em] text-[#000000] uppercase">
                                     Explore Collection{' '}
                                     <span aria-hidden="true">-&gt;</span>
                                 </p>
@@ -530,8 +530,8 @@ function CollectionsSection() {
 
 function SectionTag({ children }: { children: string }) {
     return (
-        <div className="inline-flex items-center gap-3 text-[13px] font-black tracking-[0.06em] text-[#1A1A1A] uppercase">
-            <span className="h-[3px] w-10 bg-[#F58220]" />
+        <div className="inline-flex items-center gap-3 text-[13px] font-black tracking-[0.06em] text-[#000000] uppercase">
+            <span className="h-[3px] w-10 bg-[#000000]" />
             {children}
         </div>
     );
@@ -539,8 +539,8 @@ function SectionTag({ children }: { children: string }) {
 
 function CenteredTag({ children }: { children: string }) {
     return (
-        <div className="flex items-center justify-center gap-3 text-center text-[14px] font-black tracking-[0.03em] text-[#1A1A1A] uppercase italic">
-            <span className="h-[3px] w-8 bg-[#F58220]" />
+        <div className="flex items-center justify-center gap-3 text-center text-[14px] font-black tracking-[0.03em] text-[#000000] uppercase italic">
+            <span className="h-[3px] w-8 bg-[#000000]" />
             <span>{children}</span>
         </div>
     );

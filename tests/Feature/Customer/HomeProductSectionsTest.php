@@ -8,7 +8,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
-it('shows latest new arrivals and latest best sellers on home page', function () {
+it('shows flash deals and latest new arrivals on home page', function () {
     $baseTime = Carbon::parse('2026-05-21 10:00:00');
 
     foreach (range(1, 6) as $index) {
@@ -45,12 +45,20 @@ it('shows latest new arrivals and latest best sellers on home page', function ()
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('welcome')
-            ->has('wePresent', 5)
-            ->where('wePresent.0.name', 'New Arrival 6')
-            ->where('wePresent.4.name', 'New Arrival 2')
-            ->has('mostLoved', 4)
-            ->where('mostLoved.0.name', 'Best Seller 5')
-            ->where('mostLoved.3.name', 'Best Seller 2'));
+            ->has('flashDeals', 1)
+            ->where('flashDeals.0.name', 'Sale Only Product')
+            ->has('newArrivals', 6)
+            ->where('newArrivals.0.name', 'New Arrival 6')
+            ->where('newArrivals.5.name', 'New Arrival 1'));
+});
+
+it('returns empty product sections without database records', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('welcome')
+            ->has('flashDeals', 0)
+            ->has('newArrivals', 0));
 });
 
 /**
