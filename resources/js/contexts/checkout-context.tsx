@@ -105,19 +105,26 @@ type CheckoutContextValue = {
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 const checkoutStockAlertKey = 'checkout.stock_alert';
+const checkoutIdempotencyStorageKey = 'checkout.idempotency_key';
+
+function newCheckoutIdempotencyKey() {
+    return (
+        window.crypto?.randomUUID?.() ??
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    );
+}
 
 function checkoutIdempotencyKey() {
-    const storageKey = 'checkout.idempotency_key';
-    const existing = window.sessionStorage.getItem(storageKey);
+    const existing = window.sessionStorage.getItem(
+        checkoutIdempotencyStorageKey,
+    );
 
     if (existing) {
         return existing;
     }
 
-    const generated =
-        window.crypto?.randomUUID?.() ??
-        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    window.sessionStorage.setItem(storageKey, generated);
+    const generated = newCheckoutIdempotencyKey();
+    window.sessionStorage.setItem(checkoutIdempotencyStorageKey, generated);
 
     return generated;
 }
@@ -190,7 +197,9 @@ export function CheckoutProvider({
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [shippingRatesLoading, setShippingRatesLoading] = useState(false);
     const [placingOrder, setPlacingOrder] = useState(false);
-    const [idempotencyKey] = useState(checkoutIdempotencyKey);
+    const [idempotencyKey, setIdempotencyKey] = useState(
+        checkoutIdempotencyKey,
+    );
 
     const resetShippingSummary = useCallback(() => {
         setCurrentSummary((current) => ({
@@ -344,12 +353,31 @@ export function CheckoutProvider({
                     },
                 );
 
-                window.sessionStorage.removeItem('checkout.idempotency_key');
+                if (
+                    typeof payload.redirect_url !== 'string' ||
+                    payload.redirect_url.trim() === ''
+                ) {
+                    throw {
+                        payment:
+                            'URL pembayaran tidak tersedia. Silakan coba lagi.',
+                    };
+                }
 
-                return payload.redirect_url ?? null;
+                window.sessionStorage.removeItem(checkoutIdempotencyStorageKey);
+
+                return payload.redirect_url;
             } catch (error) {
                 const errors = error as Record<string, string>;
                 setErrors(errors);
+
+                if (errors.payment) {
+                    const nextIdempotencyKey = newCheckoutIdempotencyKey();
+                    window.sessionStorage.setItem(
+                        checkoutIdempotencyStorageKey,
+                        nextIdempotencyKey,
+                    );
+                    setIdempotencyKey(nextIdempotencyKey);
+                }
 
                 if (errors.cart) {
                     window.sessionStorage.setItem(

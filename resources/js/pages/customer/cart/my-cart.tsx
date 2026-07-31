@@ -98,6 +98,7 @@ export default function MyCart({
     const [processingAction, setProcessingAction] = useState<
         'update' | 'remove' | null
     >(null);
+    const [checkoutProcessing, setCheckoutProcessing] = useState(false);
 
     const isEmpty = cartItems.length === 0;
     const errorMessage =
@@ -128,7 +129,10 @@ export default function MyCart({
             return;
         }
 
-        router.visit(checkoutHref);
+        setCheckoutProcessing(true);
+        router.visit(checkoutHref, {
+            onFinish: () => setCheckoutProcessing(false),
+        });
     };
 
     const updateQuantity = (item: CartItem, nextQuantity: number) => {
@@ -408,6 +412,7 @@ export default function MyCart({
                                 <OrderSummary
                                     summary={summary}
                                     hasStockIssues={hasStockIssues}
+                                    checkoutProcessing={checkoutProcessing}
                                     onCheckout={continueToCheckout}
                                 />
                             </div>
@@ -470,10 +475,12 @@ function QuantityControl({
 function OrderSummary({
     summary,
     hasStockIssues,
+    checkoutProcessing,
     onCheckout,
 }: {
     summary: CartSummary;
     hasStockIssues: boolean;
+    checkoutProcessing: boolean;
     onCheckout: () => void;
 }) {
     return (
@@ -510,10 +517,12 @@ function OrderSummary({
             <button
                 type="button"
                 onClick={onCheckout}
-                disabled={hasStockIssues}
+                disabled={hasStockIssues || checkoutProcessing}
                 className="h-12 w-full bg-[#F58220] text-sm font-black tracking-[0.06em] text-white uppercase transition-colors hover:bg-[#E67312] disabled:bg-[#CFCFCF] disabled:text-[#707070]"
             >
-                Proceed to Checkout
+                {checkoutProcessing
+                    ? 'Opening Checkout...'
+                    : 'Proceed to Checkout'}
             </button>
             <div className="mt-8 grid grid-cols-3 gap-3 text-center text-xs font-medium">
                 <TrustItem icon={ShieldCheck} label="Secure Checkout" />

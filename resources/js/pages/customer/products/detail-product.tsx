@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     ChevronLeft,
@@ -14,8 +14,20 @@ import {
     Truck,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
+import { addProductVariantToCart } from '@/actions/App/Http/Controllers/Customer/CartController';
 import ShopLayout from '@/layouts/shop-layout';
+import { checkout, login } from '@/routes';
+
+type ProductVariant = {
+    id: number;
+    color_name: string | null;
+    color_hex: string;
+    size: string | null;
+    available_stock: number;
+    cart_quantity: number;
+};
 
 // Helper to format price
 const formatPrice = (price: number) => {
@@ -39,6 +51,7 @@ export default function DetailProduct({
     relatedProducts,
     recentProducts,
 }: any) {
+    const { auth } = usePage().props;
     const images =
         product.images?.length > 0
             ? product.images.map((img: any) => img.url)
@@ -50,17 +63,90 @@ export default function DetailProduct({
 
     const availableColors = product.colors || [];
     const availableSizes = product.sizes || [];
+    const variants = (product.variants ?? []) as ProductVariant[];
+    const initialVariant =
+        variants.find(
+            (variant) => variant.available_stock - variant.cart_quantity > 0,
+        ) ?? variants[0];
 
     const [selectedColor, setSelectedColor] = useState(
-        availableColors.length > 0 ? availableColors[0].hex : '',
+        initialVariant?.color_hex ?? '',
     );
     const [selectedSize, setSelectedSize] = useState(
-        availableSizes.length > 0 ? availableSizes[0] : '',
+        initialVariant?.size ?? '',
     );
     const [quantity, setQuantity] = useState(1);
     const [wishlisted, setWishlisted] = useState(
         product.is_wishlisted || false,
     );
+    const [cartProcessing, setCartProcessing] = useState(false);
+
+    const selectedVariant = variants.find(
+        (variant) =>
+            (variant.color_hex ?? '') === selectedColor &&
+            variant.size === selectedSize,
+    );
+    const available_stock = selectedVariant
+        ? Math.max(
+              0,
+              selectedVariant.available_stock - selectedVariant.cart_quantity,
+          )
+        : 0;
+
+    const selectColor = (color: string) => {
+        const firstAvailableVariant = variants.find(
+            (variant) =>
+                (variant.color_hex ?? '') === color &&
+                variant.available_stock - variant.cart_quantity > 0,
+        );
+        const firstVariant = variants.find(
+            (variant) => (variant.color_hex ?? '') === color,
+        );
+
+        setSelectedColor(color);
+        setSelectedSize(
+            firstAvailableVariant?.size ?? firstVariant?.size ?? '',
+        );
+        setQuantity(1);
+    };
+
+    const addToCart = (buyNow = false) => {
+        if (!auth.user) {
+            router.visit(login.url());
+
+            return;
+        }
+
+        if (!selectedVariant || available_stock < quantity) {
+            toast.error('Varian atau stok produk tidak tersedia.');
+
+            return;
+        }
+
+        setCartProcessing(true);
+        router.post(
+            addProductVariantToCart.url(selectedVariant.id),
+            { quantity },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    if (buyNow) {
+                        router.visit(checkout.url());
+                    }
+                },
+                onError: (errors) => {
+                    toast.error(
+                        String(
+                            errors.quantity ??
+                                errors.product_variant_id ??
+                                'Produk gagal ditambahkan ke keranjang.',
+                        ),
+                    );
+                },
+                onFinish: () => setCartProcessing(false),
+            },
+        );
+    };
 
     const accordions = useMemo(
         () => [
@@ -118,8 +204,12 @@ export default function DetailProduct({
                             wishlisted={wishlisted}
                             availableColors={availableColors}
                             availableSizes={availableSizes}
+                            variants={variants}
+                            available_stock={available_stock}
+                            cartProcessing={cartProcessing}
+                            addToCart={addToCart}
                             setQuantity={setQuantity}
-                            setSelectedColor={setSelectedColor}
+                            setSelectedColor={selectColor}
                             setSelectedSize={setSelectedSize}
                             setWishlisted={setWishlisted}
                         />
@@ -252,12 +342,16 @@ function PurchasePanel({
     wishlisted,
     availableColors,
     availableSizes,
+    variants,
+    available_stock,
+    cartProcessing,
+    addToCart,
     setQuantity,
     setSelectedColor,
     setSelectedSize,
     setWishlisted,
 }: any) {
-    const isOutOfStock = product.available_stock <= 0;
+    const isOutOfStock = available_stock <= 0;
     const price = product.sale_price
         ? formatPrice(product.sale_price)
         : formatPrice(product.price);
@@ -351,20 +445,40 @@ function PurchasePanel({
                         </button>
                     </div>
                     <div className="flex flex-wrap gap-3">
-                        {availableSizes.map((size: string) => (
-                            <button
-                                type="button"
-                                key={size}
-                                onClick={() => setSelectedSize(size)}
-                                className={`h-11 min-w-[3rem] rounded border px-3 text-[13px] font-bold ${
-                                    selectedSize === size
-                                        ? 'border-ink bg-ink text-white'
-                                        : 'border-hairline bg-white hover:border-ink'
-                                }`}
-                            >
-                                {size}
-                            </button>
-                        ))}
+                        {availableSizes.map((size: string) => {
+                            const variant = variants.find(
+                                (candidate: ProductVariant) =>
+                                    (candidate.color_hex ?? '') ===
+                                        selectedColor &&
+                                    candidate.size === size,
+                            );
+                            const unavailable =
+                                !variant ||
+                                variant.available_stock -
+                                    variant.cart_quantity <=
+                                    0;
+
+                            return (
+                                <button
+                                    type="button"
+                                    key={size}
+                                    disabled={unavailable}
+                                    onClick={() => {
+                                        setSelectedSize(size);
+                                        setQuantity(1);
+                                    }}
+                                    className={`h-11 min-w-[3rem] rounded border px-3 text-[13px] font-bold ${
+                                        unavailable
+                                            ? 'cursor-not-allowed border-hairline bg-surface-soft text-muted line-through'
+                                            : selectedSize === size
+                                              ? 'border-ink bg-ink text-white'
+                                              : 'border-hairline bg-white hover:border-ink'
+                                    }`}
+                                >
+                                    {size}
+                                </button>
+                            );
+                        })}
                     </div>
                 </section>
             )}
@@ -375,6 +489,7 @@ function PurchasePanel({
                     <div className="grid h-12 grid-cols-3 rounded border border-hairline">
                         <button
                             type="button"
+                            disabled={quantity <= 1 || cartProcessing}
                             onClick={() =>
                                 setQuantity(Math.max(1, quantity - 1))
                             }
@@ -387,7 +502,14 @@ function PurchasePanel({
                         </span>
                         <button
                             type="button"
-                            onClick={() => setQuantity(quantity + 1)}
+                            disabled={
+                                quantity >= available_stock || cartProcessing
+                            }
+                            onClick={() =>
+                                setQuantity(
+                                    Math.min(available_stock, quantity + 1),
+                                )
+                            }
                             aria-label="Increase quantity"
                         >
                             <Plus className="mx-auto h-4 w-4" />
@@ -395,18 +517,24 @@ function PurchasePanel({
                     </div>
                     <button
                         type="button"
-                        disabled={isOutOfStock}
-                        className={`inline-flex h-12 items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary-hover'}`}
+                        disabled={isOutOfStock || cartProcessing}
+                        onClick={() => addToCart(false)}
+                        className={`inline-flex h-12 items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock || cartProcessing ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary-hover'}`}
                     >
                         <ShoppingBag className="h-4 w-4" />
-                        {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                        {isOutOfStock
+                            ? 'Out of Stock'
+                            : cartProcessing
+                              ? 'Adding...'
+                              : 'Add to Cart'}
                     </button>
                     <button
                         type="button"
-                        disabled={isOutOfStock}
-                        className={`h-12 rounded border text-[14px] font-extrabold ${isOutOfStock ? 'cursor-not-allowed border-hairline text-muted' : 'border-ink hover:bg-ink hover:text-white'}`}
+                        disabled={isOutOfStock || cartProcessing}
+                        onClick={() => addToCart(true)}
+                        className={`h-12 rounded border text-[14px] font-extrabold ${isOutOfStock || cartProcessing ? 'cursor-not-allowed border-hairline text-muted' : 'border-ink hover:bg-ink hover:text-white'}`}
                     >
-                        Buy Now
+                        {cartProcessing ? 'Processing...' : 'Buy Now'}
                     </button>
                 </div>
             </section>

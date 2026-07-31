@@ -1,8 +1,8 @@
 import { Link } from '@inertiajs/react';
-import { Heart, Menu, ShoppingBag, X } from 'lucide-react';
+import { Heart, Menu, ShoppingBag, User, X } from 'lucide-react';
 import { useState } from 'react';
 
-import { list, login } from '@/routes';
+import { list, login, myProfile } from '@/routes';
 
 type NavbarProps = {
     cartCount?: number;
@@ -132,13 +132,24 @@ export default function Navbar({
                             {item.label}
                         </Link>
                     ))}
-                    <Link
-                        href={ctaHref}
-                        onClick={() => setIsOpen(false)}
-                        className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
-                    >
-                        {ctaLabel}
-                    </Link>
+                    {isAuthenticated ? (
+                        <Link
+                            href={myProfile()}
+                            onClick={() => setIsOpen(false)}
+                            aria-label="Open profile"
+                            className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-white hover:bg-primary-hover"
+                        >
+                            <User className="h-5 w-5" />
+                        </Link>
+                    ) : (
+                        <Link
+                            href={ctaHref}
+                            onClick={() => setIsOpen(false)}
+                            className="mt-5 inline-flex h-11 items-center justify-center rounded bg-primary px-5 text-[13px] font-extrabold text-white hover:bg-primary-hover"
+                        >
+                            {ctaLabel}
+                        </Link>
+                    )}
                 </nav>
             </aside>
         </header>

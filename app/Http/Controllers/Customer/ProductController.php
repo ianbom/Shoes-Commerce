@@ -17,6 +17,9 @@ class ProductController extends Controller
 
     public function show(Request $request, ProductBrowsingService $products): Response
     {
-        return Inertia::render('customer/products/detail-product', $products->productDetailData($request));
+        return Inertia::render(
+            'customer/products/detail-product',
+            $products->productDetailData($request),
+        );
     }
 }

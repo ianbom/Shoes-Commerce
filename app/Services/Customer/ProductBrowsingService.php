@@ -3,10 +3,10 @@
 namespace App\Services\Customer;
 
 use App\Models\Banner;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Page;
-use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -190,7 +190,7 @@ class ProductBrowsingService
             'primaryImage:id,product_id,image_url,alt_text',
             'images:id,product_id,image_url,alt_text,sort_order',
             'variants' => fn ($query) => $query
-            ->select('id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'stock', 'reserved_stock', 'regular_price', 'sale_price', 'image_url', 'is_active')
+                ->select('id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'stock', 'reserved_stock', 'regular_price', 'sale_price', 'image_url', 'is_active')
                 ->where('is_active', true)
                 ->orderByRaw('(stock - reserved_stock) > 0 desc')
                 ->orderBy('color_name')
@@ -234,7 +234,9 @@ class ProductBrowsingService
                     'hex' => $variant->color_hex,
                 ]),
             'sizes' => $variants->pluck('size')->filter()->unique()->values(),
-            'available_stock' => $variants->sum(fn ($variant) => max(0, $variant->stock - $variant->reserved_stock)),
+            'available_stock' => $variants->sum(
+                fn ($variant) => max(0, (int) $variant->stock - (int) $variant->reserved_stock),
+            ),
             'is_wishlisted' => (bool) ($product->is_wishlisted ?? false),
         ];
     }
@@ -274,13 +276,13 @@ class ProductBrowsingService
                     'id' => $variant->id,
                     'sku' => $variant->sku,
                     'color_name' => $variant->color_name,
-                    'color_hex' => $variant->color_hex,
+                    'color_hex' => $variant->color_hex ?? '',
                     'size' => $variant->size,
                     'regular_price' => $variant->regular_price !== null ? (float) $variant->regular_price : null,
                     'sale_price' => $variant->sale_price !== null ? (float) $variant->sale_price : null,
-                    'stock' => $variant->stock,
-                    'reserved_stock' => $variant->reserved_stock,
-                    'available_stock' => max(0, $variant->stock - $variant->reserved_stock),
+                    'stock' => (int) $variant->stock,
+                    'reserved_stock' => (int) $variant->reserved_stock,
+                    'available_stock' => max(0, (int) $variant->stock - (int) $variant->reserved_stock),
                     'cart_quantity' => (int) ($cartQuantities[$variant->id] ?? 0),
                     'image_url' => $variant->image_url,
                 ])

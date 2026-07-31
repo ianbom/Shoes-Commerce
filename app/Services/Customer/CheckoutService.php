@@ -318,6 +318,13 @@ class CheckoutService
 
         try {
             $snap = $this->midtrans->createSnapTransaction($payment->order()->with(['items', 'address'])->firstOrFail());
+
+            if (blank($snap['redirect_url'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'payment' => 'Midtrans tidak mengembalikan URL pembayaran.',
+                ]);
+            }
+
             DB::transaction(function () use ($payment, $snap): void {
                 $payment->refresh()->update([
                     'midtrans_snap_token' => $snap['token'] ?? null,
@@ -326,7 +333,7 @@ class CheckoutService
                 ]);
             });
         } catch (\Throwable $exception) {
-            DB::transaction(function () use ($payment): void {
+            DB::transaction(function () use ($exception, $payment): void {
                 $order = $payment->order()->lockForUpdate()->firstOrFail();
                 $this->releaseStock->execute($order);
                 $this->releaseVoucher->execute($order);
