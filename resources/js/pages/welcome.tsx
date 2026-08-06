@@ -3,6 +3,7 @@ import {
     ArrowRight,
     BadgeCheck,
     Box,
+    ChevronLeft,
     ChevronRight,
     CircleDollarSign,
     Footprints,
@@ -22,6 +23,7 @@ import {
     Wind,
     Zap,
 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
 import ShopLayout from '@/layouts/shop-layout';
@@ -87,6 +89,33 @@ const categoryCards = [
         description: 'Street-ready styles that move with your world.',
         image: '/welcome/image copy.png',
         href: '/list?search=lifestyle',
+    },
+    {
+        title: 'Apparel',
+        description: 'Performance apparel built for every active day.',
+        image: '/welcome/image.png',
+        href: '/list?search=apparel',
+    },
+    {
+        title: 'Accessories',
+        description: 'Essential accessories for sport, travel, and training.',
+        image: '/welcome/image copy.png',
+        href: '/list?search=accessories',
+    },
+];
+
+const campaignSlides = [
+    {
+        src: '/img/banner.png',
+        alt: 'Basketball athlete wearing performance sneakers',
+    },
+    {
+        src: '/welcome/image copy 2.png',
+        alt: 'Performance footwear collection',
+    },
+    {
+        src: '/welcome/image copy 3.png',
+        alt: 'Sport style collection',
     },
 ];
 
@@ -158,6 +187,107 @@ function SectionHeader({
                 <ArrowRight className="size-4" />
             </Link>
         </div>
+    );
+}
+
+function CampaignCarousel() {
+    const [activeSlide, setActiveSlide] = useState(0);
+    const touchStartX = useRef<number | null>(null);
+
+    const moveSlide = (offset: number) => {
+        setActiveSlide(
+            (currentSlide) =>
+                (currentSlide + offset + campaignSlides.length) %
+                campaignSlides.length,
+        );
+    };
+
+    useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
+
+        const interval = window.setInterval(() => moveSlide(1), 5000);
+
+        return () => window.clearInterval(interval);
+    }, [activeSlide]);
+
+    return (
+        <section
+            aria-label="Featured campaigns"
+            aria-roledescription="carousel"
+            className="relative h-[200px] overflow-hidden rounded-[14px] sm:h-[260px] lg:h-[430px]"
+            onTouchStart={(event) => {
+                touchStartX.current = event.touches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={(event) => {
+                const startX = touchStartX.current;
+                const endX = event.changedTouches[0]?.clientX;
+
+                touchStartX.current = null;
+
+                if (startX === null || endX === undefined) {
+                    return;
+                }
+
+                const distance = startX - endX;
+
+                if (Math.abs(distance) < 40) {
+                    return;
+                }
+
+                moveSlide(distance > 0 ? 1 : -1);
+            }}
+        >
+            <div
+                className="flex h-full transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            >
+                {campaignSlides.map((slide) => (
+                    <img
+                        key={slide.src}
+                        src={slide.src}
+                        alt={slide.alt}
+                        loading="lazy"
+                        className="h-full w-full shrink-0 object-cover object-center"
+                    />
+                ))}
+            </div>
+
+            <button
+                type="button"
+                onClick={() => moveSlide(-1)}
+                className="absolute top-1/2 left-3 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink transition-colors hover:bg-white"
+                aria-label="Previous campaign"
+            >
+                <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+                type="button"
+                onClick={() => moveSlide(1)}
+                className="absolute top-1/2 right-3 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink transition-colors hover:bg-white"
+                aria-label="Next campaign"
+            >
+                <ChevronRight className="h-5 w-5" />
+            </button>
+
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+                {campaignSlides.map((slide, index) => (
+                    <button
+                        key={slide.src}
+                        type="button"
+                        onClick={() => setActiveSlide(index)}
+                        className={`h-2 rounded-full transition-all ${
+                            activeSlide === index
+                                ? 'w-5 bg-white'
+                                : 'w-2 bg-white/60 hover:bg-white'
+                        }`}
+                        aria-label={`Show campaign ${index + 1}`}
+                        aria-current={activeSlide === index}
+                    />
+                ))}
+            </div>
+        </section>
     );
 }
 
@@ -401,17 +531,7 @@ export default function Welcome({
                         </div>
                     </section>
 
-                    <section
-                        aria-label="Basketball campaign banner"
-                        className="h-[200px] overflow-hidden rounded-[14px] sm:h-[260px] lg:h-[430px]"
-                    >
-                        <img
-                            src="/img/banner.png"
-                            alt="Basketball athlete wearing performance sneakers"
-                            loading="lazy"
-                            className="h-full w-full object-cover object-center"
-                        />
-                    </section>
+                    <CampaignCarousel />
 
                     <section>
                         <SectionHeader

@@ -1,5 +1,6 @@
-import { Link } from '@inertiajs/react';
-import { Heart, Menu, ShoppingBag, User, X } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { Heart, Menu, Search, ShoppingBag, User, X } from 'lucide-react';
+import type { FormEvent } from 'react';
 import { useState } from 'react';
 
 import { list, login, myProfile } from '@/routes';
@@ -17,7 +18,7 @@ const navItems = [
     { label: 'Best Sellers', href: '/list?type=best_seller' },
     { label: 'Sneakers', href: '/list?search=sneakers' },
     { label: 'Streetwear', href: '/list?search=streetwear' },
-    { label: 'About', href: '/about' },
+    { label: 'Why Us', href: '/about' },
 ];
 
 export default function Navbar({
@@ -27,10 +28,19 @@ export default function Navbar({
     logoSrc = '/logo-shay/gods-hitam.webp',
 }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const cartBadge = cartCount > 99 ? '99+' : String(cartCount);
     const ctaHref = isAuthenticated ? list() : login();
     const ctaLabel = isAuthenticated ? 'Shop Now' : 'Login';
     const isActive = (href: string) => currentUrl === href;
+    const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const search = searchQuery.trim();
+
+        setIsOpen(false);
+        router.get(list.url(), search ? { search } : {});
+    };
 
     return (
         <header className="sticky top-0 z-50 border-b border-hairline bg-white">
@@ -60,6 +70,23 @@ export default function Navbar({
                 </nav>
 
                 <div className="flex items-center gap-1 text-ink sm:gap-2">
+                    <form
+                        onSubmit={submitSearch}
+                        className="hidden h-10 w-52 items-center border border-hairline bg-white px-3 lg:flex"
+                        role="search"
+                    >
+                        <Search className="mr-2 h-4 w-4 shrink-0" />
+                        <input
+                            type="search"
+                            value={searchQuery}
+                            onChange={(event) =>
+                                setSearchQuery(event.target.value)
+                            }
+                            placeholder="Search products"
+                            aria-label="Search products"
+                            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                        />
+                    </form>
                     <Link
                         href="/wishlist"
                         aria-label="Open wishlist"
@@ -130,6 +157,27 @@ export default function Navbar({
                         <X className="h-5 w-5" />
                     </button>
                 </div>
+                <form
+                    onSubmit={submitSearch}
+                    className="mb-5 flex h-11 items-center border border-hairline px-3"
+                    role="search"
+                >
+                    <Search className="mr-2 h-4 w-4 shrink-0" />
+                    <input
+                        type="search"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        placeholder="Search products"
+                        aria-label="Search products"
+                        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                    />
+                    <button
+                        type="submit"
+                        className="ml-2 text-xs font-extrabold uppercase hover:text-primary"
+                    >
+                        Search
+                    </button>
+                </form>
                 <nav className="grid divide-y divide-hairline text-[15px] font-bold text-ink">
                     {navItems.map((item) => (
                         <Link

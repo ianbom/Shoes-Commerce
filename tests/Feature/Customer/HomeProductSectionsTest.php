@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -59,6 +60,20 @@ it('returns empty product sections without database records', function () {
             ->component('welcome')
             ->has('flashDeals', 0)
             ->has('newArrivals', 0));
+});
+
+it('shares the WhatsApp number with shop pages', function () {
+    SiteSetting::query()->create([
+        'key' => 'whatsapp_number',
+        'value' => '6281234567890',
+        'type' => 'string',
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('welcome')
+            ->where('shop.whatsapp_number', '6281234567890'));
 });
 
 /**

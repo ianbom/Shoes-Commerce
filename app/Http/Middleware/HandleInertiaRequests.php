@@ -4,12 +4,15 @@ namespace App\Http\Middleware;
 
 use App\Models\Cart;
 use App\Models\Collection;
+use App\Services\Settings\SiteSettingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(private readonly SiteSettingService $settings) {}
+
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -54,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'shop' => [
                 'cart_count' => fn (): int => $this->cartCount($request),
                 'featured_collections' => fn (): array => $this->featuredCollections(),
+                'whatsapp_number' => fn (): ?string => $this->settings->get('whatsapp_number'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

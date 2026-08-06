@@ -15,22 +15,13 @@ const columns = [
     {
         title: 'Support',
         links: [
-            ['Help Center', '/about'],
             ['Shipping & Returns', '/shipping-policy'],
-            ['Size Guide', '/size-guide.webp'],
             ['Track Your Order', '/my-order'],
-            ['FAQ', '/about'],
         ],
     },
     {
         title: 'Company',
-        links: [
-            ['Reviews', '/#reviews'],
-            ['About Us', '/about'],
-            ['Blog', '/about'],
-            ['Careers', '/about'],
-            ['Contact Us', '/about'],
-        ],
+        links: [['Why Us', '/about']],
     },
 ];
 
