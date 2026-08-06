@@ -16,19 +16,44 @@ class SepatuSeeder extends Seeder
 {
     private const BASE_URL = 'https://dummyjson.com';
 
-    private const CATEGORIES = ['mens-shoes', 'womens-shoes'];
+    private const CATEGORIES = [
+        'mens-shoes',
+        'womens-shoes',
+    ];
 
     private const USD_TO_IDR = 16000;
+
+    /**
+     * Daftar ukuran sepatu yang tersedia.
+     *
+     * Ukuran US dan EU akan disimpan dalam satu kolom size.
+     */
+    private const SHOE_SIZES = [
+        ['us' => 4, 'eu' => 36],
+        ['us' => 5, 'eu' => 37],
+        ['us' => 6, 'eu' => 38],
+        ['us' => 7, 'eu' => 39],
+        ['us' => 8, 'eu' => 40],
+        ['us' => 9, 'eu' => 41],
+        ['us' => 10, 'eu' => 42],
+        ['us' => 11, 'eu' => 43],
+        ['us' => 12, 'eu' => 44],
+    ];
 
     public function run(): void
     {
         $products = collect($this->catalog())
-            ->map(fn (array $product, int $index): ?array => $this->mapProduct($product, $index))
+            ->map(
+                fn (array $product, int $index): ?array =>
+                    $this->mapProduct($product, $index)
+            )
             ->filter()
             ->values();
 
         if ($products->isEmpty()) {
-            throw new RuntimeException('DummyJSON tidak menghasilkan produk sepatu yang valid.');
+            throw new RuntimeException(
+                'DummyJSON tidak menghasilkan produk sepatu yang valid.'
+            );
         }
 
         DB::transaction(function () use ($products): void {
@@ -37,42 +62,66 @@ class SepatuSeeder extends Seeder
             $seededSkus = [];
 
             foreach ($products as $product) {
-                $record = Product::query()->withTrashed()->updateOrCreate(
-                    ['slug' => $product['slug']],
-                    [
-                        'category_id' => $category->id,
-                        'name' => $product['name'],
-                        'sku' => $product['sku'],
-                        'brand_name' => $product['brand_name'],
-                        'regular_price' => $product['regular_price'],
-                        'sale_price' => $product['sale_price'],
-                        'short_description' => Str::limit($product['description'], 150),
-                        'description' => $product['description'],
-                        'stock_status' => $product['stock_status'],
-                        'status' => 'published',
-                        'weight' => $product['weight'],
-                        'length' => $product['length'],
-                        'width' => $product['width'],
-                        'height' => $product['height'],
-                        'is_featured' => $product['index'] % 5 === 0,
-                        'is_new_arrival' => $product['index'] < 10,
-                        'is_best_seller' => $product['index'] % 3 === 0,
-                        'meta_title' => $product['name'].' | '.$product['brand_name'],
-                        'meta_description' => Str::limit($product['description'], 160),
-                    ],
-                );
+                $record = Product::query()
+                    ->withTrashed()
+                    ->updateOrCreate(
+                        [
+                            'slug' => $product['slug'],
+                        ],
+                        [
+                            'category_id' => $category->id,
+                            'name' => $product['name'],
+                            'sku' => $product['sku'],
+                            'brand_name' => $product['brand_name'],
+                            'regular_price' => $product['regular_price'],
+                            'sale_price' => $product['sale_price'],
+                            'short_description' => Str::limit(
+                                $product['description'],
+                                150
+                            ),
+                            'description' => $product['description'],
+                            'stock_status' => $product['stock_status'],
+                            'status' => 'published',
+                            'weight' => $product['weight'],
+                            'length' => $product['length'],
+                            'width' => $product['width'],
+                            'height' => $product['height'],
+                            'is_featured' => $product['index'] % 5 === 0,
+                            'is_new_arrival' => $product['index'] < 10,
+                            'is_best_seller' => $product['index'] % 3 === 0,
+                            'meta_title' => $product['name']
+                                .' | '
+                                .$product['brand_name'],
+                            'meta_description' => Str::limit(
+                                $product['description'],
+                                160
+                            ),
+                        ],
+                    );
 
                 if ($record->trashed()) {
                     $record->restore();
                 }
 
                 $record->collections()->sync($collectionIds);
-                $this->syncImages($record, $product['images']);
-                $this->syncVariant($record, $product);
+
+                $this->syncImages(
+                    $record,
+                    $product['images']
+                );
+
+                $this->syncVariants(
+                    $record,
+                    $product
+                );
 
                 $seededSkus[] = $product['sku'];
             }
 
+            /*
+             * Menghapus produk sepatu dari hasil seeder lama yang sudah
+             * tidak ditemukan lagi pada response DummyJSON terbaru.
+             */
             Product::query()
                 ->where('sku', 'like', 'SHOE-%')
                 ->whereNotIn('sku', $seededSkus)
@@ -81,6 +130,8 @@ class SepatuSeeder extends Seeder
     }
 
     /**
+     * Mengambil katalog sepatu pria dan wanita dari DummyJSON.
+     *
      * @return array<int, array<string, mixed>>
      */
     private function catalog(): array
@@ -92,26 +143,41 @@ class SepatuSeeder extends Seeder
                 ->retry([100, 300], throw: false)
                 ->timeout(20)
                 ->connectTimeout(5)
-                ->get(self::BASE_URL."/products/category/{$category}", ['limit' => 0]);
+                ->get(
+                    self::BASE_URL."/products/category/{$category}",
+                    [
+                        'limit' => 0,
+                    ]
+                );
 
             if (! $response->successful()) {
-                throw new RuntimeException("DummyJSON {$category} gagal diakses (HTTP {$response->status()}).");
+                throw new RuntimeException(
+                    "DummyJSON {$category} gagal diakses "
+                    ."(HTTP {$response->status()})."
+                );
             }
 
             $categoryProducts = $response->json('products');
 
             if (! is_array($categoryProducts)) {
-                throw new RuntimeException("Response DummyJSON {$category} tidak valid.");
+                throw new RuntimeException(
+                    "Response DummyJSON {$category} tidak valid."
+                );
             }
 
-            $products = [...$products, ...$categoryProducts];
+            $products = [
+                ...$products,
+                ...$categoryProducts,
+            ];
         }
 
         return $products;
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * Mengubah data produk dari DummyJSON menjadi format aplikasi.
+     *
+     * @param array<string, mixed> $data
      * @return array<string, mixed>|null
      */
     private function mapProduct(array $data, int $index): ?array
@@ -119,60 +185,145 @@ class SepatuSeeder extends Seeder
         $name = trim((string) ($data['title'] ?? ''));
         $sourceId = (string) ($data['id'] ?? '');
         $regularPrice = $this->rupiah($data['price'] ?? 0);
+
         $images = collect($data['images'] ?? [])
-            ->filter(fn (mixed $image): bool => is_string($image) && filter_var($image, FILTER_VALIDATE_URL) !== false)
+            ->filter(
+                fn (mixed $image): bool =>
+                    is_string($image)
+                    && filter_var(
+                        $image,
+                        FILTER_VALIDATE_URL
+                    ) !== false
+            )
             ->unique()
             ->values()
             ->all();
 
-        if ($name === '' || $sourceId === '' || $regularPrice <= 0 || $images === []) {
+        if (
+            $name === ''
+            || $sourceId === ''
+            || $regularPrice <= 0
+            || $images === []
+        ) {
             return null;
         }
 
-        $discountPercentage = max(0, min(100, (float) ($data['discountPercentage'] ?? 0)));
+        $discountPercentage = max(
+            0,
+            min(
+                100,
+                (float) ($data['discountPercentage'] ?? 0)
+            )
+        );
+
         $salePrice = $discountPercentage > 0
-            ? (int) round($regularPrice * (1 - ($discountPercentage / 100)))
+            ? (int) round(
+                $regularPrice * (1 - ($discountPercentage / 100))
+            )
             : null;
-        $stock = max(0, (int) ($data['stock'] ?? 0));
-        $brand = trim((string) ($data['brand'] ?? '')) ?: 'Generic';
+
+        $stock = max(
+            0,
+            (int) ($data['stock'] ?? 0)
+        );
+
+        $brand = trim(
+            (string) ($data['brand'] ?? '')
+        ) ?: 'Generic';
+
+        $availabilityStatus = (string) (
+            $data['availabilityStatus'] ?? ''
+        );
 
         return [
             'index' => $index,
             'name' => $name,
             'slug' => Str::slug($name).'-'.$sourceId,
-            'sku' => $this->sku((string) ($data['sku'] ?? $sourceId)),
+            'sku' => $this->sku(
+                (string) ($data['sku'] ?? $sourceId)
+            ),
             'brand_name' => $brand,
-            'description' => trim((string) ($data['description'] ?? '')) ?: $name,
+            'description' => trim(
+                (string) ($data['description'] ?? '')
+            ) ?: $name,
             'regular_price' => $regularPrice,
             'sale_price' => $salePrice,
             'stock' => $stock,
-            'stock_status' => $stock === 0 || Str::contains((string) ($data['availabilityStatus'] ?? ''), 'Out of Stock', true)
-                ? 'out_of_stock'
-                : 'in_stock',
-            'weight' => max(1, (int) round(((float) ($data['weight'] ?? 1)) * 1000)),
-            'length' => max(1, (int) round((float) data_get($data, 'dimensions.depth', 35))),
-            'width' => max(1, (int) round((float) data_get($data, 'dimensions.width', 25))),
-            'height' => max(1, (int) round((float) data_get($data, 'dimensions.height', 15))),
+            'stock_status' => $stock === 0
+                || Str::contains(
+                    $availabilityStatus,
+                    'Out of Stock',
+                    true
+                )
+                    ? 'out_of_stock'
+                    : 'in_stock',
+            'weight' => max(
+                1,
+                (int) round(
+                    ((float) ($data['weight'] ?? 1)) * 1000
+                )
+            ),
+            'length' => max(
+                1,
+                (int) round(
+                    (float) data_get(
+                        $data,
+                        'dimensions.depth',
+                        35
+                    )
+                )
+            ),
+            'width' => max(
+                1,
+                (int) round(
+                    (float) data_get(
+                        $data,
+                        'dimensions.width',
+                        25
+                    )
+                )
+            ),
+            'height' => max(
+                1,
+                (int) round(
+                    (float) data_get(
+                        $data,
+                        'dimensions.height',
+                        15
+                    )
+                )
+            ),
             'images' => $images,
         ];
     }
 
     /**
-     * @param  array<int, string>  $images
+     * Menyimpan dan memperbarui gambar produk.
+     *
+     * @param array<int, string> $images
      */
-    private function syncImages(Product $product, array $images): void
-    {
+    private function syncImages(
+        Product $product,
+        array $images
+    ): void {
         $keptIds = [];
 
         foreach ($images as $sortOrder => $imageUrl) {
-            $record = ProductImage::query()->withTrashed()->updateOrCreate(
-                ['product_id' => $product->id, 'sort_order' => $sortOrder],
-                [
-                    'image_url' => $imageUrl,
-                    'alt_text' => $product->name.' image '.($sortOrder + 1),
-                    'is_primary' => $sortOrder === 0,
-                ],
-            );
+            $record = ProductImage::query()
+                ->withTrashed()
+                ->updateOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'sort_order' => $sortOrder,
+                    ],
+                    [
+                        'image_url' => $imageUrl,
+                        'alt_text' => $product->name
+                            .' image '
+                            .($sortOrder + 1),
+                        'is_primary' => $sortOrder === 0,
+                    ],
+                );
 
             if ($record->trashed()) {
                 $record->restore();
@@ -188,52 +339,159 @@ class SepatuSeeder extends Seeder
     }
 
     /**
-     * @param  array<string, mixed>  $productData
+     * Membuat beberapa varian ukuran untuk satu produk.
+     *
+     * Contoh:
+     * - US=4 EU=36
+     * - US=5 EU=37
+     * - US=6 EU=38
+     *
+     * @param array<string, mixed> $productData
      */
-    private function syncVariant(Product $product, array $productData): void
-    {
-        $sku = $productData['sku'].'-DEFAULT';
-        $record = ProductVariant::query()->withTrashed()->updateOrCreate(
-            ['sku' => $sku],
-            [
-                'product_id' => $product->id,
-                'color_name' => 'Default',
-                'color_hex' => null,
-                'size' => 'One Size',
-                'regular_price' => $productData['regular_price'],
-                'sale_price' => $productData['sale_price'],
-                'stock' => $productData['stock'],
-                'reserved_stock' => 0,
-                'weight' => $productData['weight'],
-                'length' => $productData['length'],
-                'width' => $productData['width'],
-                'height' => $productData['height'],
-                'image_url' => $productData['images'][0],
-                'is_active' => true,
-            ],
+    private function syncVariants(
+        Product $product,
+        array $productData
+    ): void {
+        $sizes = $this->sizesForProduct(
+            (int) $productData['index']
         );
 
-        if ($record->trashed()) {
-            $record->restore();
+        $variantCount = count($sizes);
+        $totalStock = max(
+            0,
+            (int) $productData['stock']
+        );
+
+        /*
+         * Membagi stok produk ke seluruh varian ukuran.
+         *
+         * Contoh:
+         * Total stok: 20
+         * Jumlah varian: 6
+         *
+         * Hasil pembagian:
+         * 4, 4, 3, 3, 3, 3
+         */
+        $baseStock = intdiv(
+            $totalStock,
+            $variantCount
+        );
+
+        $stockRemainder = $totalStock % $variantCount;
+
+        $keptVariantIds = [];
+
+        foreach ($sizes as $index => $size) {
+            $sizeLabel = sprintf(
+                'US=%s EU=%s',
+                $size['us'],
+                $size['eu']
+            );
+
+            $variantSku = $this->variantSku(
+                $productData['sku'],
+                $size['us'],
+                $size['eu']
+            );
+
+            $variantStock = $baseStock
+                + ($index < $stockRemainder ? 1 : 0);
+
+            $record = ProductVariant::query()
+                ->withTrashed()
+                ->updateOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'sku' => $variantSku,
+                    ],
+                    [
+                        'color_name' => 'Default',
+                        'color_hex' => null,
+                        'size' => $sizeLabel,
+                        'regular_price' => $productData['regular_price'],
+                        'sale_price' => $productData['sale_price'],
+                        'stock' => $variantStock,
+                        'reserved_stock' => 0,
+                        'weight' => $productData['weight'],
+                        'length' => $productData['length'],
+                        'width' => $productData['width'],
+                        'height' => $productData['height'],
+                        'image_url' => $productData['images'][0],
+                        'is_active' => true,
+                    ],
+                );
+
+            if ($record->trashed()) {
+                $record->restore();
+            }
+
+            $keptVariantIds[] = $record->id;
         }
 
+        /*
+         * Menghapus varian lama yang tidak termasuk dalam
+         * daftar ukuran terbaru.
+         */
         ProductVariant::query()
             ->where('product_id', $product->id)
-            ->where('sku', '!=', $sku)
+            ->whereNotIn('id', $keptVariantIds)
             ->delete();
     }
 
+    /**
+     * Menghasilkan variasi ukuran berbeda untuk setiap produk.
+     *
+     * Setiap produk akan mempunyai 4 sampai 7 ukuran.
+     *
+     * @return array<int, array{us: int, eu: int}>
+     */
+    private function sizesForProduct(int $productIndex): array
+    {
+        $availableSizes = self::SHOE_SIZES;
+
+        /*
+         * Pola jumlah varian:
+         *
+         * Produk index 0: 4 ukuran
+         * Produk index 1: 5 ukuran
+         * Produk index 2: 6 ukuran
+         * Produk index 3: 7 ukuran
+         * Produk index 4: kembali 4 ukuran
+         */
+        $variantCount = 4 + ($productIndex % 4);
+
+        $maximumStartIndex = count($availableSizes)
+            - $variantCount;
+
+        $startIndex = $maximumStartIndex > 0
+            ? $productIndex % ($maximumStartIndex + 1)
+            : 0;
+
+        return array_slice(
+            $availableSizes,
+            $startIndex,
+            $variantCount
+        );
+    }
+
+    /**
+     * Membuat atau memperbarui kategori sepatu.
+     */
     private function category(): Category
     {
-        $category = Category::query()->withTrashed()->updateOrCreate(
-            ['slug' => 'sneakers'],
-            [
-                'name' => 'Sepatu Sneakers',
-                'description' => 'Koleksi sepatu pria dan wanita dari DummyJSON.',
-                'sort_order' => 10,
-                'is_active' => true,
-            ],
-        );
+        $category = Category::query()
+            ->withTrashed()
+            ->updateOrCreate(
+                [
+                    'slug' => 'sneakers',
+                ],
+                [
+                    'name' => 'Sepatu Sneakers',
+                    'description' => 'Koleksi sepatu pria dan wanita dari DummyJSON.',
+                    'sort_order' => 10,
+                    'is_active' => true,
+                ],
+            );
 
         if ($category->trashed()) {
             $category->restore();
@@ -243,24 +501,68 @@ class SepatuSeeder extends Seeder
     }
 
     /**
+     * Mendapatkan collection yang akan dipasang pada produk.
+     *
      * @return array<int, array{sort_order: int}>
      */
     private function collectionIds(): array
     {
         return DB::table('collections')
-            ->whereIn('slug', ['new-arrivals'])
+            ->whereIn(
+                'slug',
+                ['new-arrivals']
+            )
             ->pluck('id')
-            ->mapWithKeys(fn (int $id): array => [$id => ['sort_order' => 1]])
+            ->mapWithKeys(
+                fn (int $id): array => [
+                    $id => [
+                        'sort_order' => 1,
+                    ],
+                ]
+            )
             ->all();
     }
 
+    /**
+     * Membuat SKU utama produk.
+     */
     private function sku(string $value): string
     {
-        return Str::limit('SHOE-'.Str::upper(Str::slug($value)), 100, '');
+        return Str::limit(
+            'SHOE-'.Str::upper(
+                Str::slug($value)
+            ),
+            100,
+            ''
+        );
     }
 
+    /**
+     * Membuat SKU varian berdasarkan ukuran US dan EU.
+     */
+    private function variantSku(
+        string $productSku,
+        int $usSize,
+        int $euSize
+    ): string {
+        $suffix = "-US{$usSize}-EU{$euSize}";
+
+        $maximumProductSkuLength = 100 - strlen($suffix);
+
+        return Str::limit(
+            $productSku,
+            $maximumProductSkuLength,
+            ''
+        ).$suffix;
+    }
+
+    /**
+     * Mengonversi harga USD menjadi Rupiah.
+     */
     private function rupiah(mixed $usd): int
     {
-        return (int) round(((float) $usd) * self::USD_TO_IDR);
+        return (int) round(
+            ((float) $usd) * self::USD_TO_IDR
+        );
     }
 }
