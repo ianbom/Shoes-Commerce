@@ -168,7 +168,7 @@ export default function DetailProduct({
             <Head title={`${product.title} | NEXSTEP`} />
 
             <main className="bg-white text-ink">
-                <div className="mx-auto max-w-[1440px] px-5 py-5 sm:px-8 lg:px-12">
+                <div className="mx-auto max-w-[1440px] px-4 py-4 sm:px-8 sm:py-5 lg:px-12">
                     <Breadcrumb
                         category={product.category}
                         categorySlug={product.category_slug}
@@ -237,7 +237,7 @@ function Breadcrumb({
     productName: string;
 }) {
     return (
-        <nav className="mb-6 flex flex-wrap items-center gap-3 text-[13px] font-medium text-muted-foreground">
+        <nav className="mb-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-medium text-muted-foreground sm:mb-6 sm:gap-3 sm:text-[13px]">
             <span className="flex items-center gap-3">
                 <Link href="/" className="hover:text-primary">
                     Home
@@ -261,7 +261,9 @@ function Breadcrumb({
                     <span>/</span>
                 </span>
             )}
-            <span className="font-bold text-ink">{productName}</span>
+            <span className="min-w-0 font-bold break-words text-ink">
+                {productName}
+            </span>
         </nav>
     );
 }
@@ -277,7 +279,7 @@ function ProductGallery({
 }) {
     return (
         <section>
-            <div className="relative flex aspect-[1.05] min-h-[360px] items-center justify-center overflow-hidden rounded-md">
+            <div className="relative flex aspect-square min-h-0 items-center justify-center overflow-hidden rounded-md sm:aspect-[1.05] sm:min-h-[360px]">
                 <button
                     type="button"
                     className="absolute top-5 right-5 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-white hover:border-primary hover:text-primary"
@@ -293,7 +295,7 @@ function ProductGallery({
             </div>
 
             {images.length > 1 && (
-                <div className="mt-5 grid grid-cols-[40px_1fr_40px] items-center gap-2">
+                <div className="mt-3 grid grid-cols-[32px_minmax(0,1fr)_32px] items-center gap-1 sm:mt-5 sm:grid-cols-[40px_minmax(0,1fr)_40px] sm:gap-2">
                     <button
                         type="button"
                         className="h-10 hover:text-primary"
@@ -301,7 +303,7 @@ function ProductGallery({
                     >
                         <ChevronLeft className="mx-auto h-6 w-6" />
                     </button>
-                    <div className="grid grid-cols-4 gap-3">
+                    <div className="grid min-w-0 grid-cols-4 gap-2 sm:gap-3">
                         {images.slice(0, 4).map((item, index) => (
                             <button
                                 type="button"
@@ -362,7 +364,7 @@ function PurchasePanel({
             <p className="text-[12px] font-extrabold tracking-wide text-ink uppercase">
                 {product.category || 'Product'}
             </p>
-            <h1 className="mt-2 text-[40px] leading-[1.02] font-black tracking-[-0.02em] text-ink sm:text-[48px]">
+            <h1 className="mt-2 text-[32px] leading-[1.02] font-black tracking-[-0.02em] break-words text-ink sm:text-[48px]">
                 {product.title}
             </h1>
             {product.short_description && (
@@ -372,7 +374,9 @@ function PurchasePanel({
             )}
 
             <div className="mt-6 flex flex-wrap items-center gap-4">
-                <span className="text-[32px] font-extrabold">{price}</span>
+                <span className="text-[28px] font-extrabold sm:text-[32px]">
+                    {price}
+                </span>
                 {oldPrice && (
                     <span className="text-[24px] font-bold text-muted-foreground line-through">
                         {oldPrice}
@@ -385,7 +389,7 @@ function PurchasePanel({
                 )}
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3 border-b border-hairline pb-6">
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-b border-hairline pb-5 sm:gap-3 sm:pb-6">
                 <Stars />
                 <span className="text-[13px] font-bold">4.7</span>
                 <span className="h-4 w-px bg-hairline" />
@@ -410,7 +414,7 @@ function PurchasePanel({
                             )?.name || selectedColor}
                         </span>
                     </p>
-                    <div className="mt-3 flex gap-3">
+                    <div className="mt-3 flex flex-wrap gap-3">
                         {availableColors.map((color: any) => (
                             <button
                                 type="button"
@@ -434,8 +438,8 @@ function PurchasePanel({
             )}
 
             {availableSizes.length > 0 && (
-                <section className="mt-6">
-                    <div className="mb-3 flex items-center justify-between">
+                <section className="mt-5 sm:mt-6">
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                         <p className="text-[14px] font-bold">Size:</p>
                         <button
                             type="button"
@@ -485,8 +489,8 @@ function PurchasePanel({
 
             <section className="mt-6">
                 <p className="mb-3 text-[14px] font-bold">Quantity:</p>
-                <div className="grid gap-3 sm:grid-cols-[130px_1fr_1fr]">
-                    <div className="grid h-12 grid-cols-3 rounded border border-hairline">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-[130px_1fr_1fr]">
+                    <div className="grid h-12 w-full grid-cols-3 rounded border border-hairline sm:w-[130px]">
                         <button
                             type="button"
                             disabled={quantity <= 1 || cartProcessing}
@@ -519,7 +523,7 @@ function PurchasePanel({
                         type="button"
                         disabled={isOutOfStock || cartProcessing}
                         onClick={() => addToCart(false)}
-                        className={`inline-flex h-12 items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock || cartProcessing ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary-hover'}`}
+                        className={`inline-flex h-12 w-full items-center justify-center gap-2 rounded px-5 text-[14px] font-extrabold text-white ${isOutOfStock || cartProcessing ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary-hover'}`}
                     >
                         <ShoppingBag className="h-4 w-4" />
                         {isOutOfStock
@@ -532,7 +536,7 @@ function PurchasePanel({
                         type="button"
                         disabled={isOutOfStock || cartProcessing}
                         onClick={() => addToCart(true)}
-                        className={`h-12 rounded border text-[14px] font-extrabold ${isOutOfStock || cartProcessing ? 'cursor-not-allowed border-hairline text-muted' : 'border-ink hover:bg-ink hover:text-white'}`}
+                        className={`h-12 w-full rounded border text-[14px] font-extrabold ${isOutOfStock || cartProcessing ? 'cursor-not-allowed border-hairline text-muted' : 'border-ink hover:bg-ink hover:text-white'}`}
                     >
                         {cartProcessing ? 'Processing...' : 'Buy Now'}
                     </button>
@@ -569,7 +573,7 @@ function TrustGrid() {
 
     return (
         <>
-            <div className="mt-5 flex gap-4 rounded-md bg-surface-soft p-6">
+            <div className="mt-5 flex gap-3 rounded-md bg-surface-soft p-4 sm:gap-4 sm:p-6">
                 <Truck className="mt-1 h-8 w-8 shrink-0" />
                 <div>
                     <p className="text-[14px] font-extrabold">
@@ -590,11 +594,11 @@ function AccordionList({ items }: { items: string[][] }) {
         <section className="mt-7 divide-y divide-hairline rounded-md border border-hairline">
             {items.map(([title, body], index) => (
                 <details key={title} open={index === 0} className="group">
-                    <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[14px] font-extrabold">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-[14px] font-extrabold sm:px-5">
                         {title}
                         <Plus className="h-4 w-4 group-open:rotate-45" />
                     </summary>
-                    <p className="px-5 pb-4 text-[13px] leading-5 text-body">
+                    <p className="px-4 pb-4 text-[13px] leading-5 text-body sm:px-5">
                         {body}
                     </p>
                 </details>
