@@ -25,12 +25,12 @@ class StockService
             'variants' => ProductVariant::query()
                 ->with('product:id,name')
                 ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
-                    ->where('sku', 'like', "%{$search}%")
+                    ->where('size', 'like', "%{$search}%")
                     ->orWhereHas('product', fn ($query) => $query->where('name', 'like', "%{$search}%"))))
-                ->when($stockStatus === 'low_stock', fn ($query) => $query->whereBetween('stock', [1, 5]))
-                ->when($stockStatus === 'sold_out', fn ($query) => $query->where('stock', '<=', 0))
-                ->when($stockStatus === 'in_stock', fn ($query) => $query->where('stock', '>', 5))
-                ->orderBy('stock')
+                ->when($stockStatus === 'low_stock', fn ($query) => $query->whereRaw('(stock - reserved_stock) between 1 and 5'))
+                ->when($stockStatus === 'sold_out', fn ($query) => $query->whereRaw('(stock - reserved_stock) <= 0'))
+                ->when($stockStatus === 'in_stock', fn ($query) => $query->whereRaw('(stock - reserved_stock) > 5'))
+                ->orderByRaw('(stock - reserved_stock)')
                 ->paginate($this->perPage($request))
                 ->withQueryString()
                 ->through(fn (ProductVariant $variant): array => $this->variantRow($variant)),
@@ -128,8 +128,7 @@ class StockService
             'id' => $variant->id,
             'product_id' => $variant->product_id,
             'product' => $variant->product?->name,
-            'sku' => $variant->sku,
-            'color_name' => $variant->color_name,
+            'sku' => $variant->size,
             'size' => $variant->size,
             'stock' => $variant->stock,
             'reserved_stock' => $variant->reserved_stock,

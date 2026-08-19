@@ -21,21 +21,15 @@ class ProductVariantRequest extends FormRequest
 
         return [
             'product_id' => ['required', 'integer', 'exists:products,id'],
-            'sku' => ['required', 'string', 'max:100', Rule::unique('product_variants', 'sku')->ignore($variant)],
-            'color_name' => [
+            'size' => [
                 'required',
                 'string',
                 'max:100',
-                Rule::unique('product_variants', 'color_name')
-                    ->where(fn ($query) => $query
-                        ->where('product_id', $this->input('product_id'))
-                        ->where('size', $this->input('size')))
+                Rule::unique('product_variants', 'size')
+                    ->where('product_id', $this->input('product_id'))
                     ->ignore($variant),
             ],
-            'color_hex' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
-            'size' => ['required', 'string', 'max:100'],
-            'regular_price' => ['nullable', 'numeric', 'min:0'],
-            'sale_price' => ['nullable', 'numeric', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0.01'],
             'stock' => ['required', 'integer', 'min:0'],
             'reserved_stock' => ['required', 'integer', 'min:0', 'lte:stock'],
             'weight' => ['nullable', 'integer', 'min:0'],
@@ -45,19 +39,5 @@ class ProductVariantRequest extends FormRequest
             'image' => ['nullable', 'file', 'image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ];
-    }
-
-    /**
-     * @return array<int, callable>
-     */
-    public function after(): array
-    {
-        return [function ($validator): void {
-            if (filled($this->input('sale_price')) && blank($this->input('regular_price'))) {
-                $validator->errors()->add('sale_price', 'Sale price membutuhkan regular price.');
-            } elseif ((float) $this->input('sale_price', 0) > (float) $this->input('regular_price', 0)) {
-                $validator->errors()->add('sale_price', 'Sale price tidak boleh lebih besar dari regular price.');
-            }
-        }];
     }
 }

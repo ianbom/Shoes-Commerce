@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
@@ -66,10 +65,9 @@ class YupooKobe6Seeder extends Seeder
 
         DB::transaction(function () use ($catalog): void {
             $category = $this->category();
-            $collection = $this->collection();
 
-            foreach ($catalog as $index => $data) {
-                $this->seedProduct($data, $category, $collection, $index);
+            foreach ($catalog as $data) {
+                $this->seedProduct($data, $category);
             }
         });
     }
@@ -90,7 +88,7 @@ class YupooKobe6Seeder extends Seeder
         ];
     }
 
-    private function seedProduct(array $data, Category $category, Collection $collection, int $index): void
+    private function seedProduct(array $data, Category $category): void
     {
         $sku = "YUPOO-K6-{$data['album_id']}";
         $price = $data['price_cny'] * self::CNY_TO_IDR;
@@ -99,22 +97,16 @@ class YupooKobe6Seeder extends Seeder
         $product = Product::query()->withTrashed()->updateOrCreate(
             ['sku' => $sku],
             [
-                'category_id' => $category->id,
                 'name' => $data['name'],
                 'slug' => Str::slug("yupoo-kobe-6-{$data['album_id']}"),
                 'brand_name' => 'Kobe',
-                'regular_price' => $price,
-                'sale_price' => null,
-                'short_description' => $description,
+                'price' => $price,
                 'description' => $description,
-                'stock_status' => 'out_of_stock',
                 'status' => 'draft',
                 'weight' => 0,
                 'is_featured' => false,
                 'is_new_arrival' => true,
                 'is_best_seller' => false,
-                'meta_title' => $data['name'],
-                'meta_description' => Str::limit($description, 160),
             ],
         );
 
@@ -122,9 +114,9 @@ class YupooKobe6Seeder extends Seeder
             $product->restore();
         }
 
-        $product->collections()->syncWithoutDetaching([$collection->id => ['sort_order' => $index + 1]]);
+        $product->categories()->syncWithoutDetaching([$category->id]);
         $this->syncImages($product, $data['images'], $data['name']);
-        $this->syncVariants($product, $sku, $data['color'], $price, $data['images'][0]);
+        $this->syncVariants($product, $price, $data['images'][0]);
     }
 
     private function syncImages(Product $product, array $images, string $alt): void
@@ -143,16 +135,13 @@ class YupooKobe6Seeder extends Seeder
         }
     }
 
-    private function syncVariants(Product $product, string $sku, string $color, int $price, string $image): void
+    private function syncVariants(Product $product, int $price, string $image): void
     {
         foreach (self::SIZES as $size) {
             $variant = ProductVariant::query()->withTrashed()->updateOrCreate(
-                ['product_id' => $product->id, 'color_name' => $color, 'size' => $size],
+                ['product_id' => $product->id, 'size' => $size],
                 [
-                    'sku' => "{$sku}-EU".str_replace('.', '-', $size),
-                    'color_hex' => null,
-                    'regular_price' => $price,
-                    'sale_price' => null,
+                    'price' => $price,
                     'stock' => 0,
                     'reserved_stock' => 0,
                     'image_url' => $image,
@@ -178,19 +167,5 @@ class YupooKobe6Seeder extends Seeder
         }
 
         return $category;
-    }
-
-    private function collection(): Collection
-    {
-        $collection = Collection::query()->withTrashed()->updateOrCreate(
-            ['slug' => 'yupoo-kobe-6-star'],
-            ['name' => 'Yupoo Kobe 6 STAR', 'description' => 'Koleksi Kobe 6 STAR dari Yupoo.', 'sort_order' => 50, 'is_featured' => false, 'is_active' => true],
-        );
-
-        if ($collection->trashed()) {
-            $collection->restore();
-        }
-
-        return $collection;
     }
 }

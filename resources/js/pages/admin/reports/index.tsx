@@ -21,13 +21,11 @@ type Props = {
         payment_status: string;
         order_status: string;
         category_id: string;
-        collection_id: string;
     };
     options: {
         paymentStatuses: string[];
         orderStatuses: string[];
         categories: { id: number; name: string }[];
-        collections: { id: number; name: string }[];
     };
     report: { metrics: Metric[]; tables: ReportTable[] };
 };

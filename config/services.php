@@ -67,4 +67,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'kicksdb' => [
+        'base_url' => env('KICKSDB_BASE_URL', 'https://api.kicks.dev'),
+        'key' => env('KICKSDB_API_KEY'),
+    ],
+
 ];

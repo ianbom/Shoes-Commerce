@@ -126,8 +126,7 @@ export function StatusBadge({ status }: { status: string }) {
         <Badge
             variant="outline"
             className={cn(
-                status === 'published' &&
-                    'border-black bg-black text-white',
+                status === 'published' && 'border-black bg-black text-white',
                 status === 'draft' &&
                     'border-black/[0.32] bg-black/[0.08] text-black',
                 status === 'archived' &&

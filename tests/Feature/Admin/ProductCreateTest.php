@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
@@ -27,15 +26,7 @@ it('creates a product with images, variants, and stock logs from the admin form 
         'is_active' => true,
     ]);
 
-    $collection = Collection::query()->create([
-        'name' => 'Ramadan Collection',
-        'slug' => 'ramadan-collection',
-        'description' => 'Ramadan collection',
-        'is_featured' => true,
-        'is_active' => true,
-    ]);
-
-    $payload = productPayload($category, $collection);
+    $payload = productPayload($category);
 
     $this->actingAs($admin)
         ->post(route('admin.products.store'), $payload)
@@ -46,20 +37,16 @@ it('creates a product with images, variants, and stock logs from the admin form 
         ->firstOrFail();
 
     expect($product)
-        ->category_id->toBe($category->id)
+        ->categories->first()->id->toBe($category->id)
         ->name->toBe('Gamis Syar\'i Pita')
         ->sku->toBe('GMS-001')
-        ->short_description->toBe('Gamis premium untuk daily wear.')
         ->description->toBe('Gamis premium dengan detail pita dan bahan nyaman.')
         ->status->toBe('published')
         ->is_featured->toBeTrue()
         ->is_new_arrival->toBeTrue()
-        ->is_best_seller->toBeFalse()
-        ->meta_title->toBe('Gamis Syar\'i Pita Premium')
-        ->meta_description->toBe('Gamis premium nyaman untuk aktivitas harian.');
+        ->is_best_seller->toBeFalse();
 
-    expect((float) $product->regular_price)->toBe(350000.00)
-        ->and((float) $product->sale_price)->toBe(299000.00)
+    expect((float) $product->price)->toBe(350000.00)
         ->and($product->weight)->toBe(500)
         ->and($product->length)->toBe(30)
         ->and($product->width)->toBe(25)
@@ -67,21 +54,14 @@ it('creates a product with images, variants, and stock logs from the admin form 
 
     $this->assertDatabaseHas('products', [
         'id' => $product->id,
-        'category_id' => $category->id,
         'name' => 'Gamis Syar\'i Pita',
         'slug' => 'gamis-syari-pita',
         'sku' => 'GMS-001',
-        'regular_price' => 350000,
-        'sale_price' => 299000,
+        'price' => 350000,
         'status' => 'published',
         'is_featured' => true,
         'is_new_arrival' => true,
         'is_best_seller' => false,
-    ]);
-
-    $this->assertDatabaseHas('product_collections', [
-        'product_id' => $product->id,
-        'collection_id' => $collection->id,
     ]);
 
     $this->assertDatabaseHas('product_images', [
@@ -96,20 +76,18 @@ it('creates a product with images, variants, and stock logs from the admin form 
     Storage::disk('public')->assertExists(Str::after($image->image_url, '/storage/'));
 
     $variant = ProductVariant::query()
-        ->where('sku', 'GMS-001-BLK-M')
+        ->whereBelongsTo($product)
+        ->where('size', 'M')
         ->firstOrFail();
 
     expect($variant)
         ->product_id->toBe($product->id)
-        ->color_name->toBe('Black')
-        ->color_hex->toBe('#000000')
         ->size->toBe('M')
         ->stock->toBe(12)
         ->reserved_stock->toBe(2)
         ->is_active->toBeTrue();
 
-    expect((float) $variant->regular_price)->toBe(15000.00)
-        ->and((float) $variant->sale_price)->toBe(12000.00)
+    expect((float) $variant->price)->toBe(15000.00)
         ->and($variant->weight)->toBe(700)
         ->and($variant->length)->toBe(32)
         ->and($variant->width)->toBe(26)
@@ -120,11 +98,8 @@ it('creates a product with images, variants, and stock logs from the admin form 
     $this->assertDatabaseHas('product_variants', [
         'id' => $variant->id,
         'product_id' => $product->id,
-        'sku' => 'GMS-001-BLK-M',
-        'color_name' => 'Black',
-        'color_hex' => '#000000',
         'size' => 'M',
-        'regular_price' => 15000,
+        'price' => 15000,
         'stock' => 12,
         'reserved_stock' => 2,
         'is_active' => true,
@@ -154,7 +129,7 @@ it('preserves stored product and variant files without image url input', functio
         'slug' => 'urban-speed',
         'sku' => 'USB-001',
         'brand_name' => 'NEXSTEP',
-        'regular_price' => 1000000,
+        'price' => 1000000,
         'weight' => 800,
         'status' => 'draft',
     ]);
@@ -165,14 +140,11 @@ it('preserves stored product and variant files without image url input', functio
     $image = $product->images()->create([
         'image_url' => '/storage/'.$imagePath,
         'alt_text' => 'legacy alt text',
-        'color_name' => 'Legacy color',
         'sort_order' => 0,
         'is_primary' => true,
     ]);
     $variant = $product->variants()->create([
         'sku' => 'USB-BLK-42',
-        'color_name' => 'Black',
-        'color_hex' => '#000000',
         'size' => 'EU 42',
         'stock' => 8,
         'reserved_stock' => 1,
@@ -186,7 +158,7 @@ it('preserves stored product and variant files without image url input', functio
             'slug' => $product->slug,
             'sku' => $product->sku,
             'brand_name' => $product->brand_name,
-            'regular_price' => $product->regular_price,
+            'price' => $product->price,
             'weight' => $product->weight,
             'status' => 'draft',
             'images' => [[
@@ -197,8 +169,6 @@ it('preserves stored product and variant files without image url input', functio
             'variants' => [[
                 'id' => $variant->id,
                 'sku' => $variant->sku,
-                'color_name' => $variant->color_name,
-                'color_hex' => $variant->color_hex,
                 'size' => $variant->size,
                 'stock' => $variant->stock,
                 'reserved_stock' => $variant->reserved_stock,
@@ -219,18 +189,15 @@ it('preserves stored product and variant files without image url input', functio
 /**
  * @return array<string, mixed>
  */
-function productPayload(Category $category, Collection $collection): array
+function productPayload(Category $category): array
 {
     return [
-        'category_id' => $category->id,
-        'collection_id' => $collection->id,
+        'category_ids' => [$category->id],
         'name' => 'Gamis Syar\'i Pita',
         'slug' => 'gamis-syari-pita',
         'sku' => 'GMS-001',
-        'short_description' => 'Gamis premium untuk daily wear.',
         'description' => 'Gamis premium dengan detail pita dan bahan nyaman.',
-        'regular_price' => 350000,
-        'sale_price' => 299000,
+        'price' => 350000,
         'weight' => 500,
         'length' => 30,
         'width' => 25,
@@ -239,8 +206,6 @@ function productPayload(Category $category, Collection $collection): array
         'is_featured' => true,
         'is_new_arrival' => true,
         'is_best_seller' => false,
-        'meta_title' => 'Gamis Syar\'i Pita Premium',
-        'meta_description' => 'Gamis premium nyaman untuk aktivitas harian.',
         'images' => [
             [
                 'image' => UploadedFile::fake()->image('product-front.jpg', 800, 1067),
@@ -250,12 +215,8 @@ function productPayload(Category $category, Collection $collection): array
         ],
         'variants' => [
             [
-                'sku' => 'GMS-001-BLK-M',
-                'color_name' => 'Black',
-                'color_hex' => '#000000',
                 'size' => 'M',
-                'regular_price' => 15000,
-                'sale_price' => 12000,
+                'price' => 15000,
                 'stock' => 12,
                 'reserved_stock' => 2,
                 'weight' => 700,

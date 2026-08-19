@@ -7,7 +7,6 @@ import { list, login, myProfile } from '@/routes';
 
 type NavbarProps = {
     cartCount?: number;
-    collections?: unknown[];
     currentUrl?: string;
     isAuthenticated?: boolean;
     logoSrc?: string;

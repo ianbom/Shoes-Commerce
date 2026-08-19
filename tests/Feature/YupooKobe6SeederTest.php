@@ -20,15 +20,13 @@ it('seeds Yupoo Kobe 6 albums with CNY prices converted to rupiah idempotently',
     (new YupooKobe6Seeder)->run();
     (new YupooKobe6Seeder)->run();
 
-    $product = Product::query()->with(['category', 'collections', 'images', 'variants'])
+    $product = Product::query()->with(['categories', 'images', 'variants'])
         ->where('sku', 'YUPOO-K6-244413554')
         ->firstOrFail();
 
     expect(Product::query()->where('sku', 'like', 'YUPOO-K6-%')->count())->toBe(17)
-        ->and($product->category->slug)->toBe('kobe-6')
-        ->and($product->collections->pluck('slug')->all())->toContain('yupoo-kobe-6-star')
-        ->and((float) $product->regular_price)->toBe(1192500.00)
-        ->and($product->stock_status)->toBe('out_of_stock')
+        ->and($product->categories->first()->slug)->toBe('kobe-6')
+        ->and((float) $product->price)->toBe(1192500.00)
         ->and($product->status)->toBe('draft')
         ->and($product->images)->toHaveCount(1)
         ->and($product->images->first()->is_primary)->toBeTrue()
@@ -52,7 +50,7 @@ it('uses verified snapshot data when Yupoo blocks server requests', function () 
         ->where('sku', 'YUPOO-K6-244413554')
         ->firstOrFail();
 
-    expect((float) $product->regular_price)->toBe(1192500.00)
+    expect((float) $product->price)->toBe(1192500.00)
         ->and($product->images)->not->toBeEmpty()
         ->and($product->images->first()->image_url)->toStartWith('https://photo.yupoo.com/tianjin-no1/');
 });

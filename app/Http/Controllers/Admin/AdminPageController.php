@@ -19,14 +19,14 @@ class AdminPageController extends Controller
             'group' => 'Catalog Management',
             'table' => 'products',
             'description' => 'Manage catalog products, prices, publication status, labels, and SEO metadata.',
-            'columns' => ['name', 'sku', 'category', 'collection', 'regular_price', 'sale_price', 'stock', 'status', 'created_at'],
+            'columns' => ['name', 'sku', 'category', 'price', 'stock', 'status', 'created_at'],
         ],
         'product-variants' => [
             'title' => 'Product Variants',
             'group' => 'Catalog Management',
             'table' => 'product_variants',
-            'description' => 'Review variant SKU, color, size, stock, reserved stock, and active status.',
-            'columns' => ['sku', 'product', 'color_name', 'size', 'stock', 'reserved_stock', 'available_stock', 'is_active'],
+            'description' => 'Review variant size, price, stock, reserved stock, and active status.',
+            'columns' => ['product', 'size', 'price', 'stock', 'reserved_stock', 'available_stock', 'is_active'],
         ],
         'categories' => [
             'title' => 'Categories',
@@ -35,19 +35,12 @@ class AdminPageController extends Controller
             'description' => 'Organize customer-facing product categories.',
             'columns' => ['name', 'slug', 'products_count', 'is_active', 'created_at'],
         ],
-        'collections' => [
-            'title' => 'Collections',
-            'group' => 'Catalog Management',
-            'table' => 'collections',
-            'description' => 'Manage campaign collections and featured homepage groupings.',
-            'columns' => ['name', 'slug', 'products_count', 'is_featured', 'is_active', 'created_at'],
-        ],
         'stock' => [
             'title' => 'Stock',
             'group' => 'Catalog Management',
             'table' => 'product_variants',
             'description' => 'Monitor stock, reserved quantity, and available inventory for each variant.',
-            'columns' => ['sku', 'product', 'color_name', 'size', 'stock', 'reserved_stock', 'available_stock'],
+            'columns' => ['product', 'size', 'price', 'stock', 'reserved_stock', 'available_stock'],
             'readonly' => true,
         ],
         'stock-logs' => [
@@ -125,7 +118,7 @@ class AdminPageController extends Controller
             'group' => 'Content Management',
             'table' => 'banners',
             'description' => 'Manage homepage and campaign banner placements.',
-            'columns' => ['title', 'placement', 'sort_order', 'is_active', 'starts_at', 'ends_at'],
+            'columns' => ['title', 'placement', 'sort_order', 'is_active', 'created_at'],
         ],
         'pages' => [
             'title' => 'Pages',
@@ -243,7 +236,6 @@ class AdminPageController extends Controller
             'products' => $this->products($request),
             'product-variants', 'stock' => $this->variants($request),
             'categories' => $this->categories($request),
-            'collections' => $this->collections($request),
             'stock-logs' => $this->stockLogs($request),
             'orders' => $this->orders($request),
             'payments' => $this->payments($request),
@@ -259,26 +251,23 @@ class AdminPageController extends Controller
     private function products(Request $request): Collection
     {
         $query = DB::table('products')
-            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
-            ->leftJoin('product_collections', 'product_collections.product_id', '=', 'products.id')
-            ->leftJoin('collections', 'collections.id', '=', 'product_collections.collection_id')
+            ->leftJoin('product_categories', 'product_categories.product_id', '=', 'products.id')
+            ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
             ->select([
                 'products.id',
                 'products.name',
                 'products.sku',
-                'products.regular_price',
-                'products.sale_price',
+                'products.price',
                 'products.status',
                 'products.is_featured',
                 'products.is_new_arrival',
                 'products.is_best_seller',
                 'products.created_at',
-                DB::raw('categories.name as category'),
-                DB::raw('max(collections.name) as collection'),
+                DB::raw('max(categories.name) as category'),
                 DB::raw('(select coalesce(sum(stock), 0) from product_variants where product_variants.product_id = products.id and product_variants.deleted_at is null) as stock'),
             ])
             ->whereNull('products.deleted_at')
-            ->groupBy('products.id', 'products.name', 'products.sku', 'products.regular_price', 'products.sale_price', 'products.status', 'products.is_featured', 'products.is_new_arrival', 'products.is_best_seller', 'products.created_at', 'categories.name')
+            ->groupBy('products.id', 'products.name', 'products.sku', 'products.price', 'products.status', 'products.is_featured', 'products.is_new_arrival', 'products.is_best_seller', 'products.created_at')
             ->latest('products.created_at');
 
         return $this->search($query, $request, $this->definition('products'), ['products.name', 'products.sku'])->limit(50)->get();
@@ -290,9 +279,8 @@ class AdminPageController extends Controller
             ->leftJoin('products', 'products.id', '=', 'product_variants.product_id')
             ->select([
                 'product_variants.id',
-                'product_variants.sku',
-                'product_variants.color_name',
                 'product_variants.size',
+                'product_variants.price',
                 'product_variants.stock',
                 'product_variants.reserved_stock',
                 'product_variants.is_active',
@@ -302,7 +290,7 @@ class AdminPageController extends Controller
             ->whereNull('product_variants.deleted_at')
             ->orderBy('products.name');
 
-        return $this->search($query, $request, $this->definition('product-variants'), ['product_variants.sku', 'products.name'])->limit(50)->get();
+        return $this->search($query, $request, $this->definition('product-variants'), ['product_variants.size', 'products.name'])->limit(50)->get();
     }
 
     private function categories(Request $request): Collection
@@ -314,30 +302,12 @@ class AdminPageController extends Controller
                 'categories.slug',
                 'categories.is_active',
                 'categories.created_at',
-                DB::raw('(select count(*) from products where products.category_id = categories.id and products.deleted_at is null) as products_count'),
+                DB::raw('(select count(*) from product_categories join products on products.id = product_categories.product_id where product_categories.category_id = categories.id and products.deleted_at is null) as products_count'),
             ])
             ->whereNull('categories.deleted_at')
             ->latest('categories.created_at');
 
         return $this->search($query, $request, $this->definition('categories'), ['categories.name', 'categories.slug'])->limit(50)->get();
-    }
-
-    private function collections(Request $request): Collection
-    {
-        $query = DB::table('collections')
-            ->select([
-                'collections.id',
-                'collections.name',
-                'collections.slug',
-                'collections.is_featured',
-                'collections.is_active',
-                'collections.created_at',
-                DB::raw('(select count(*) from product_collections join products on products.id = product_collections.product_id where product_collections.collection_id = collections.id and products.deleted_at is null) as products_count'),
-            ])
-            ->whereNull('collections.deleted_at')
-            ->latest('collections.created_at');
-
-        return $this->search($query, $request, $this->definition('collections'), ['collections.name', 'collections.slug'])->limit(50)->get();
     }
 
     private function stockLogs(Request $request): Collection
@@ -346,7 +316,7 @@ class AdminPageController extends Controller
             ->leftJoin('product_variants', 'product_variants.id', '=', 'stock_logs.product_variant_id')
             ->select([
                 'stock_logs.id',
-                DB::raw('product_variants.sku as variant'),
+                DB::raw('product_variants.size as variant'),
                 'stock_logs.type',
                 'stock_logs.quantity',
                 'stock_logs.stock_before',
@@ -356,7 +326,7 @@ class AdminPageController extends Controller
             ])
             ->latest('stock_logs.created_at');
 
-        return $this->search($query, $request, $this->definition('stock-logs'), ['product_variants.sku', 'stock_logs.type'])->limit(50)->get();
+        return $this->search($query, $request, $this->definition('stock-logs'), ['product_variants.size', 'stock_logs.type'])->limit(50)->get();
     }
 
     private function orders(Request $request): Collection

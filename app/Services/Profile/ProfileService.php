@@ -27,15 +27,15 @@ class ProfileService
 
         return [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
-            'status'          => $request->session()->get('status'),
-            'defaultAddress'  => $defaultAddress ? $this->addressPayload($defaultAddress) : null,
-            'user'            => [
-                'id'           => $user->id,
-                'name'         => $user->name,
-                'email'        => $user->email,
-                'phone'        => $user->phone,
-                'avatar_url'   => $user->avatar_url,
-                'role'         => $user->role,
+            'status' => $request->session()->get('status'),
+            'defaultAddress' => $defaultAddress ? $this->addressPayload($defaultAddress) : null,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'avatar_url' => $user->avatar_url,
+                'role' => $user->role,
                 'member_since' => $user->created_at?->format('Y'),
             ],
         ];

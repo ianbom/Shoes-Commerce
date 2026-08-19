@@ -110,7 +110,7 @@ function createCartStockProduct(int $stock, int $reservedStock): array
     $product = Product::query()->create([
         'name' => $name,
         'slug' => Str::slug($name).'-'.Str::lower(Str::random(6)),
-        'regular_price' => 100000,
+        'price' => 100000,
         'weight' => 500,
         'status' => 'published',
     ]);
@@ -137,8 +137,8 @@ function createCartStockItem(User $user, Product $product, ProductVariant $varia
         'product_variant_id' => $variant->id,
         'quantity' => $quantity,
         'product_name_snapshot' => $product->name,
-        'variant_sku_snapshot' => $variant->sku,
-        'color_name_snapshot' => $variant->color_name,
+        'variant_sku_snapshot' => $variant->size,
+        'color_name_snapshot' => '',
         'size_snapshot' => $variant->size,
         'price_snapshot' => 100000,
     ]);

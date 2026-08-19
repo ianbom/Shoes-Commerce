@@ -10,12 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'product_id',
-    'sku',
-    'color_name',
-    'color_hex',
     'size',
-    'regular_price',
-    'sale_price',
+    'price',
     'stock',
     'reserved_stock',
     'weight',
@@ -28,6 +24,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductVariant extends Model
 {
     use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $variant): void {
+            $variant->price ??= $variant->product()->value('price');
+        });
+    }
 
     public function cartItems(): HasMany
     {
@@ -55,9 +58,8 @@ class ProductVariant extends Model
             'height' => 'integer',
             'is_active' => 'boolean',
             'length' => 'integer',
-            'regular_price' => 'decimal:2',
+            'price' => 'decimal:2',
             'reserved_stock' => 'integer',
-            'sale_price' => 'decimal:2',
             'stock' => 'integer',
             'weight' => 'integer',
             'width' => 'integer',

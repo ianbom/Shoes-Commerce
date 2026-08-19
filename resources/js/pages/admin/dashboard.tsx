@@ -53,7 +53,6 @@ type LowStockVariant = {
     product_id?: number | null;
     product_name: string | null;
     sku?: string;
-    color_name?: string | null;
     size?: string | null;
     available_stock: number;
 };
@@ -706,12 +705,9 @@ function LowStockProductsCard({ products }: { products: LowStockVariant[] }) {
                                     </p>
                                 )}
                                 <p className="mt-1 text-xs text-zinc-400">
-                                    {[
-                                        product.color_name,
-                                        product.size && `Size ${product.size}`,
-                                    ]
-                                        .filter(Boolean)
-                                        .join(' · ') || 'Standard variant'}
+                                    {product.size
+                                        ? `Size ${product.size}`
+                                        : 'Standard variant'}
                                 </p>
                             </div>
                             <div className="w-full text-left sm:w-auto sm:text-right">

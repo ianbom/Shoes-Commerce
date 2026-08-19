@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -148,7 +149,7 @@ class AdminDashboardService
         return $this->ordersInRange($start, $end)->where('payment_status', $status)->count();
     }
 
-    private function ordersInRange(CarbonImmutable $start, CarbonImmutable $end): \Illuminate\Database\Query\Builder
+    private function ordersInRange(CarbonImmutable $start, CarbonImmutable $end): Builder
     {
         return DB::table('orders')->whereBetween('created_at', [$start, $end]);
     }
@@ -382,8 +383,6 @@ class AdminDashboardService
             ->select([
                 'product_variants.id',
                 'product_variants.product_id',
-                'product_variants.sku',
-                'product_variants.color_name',
                 'product_variants.size',
                 'product_variants.stock',
                 'product_variants.reserved_stock',
@@ -391,7 +390,9 @@ class AdminDashboardService
                 DB::raw('products.name as product_name'),
             ])
             ->whereNull('product_variants.deleted_at')
-            ->whereRaw('(product_variants.stock - product_variants.reserved_stock) <= 5')
+            ->whereNull('products.deleted_at')
+            ->where('product_variants.is_active', true)
+            ->whereRaw('(product_variants.stock - product_variants.reserved_stock) between 1 and 5')
             ->orderBy('available_stock')
             ->limit(10)
             ->get();

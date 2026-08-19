@@ -56,12 +56,11 @@ export function StatusBadge({
         <Badge
             variant="outline"
             className={cn(
-                resolvedTone === 'good' &&
-                    'border-black bg-black text-white',
+                resolvedTone === 'good' && 'border-black bg-black text-white',
                 resolvedTone === 'warn' &&
                     'border-black/[0.32] bg-black/[0.08] text-black',
                 resolvedTone === 'bad' &&
-                    'border-black border-dashed bg-white text-black',
+                    'border-dashed border-black bg-white text-black',
                 resolvedTone === 'info' &&
                     'border-black/[0.16] bg-white text-black/[0.56]',
             )}

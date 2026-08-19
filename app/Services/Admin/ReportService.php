@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,6 @@ class ReportService
                 'payment_status' => $request->string('payment_status')->toString(),
                 'order_status' => $request->string('order_status')->toString(),
                 'category_id' => $request->string('category_id')->toString(),
-                'collection_id' => $request->string('collection_id')->toString(),
             ],
             'options' => $this->options(),
             'report' => match ($type) {
@@ -127,11 +127,10 @@ class ReportService
         $items = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->leftJoin('products', 'products.id', '=', 'order_items.product_id')
-            ->leftJoin('product_collections', 'product_collections.product_id', '=', 'products.id')
+            ->leftJoin('product_categories', 'product_categories.product_id', '=', 'products.id')
             ->where('orders.payment_status', 'paid')
             ->whereBetween('orders.paid_at', [$start, $end])
-            ->when($request->string('category_id')->toString() !== '', fn ($query) => $query->where('products.category_id', $request->string('category_id')->toString()))
-            ->when($request->string('collection_id')->toString() !== '', fn ($query) => $query->where('product_collections.collection_id', $request->string('collection_id')->toString()));
+            ->when($request->string('category_id')->toString() !== '', fn ($query) => $query->where('product_categories.category_id', $request->string('category_id')->toString()));
 
         $products = (clone $items)
             ->selectRaw('order_items.product_name, coalesce(order_items.product_sku, "-") as product_sku, sum(order_items.quantity) as quantity, sum(order_items.subtotal) as revenue')
@@ -140,8 +139,8 @@ class ReportService
             ->limit(20)
             ->get();
         $variants = (clone $items)
-            ->selectRaw('coalesce(order_items.variant_sku, "-") as variant_sku, order_items.product_name, order_items.color_name, order_items.size, sum(order_items.quantity) as quantity, sum(order_items.subtotal) as revenue')
-            ->groupBy('order_items.variant_sku', 'order_items.product_name', 'order_items.color_name', 'order_items.size')
+            ->selectRaw('order_items.product_name, order_items.size, sum(order_items.quantity) as quantity, sum(order_items.subtotal) as revenue')
+            ->groupBy('order_items.product_name', 'order_items.size')
             ->orderByDesc('quantity')
             ->limit(20)
             ->get();
@@ -158,9 +157,9 @@ class ReportService
             ],
             'tables' => [
                 ['title' => 'Best selling products', 'columns' => ['product_name', 'product_sku', 'quantity', 'revenue'], 'rows' => $products->map(fn (object $row): array => (array) $row)->all()],
-                ['title' => 'Best selling variants', 'columns' => ['variant_sku', 'product_name', 'color_name', 'size', 'quantity', 'revenue'], 'rows' => $variants->map(fn (object $row): array => (array) $row)->all()],
-                ['title' => 'Low stock variants', 'columns' => ['product_name', 'sku', 'stock', 'reserved_stock', 'available_stock'], 'rows' => $lowStock->map(fn (object $row): array => (array) $row)->all()],
-                ['title' => 'Sold out variants', 'columns' => ['product_name', 'sku', 'stock', 'reserved_stock', 'available_stock'], 'rows' => $soldOut->map(fn (object $row): array => (array) $row)->all()],
+                ['title' => 'Best selling variants', 'columns' => ['product_name', 'size', 'quantity', 'revenue'], 'rows' => $variants->map(fn (object $row): array => (array) $row)->all()],
+                ['title' => 'Low stock variants', 'columns' => ['product_name', 'size', 'price', 'stock', 'reserved_stock', 'available_stock'], 'rows' => $lowStock->map(fn (object $row): array => (array) $row)->all()],
+                ['title' => 'Sold out variants', 'columns' => ['product_name', 'size', 'price', 'stock', 'reserved_stock', 'available_stock'], 'rows' => $soldOut->map(fn (object $row): array => (array) $row)->all()],
             ],
         ];
     }
@@ -217,7 +216,7 @@ class ReportService
         $byStatus = (clone $shipments)->selectRaw('shipping_status, count(*) as shipments')->groupBy('shipping_status')->orderByDesc('shipments')->get();
         $driver = DB::connection()->getDriverName();
         $averageExpression = $driver === 'sqlite'
-            ? "avg((julianday(delivered_at) - julianday(shipped_at)) * 24)"
+            ? 'avg((julianday(delivered_at) - julianday(shipped_at)) * 24)'
             : 'avg(timestampdiff(hour, shipped_at, delivered_at))';
         $averageDelivery = (clone $shipments)
             ->whereNotNull('shipped_at')
@@ -264,7 +263,7 @@ class ReportService
         ];
     }
 
-    private function ordersQuery(CarbonImmutable $start, CarbonImmutable $end, Request $request): \Illuminate\Database\Query\Builder
+    private function ordersQuery(CarbonImmutable $start, CarbonImmutable $end, Request $request): Builder
     {
         $query = DB::table('orders')->whereBetween('created_at', [$start, $end]);
 
@@ -280,7 +279,7 @@ class ReportService
     {
         return DB::table('product_variants')
             ->leftJoin('products', 'products.id', '=', 'product_variants.product_id')
-            ->selectRaw('products.name as product_name, product_variants.sku, product_variants.stock, product_variants.reserved_stock, (product_variants.stock - product_variants.reserved_stock) as available_stock')
+            ->selectRaw('products.name as product_name, product_variants.size, product_variants.price, product_variants.stock, product_variants.reserved_stock, (product_variants.stock - product_variants.reserved_stock) as available_stock')
             ->whereNull('product_variants.deleted_at')
             ->whereRaw("(product_variants.stock - product_variants.reserved_stock) {$operator} ?", [$threshold])
             ->orderBy('available_stock')
@@ -297,7 +296,6 @@ class ReportService
             'paymentStatuses' => ['pending', 'paid', 'expired', 'failed', 'cancelled'],
             'orderStatuses' => ['pending_payment', 'paid', 'processing', 'ready_to_ship', 'shipped', 'delivered', 'completed', 'cancelled', 'expired'],
             'categories' => Schema::hasTable('categories') ? DB::table('categories')->select('id', 'name')->orderBy('name')->get() : [],
-            'collections' => Schema::hasTable('collections') ? DB::table('collections')->select('id', 'name')->orderBy('name')->get() : [],
         ];
     }
 }

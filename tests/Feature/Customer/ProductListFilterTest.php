@@ -37,7 +37,7 @@ function createListProduct(string $name, string $brand, int $price = 500000): Pr
         'name' => $name,
         'slug' => Str::slug($name).'-'.Str::random(6),
         'brand_name' => $brand,
-        'regular_price' => $price,
+        'price' => $price,
         'status' => 'published',
     ]);
 }

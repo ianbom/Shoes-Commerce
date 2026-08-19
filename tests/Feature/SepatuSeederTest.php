@@ -38,17 +38,15 @@ it('seeds DummyJSON shoe products idempotently', function () {
     (new SepatuSeeder)->run();
 
     $product = Product::query()
-        ->with(['category', 'images', 'variants'])
+        ->with(['categories', 'images', 'variants'])
         ->where('sku', 'SHOE-MEN-001')
         ->firstOrFail();
 
     expect(Product::query()->where('sku', 'like', 'SHOE-%')->count())->toBe(2)
         ->and($product->name)->toBe('Nike Air Jordan 1 Red And Black')
         ->and($product->brand_name)->toBe('Nike')
-        ->and($product->stock_status)->toBe('in_stock')
-        ->and($product->category->slug)->toBe('sneakers')
-        ->and((float) $product->regular_price)->toBe(2048000.00)
-        ->and((float) $product->sale_price)->toBe(1843200.00)
+        ->and($product->categories->first()->slug)->toBe('sneakers')
+        ->and((float) $product->price)->toBe(1843200.00)
         ->and($product->weight)->toBe(900)
         ->and($product->length)->toBe(35)
         ->and($product->width)->toBe(24)
@@ -58,10 +56,10 @@ it('seeds DummyJSON shoe products idempotently', function () {
         ->and($product->images->first()->is_primary)->toBeTrue()
         ->and(ProductImage::query()->where('product_id', $product->id)->count())->toBe(3);
 
-    expect(ProductVariant::query()->where('product_id', $product->id)->count())->toBe(1)
-        ->and($product->variants->first()->size)->toBe('One Size')
-        ->and($product->variants->first()->stock)->toBe(7)
-        ->and((float) $product->variants->first()->sale_price)->toBe(1843200.00);
+    expect(ProductVariant::query()->where('product_id', $product->id)->count())->toBe(4)
+        ->and($product->variants->first()->size)->toBe('US=4 EU=36')
+        ->and($product->variants->sum('stock'))->toBe(7)
+        ->and((float) $product->variants->first()->price)->toBe(1843200.00);
 });
 
 it('preserves seeded products when the remote catalog fails', function () {

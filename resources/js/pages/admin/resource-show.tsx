@@ -17,7 +17,7 @@ function displayValue(value: string | number | boolean | null) {
     if (typeof value === 'boolean') {
         return value ? (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-black/[0.04] px-3 py-1 text-xs font-semibold text-black ring-1 ring-black/[0.16]">
-                <span className="h-1.5 w-1.5 rounded-full bg-black/[0.04]0" />
+                <span className="bg-black/[0.04]0 h-1.5 w-1.5 rounded-full" />
                 Yes
             </span>
         ) : (

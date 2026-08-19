@@ -44,8 +44,7 @@ class SepatuSeeder extends Seeder
     {
         $products = collect($this->catalog())
             ->map(
-                fn (array $product, int $index): ?array =>
-                    $this->mapProduct($product, $index)
+                fn (array $product, int $index): ?array => $this->mapProduct($product, $index)
             )
             ->filter()
             ->values();
@@ -58,7 +57,6 @@ class SepatuSeeder extends Seeder
 
         DB::transaction(function () use ($products): void {
             $category = $this->category();
-            $collectionIds = $this->collectionIds();
             $seededSkus = [];
 
             foreach ($products as $product) {
@@ -69,18 +67,11 @@ class SepatuSeeder extends Seeder
                             'slug' => $product['slug'],
                         ],
                         [
-                            'category_id' => $category->id,
                             'name' => $product['name'],
                             'sku' => $product['sku'],
                             'brand_name' => $product['brand_name'],
-                            'regular_price' => $product['regular_price'],
-                            'sale_price' => $product['sale_price'],
-                            'short_description' => Str::limit(
-                                $product['description'],
-                                150
-                            ),
+                            'price' => $product['price'],
                             'description' => $product['description'],
-                            'stock_status' => $product['stock_status'],
                             'status' => 'published',
                             'weight' => $product['weight'],
                             'length' => $product['length'],
@@ -89,13 +80,6 @@ class SepatuSeeder extends Seeder
                             'is_featured' => $product['index'] % 5 === 0,
                             'is_new_arrival' => $product['index'] < 10,
                             'is_best_seller' => $product['index'] % 3 === 0,
-                            'meta_title' => $product['name']
-                                .' | '
-                                .$product['brand_name'],
-                            'meta_description' => Str::limit(
-                                $product['description'],
-                                160
-                            ),
                         ],
                     );
 
@@ -103,7 +87,7 @@ class SepatuSeeder extends Seeder
                     $record->restore();
                 }
 
-                $record->collections()->sync($collectionIds);
+                $record->categories()->sync([$category->id]);
 
                 $this->syncImages(
                     $record,
@@ -177,7 +161,7 @@ class SepatuSeeder extends Seeder
     /**
      * Mengubah data produk dari DummyJSON menjadi format aplikasi.
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>|null
      */
     private function mapProduct(array $data, int $index): ?array
@@ -188,8 +172,7 @@ class SepatuSeeder extends Seeder
 
         $images = collect($data['images'] ?? [])
             ->filter(
-                fn (mixed $image): bool =>
-                    is_string($image)
+                fn (mixed $image): bool => is_string($image)
                     && filter_var(
                         $image,
                         FILTER_VALIDATE_URL
@@ -231,10 +214,6 @@ class SepatuSeeder extends Seeder
             (string) ($data['brand'] ?? '')
         ) ?: 'Generic';
 
-        $availabilityStatus = (string) (
-            $data['availabilityStatus'] ?? ''
-        );
-
         return [
             'index' => $index,
             'name' => $name,
@@ -246,17 +225,8 @@ class SepatuSeeder extends Seeder
             'description' => trim(
                 (string) ($data['description'] ?? '')
             ) ?: $name,
-            'regular_price' => $regularPrice,
-            'sale_price' => $salePrice,
+            'price' => $salePrice ?? $regularPrice,
             'stock' => $stock,
-            'stock_status' => $stock === 0
-                || Str::contains(
-                    $availabilityStatus,
-                    'Out of Stock',
-                    true
-                )
-                    ? 'out_of_stock'
-                    : 'in_stock',
             'weight' => max(
                 1,
                 (int) round(
@@ -300,7 +270,7 @@ class SepatuSeeder extends Seeder
     /**
      * Menyimpan dan memperbarui gambar produk.
      *
-     * @param array<int, string> $images
+     * @param  array<int, string>  $images
      */
     private function syncImages(
         Product $product,
@@ -346,7 +316,7 @@ class SepatuSeeder extends Seeder
      * - US=5 EU=37
      * - US=6 EU=38
      *
-     * @param array<string, mixed> $productData
+     * @param  array<string, mixed>  $productData
      */
     private function syncVariants(
         Product $product,
@@ -388,12 +358,6 @@ class SepatuSeeder extends Seeder
                 $size['eu']
             );
 
-            $variantSku = $this->variantSku(
-                $productData['sku'],
-                $size['us'],
-                $size['eu']
-            );
-
             $variantStock = $baseStock
                 + ($index < $stockRemainder ? 1 : 0);
 
@@ -402,14 +366,11 @@ class SepatuSeeder extends Seeder
                 ->updateOrCreate(
                     [
                         'product_id' => $product->id,
-                        'sku' => $variantSku,
+                        'size' => $sizeLabel,
                     ],
                     [
-                        'color_name' => 'Default',
-                        'color_hex' => null,
                         'size' => $sizeLabel,
-                        'regular_price' => $productData['regular_price'],
-                        'sale_price' => $productData['sale_price'],
+                        'price' => $productData['price'],
                         'stock' => $variantStock,
                         'reserved_stock' => 0,
                         'weight' => $productData['weight'],
@@ -501,29 +462,6 @@ class SepatuSeeder extends Seeder
     }
 
     /**
-     * Mendapatkan collection yang akan dipasang pada produk.
-     *
-     * @return array<int, array{sort_order: int}>
-     */
-    private function collectionIds(): array
-    {
-        return DB::table('collections')
-            ->whereIn(
-                'slug',
-                ['new-arrivals']
-            )
-            ->pluck('id')
-            ->mapWithKeys(
-                fn (int $id): array => [
-                    $id => [
-                        'sort_order' => 1,
-                    ],
-                ]
-            )
-            ->all();
-    }
-
-    /**
      * Membuat SKU utama produk.
      */
     private function sku(string $value): string
@@ -535,25 +473,6 @@ class SepatuSeeder extends Seeder
             100,
             ''
         );
-    }
-
-    /**
-     * Membuat SKU varian berdasarkan ukuran US dan EU.
-     */
-    private function variantSku(
-        string $productSku,
-        int $usSize,
-        int $euSize
-    ): string {
-        $suffix = "-US{$usSize}-EU{$euSize}";
-
-        $maximumProductSkuLength = 100 - strlen($suffix);
-
-        return Str::limit(
-            $productSku,
-            $maximumProductSkuLength,
-            ''
-        ).$suffix;
     }
 
     /**

@@ -21,7 +21,6 @@ type FilterState = {
     brand: string;
     type: string;
     price: string;
-    color: string;
     size: string;
     sort: string;
     order: string;
@@ -34,16 +33,9 @@ type ProductCard = {
     title: string;
     sku: string | null;
     price: number;
-    sale_price: number | null;
     image: string | null;
     hover_image: string | null;
-    badge: string | null;
     category: string | null;
-    collection: string | null;
-    colors: Array<{
-        name: string | null;
-        hex: string;
-    }>;
     sizes: string[];
     available_stock: number;
     is_wishlisted: boolean;
@@ -82,7 +74,6 @@ type Props = {
     options: {
         categories: FilterOption[];
         brands: FilterOption[];
-        colors: FilterOption[];
         sizes: string[];
         priceRanges: Array<{ value: string; label: string }>;
         sorts: Array<{ value: string; label: string }>;
@@ -101,7 +92,6 @@ const defaultFilters: FilterState = {
     brand: '',
     type: 'all',
     price: 'all',
-    color: '',
     size: '',
     sort: 'featured',
     order: 'desc',
@@ -113,7 +103,6 @@ const typeOptions = [
     { value: 'featured', label: 'Featured' },
     { value: 'new_arrival', label: 'New' },
     { value: 'best_seller', label: 'Best Seller' },
-    { value: 'discount', label: 'Sale' },
 ];
 
 const formatPrice = (value: number) =>
@@ -474,35 +463,6 @@ function FilterPanel({
                 ))}
             </FilterSection>
 
-            <FilterSection title="Colors">
-                <div className="flex flex-wrap gap-2.5 py-1">
-                    <button
-                        type="button"
-                        onClick={() => setFilter('color', '')}
-                        aria-label="All colors"
-                        className={`size-7 border bg-white ${
-                            form.color === ''
-                                ? 'border-primary ring-2 ring-primary'
-                                : 'border-ink'
-                        }`}
-                    />
-                    {options.colors.map((color, index) => (
-                        <button
-                            key={`${color.hex ?? color.name ?? 'color'}-${index}`}
-                            type="button"
-                            onClick={() => setFilter('color', color.hex ?? '')}
-                            aria-label={color.name ?? color.hex ?? 'Color'}
-                            className={`size-7 border ${
-                                form.color === color.hex
-                                    ? 'border-primary ring-2 ring-primary'
-                                    : 'border-hairline-strong'
-                            }`}
-                            style={{ backgroundColor: color.hex }}
-                        />
-                    ))}
-                </div>
-            </FilterSection>
-
             <FilterSection title="Size">
                 <div className="flex flex-wrap gap-2 py-1 text-[12px] font-extrabold uppercase">
                     <button
@@ -656,7 +616,7 @@ const ProductTile = memo(function ProductTile({
     const [isWishlisted, setIsWishlisted] = useState(product.is_wishlisted);
     const isSoldOut = product.available_stock <= 0;
     const productHref = detail.url({ query: { product: product.slug } });
-    const subtitle = product.collection ?? product.category;
+    const subtitle = product.category;
     const toggleWishlist = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -716,13 +676,7 @@ const ProductTile = memo(function ProductTile({
                             isSoldOut ? 'opacity-45 grayscale' : ''
                         }`}
                     />
-                    {!isSoldOut && product.badge && (
-                        <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 [transform:rotate(180deg)] items-center justify-center bg-primary px-1 py-2 text-[11px] font-extrabold tracking-[0.08em] text-white uppercase [text-orientation:mixed] [writing-mode:vertical-rl] sm:w-10 sm:text-[12px]">
-                            {product.badge === 'DISCOUNT'
-                                ? 'SALE'
-                                : product.badge}
-                        </span>
-                    )}
+
                     {isSoldOut && (
                         <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 [transform:rotate(180deg)] items-center justify-center bg-ink px-1 py-2 text-[10px] font-extrabold tracking-[0.08em] text-white uppercase [text-orientation:mixed] [writing-mode:vertical-rl] sm:w-10 sm:text-[11px]">
                             Sold Out
@@ -758,22 +712,9 @@ const ProductTile = memo(function ProductTile({
                 <p className="mt-1 line-clamp-1 text-[15px] leading-5 text-body">
                     {subtitle ?? 'Performance Gear'}
                 </p>
-                <div className="mt-2 flex flex-wrap items-center gap-4 text-[18px] leading-none font-extrabold">
-                    {product.sale_price !== null && (
-                        <span className="text-ink line-through decoration-1">
-                            {formatPrice(product.price)}
-                        </span>
-                    )}
-                    <span
-                        className={
-                            product.sale_price !== null
-                                ? 'text-primary'
-                                : 'text-ink'
-                        }
-                    >
-                        {formatPrice(product.sale_price ?? product.price)}
-                    </span>
-                </div>
+                <p className="mt-2 text-[18px] leading-none font-extrabold text-ink">
+                    {formatPrice(product.price)}
+                </p>
             </Link>
         </article>
     );

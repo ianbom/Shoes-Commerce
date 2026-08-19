@@ -33,7 +33,6 @@ type ProductCard = {
     slug: string;
     name: string;
     price: number;
-    sale_price: number | null;
     label: string | null;
     badge: string | null;
     image: string | null;
@@ -44,80 +43,27 @@ type BannerCard = {
     id: number;
     title: string;
     subtitle: string | null;
-    image_desktop_url: string;
+    image_desktop_url: string | null;
     image_mobile_url: string | null;
     button_text: string | null;
     button_url: string | null;
-} | null;
+};
 
-type CollectionCard = {
-    id?: number;
+type CategoryCard = {
+    id: number;
     name: string;
     slug: string;
+    description: string | null;
+    image_url: string | null;
 };
 
 type Props = {
     heroBanners?: BannerCard[];
-    collections?: CollectionCard[];
+    categories?: CategoryCard[];
     flashDeals?: ProductCard[];
     newArrivals?: ProductCard[];
     mostLoved?: ProductCard[];
 };
-
-const categoryCards = [
-    {
-        title: 'Running',
-        description:
-            'Lightweight, responsive sneakers for everyday performance.',
-        image: '/welcome/image copy 2.png',
-        href: '/list?search=running',
-    },
-    {
-        title: 'Basketball',
-        description: 'Built for the game. Engineered for every move.',
-        image: '/welcome/image copy 3.png',
-        href: '/list?search=basketball',
-    },
-    {
-        title: 'Training',
-        description: 'Support, stability, and comfort for every workout.',
-        image: '/welcome/image.png',
-        href: '/list?search=training',
-    },
-    {
-        title: 'Lifestyle',
-        description: 'Street-ready styles that move with your world.',
-        image: '/welcome/image copy.png',
-        href: '/list?search=lifestyle',
-    },
-    {
-        title: 'Apparel',
-        description: 'Performance apparel built for every active day.',
-        image: '/welcome/image.png',
-        href: '/list?search=apparel',
-    },
-    {
-        title: 'Accessories',
-        description: 'Essential accessories for sport, travel, and training.',
-        image: '/welcome/image copy.png',
-        href: '/list?search=accessories',
-    },
-];
-
-const campaignSlides = [
-    {
-        src: '/img/banner.png',
-        alt: 'Basketball athlete wearing performance sneakers',
-    },
-    {
-        src: '/welcome/image copy 2.png',
-        alt: 'Performance footwear collection',
-    },
-    {
-        src: '/welcome/image copy 3.png',
-        alt: 'Sport style collection',
-    },
-];
 
 const technologies: Array<{
     title: string;
@@ -190,15 +136,14 @@ function SectionHeader({
     );
 }
 
-function CampaignCarousel() {
+function CampaignCarousel({ banners }: { banners: BannerCard[] }) {
     const [activeSlide, setActiveSlide] = useState(0);
     const touchStartX = useRef<number | null>(null);
 
     const moveSlide = (offset: number) => {
         setActiveSlide(
             (currentSlide) =>
-                (currentSlide + offset + campaignSlides.length) %
-                campaignSlides.length,
+                (currentSlide + offset + banners.length) % banners.length,
         );
     };
 
@@ -243,14 +188,21 @@ function CampaignCarousel() {
                 className="flex h-full transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${activeSlide * 100}%)` }}
             >
-                {campaignSlides.map((slide) => (
-                    <img
-                        key={slide.src}
-                        src={slide.src}
-                        alt={slide.alt}
-                        loading="lazy"
-                        className="h-full w-full shrink-0 object-cover object-center"
-                    />
+                {banners.map((banner) => (
+                    <picture key={banner.id} className="h-full w-full shrink-0">
+                        {banner.image_mobile_url && (
+                            <source
+                                media="(max-width: 639px)"
+                                srcSet={banner.image_mobile_url}
+                            />
+                        )}
+                        <img
+                            src={banner.image_desktop_url ?? '/img/banner.png'}
+                            alt={banner.title}
+                            loading="lazy"
+                            className="h-full w-full object-cover object-center"
+                        />
+                    </picture>
                 ))}
             </div>
 
@@ -272,9 +224,9 @@ function CampaignCarousel() {
             </button>
 
             <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
-                {campaignSlides.map((slide, index) => (
+                {banners.map((banner, index) => (
                     <button
-                        key={slide.src}
+                        key={banner.id}
                         type="button"
                         onClick={() => setActiveSlide(index)}
                         className={`h-2 rounded-full transition-all ${
@@ -292,12 +244,7 @@ function CampaignCarousel() {
 }
 
 function ProductTile({ product }: { product: ProductCard }) {
-    const currentPrice = product.sale_price ?? product.price;
-    const oldPrice = product.sale_price !== null ? product.price : null;
-    const discount =
-        oldPrice && oldPrice > currentPrice
-            ? Math.round((1 - currentPrice / oldPrice) * 100)
-            : null;
+    const currentPrice = product.price;
     const label = product.label ?? product.badge;
 
     return (
@@ -334,16 +281,6 @@ function ProductTile({ product }: { product: ProductCard }) {
                         <span className="text-[14px] font-extrabold text-ink">
                             {money(currentPrice)}
                         </span>
-                        {oldPrice ? (
-                            <span className="text-[11px] text-muted-foreground line-through">
-                                {money(oldPrice)}
-                            </span>
-                        ) : null}
-                        {discount ? (
-                            <span className="ml-auto text-[12px] font-extrabold text-primary">
-                                -{discount}%
-                            </span>
-                        ) : null}
                     </div>
                 </div>
             </Link>
@@ -376,30 +313,33 @@ function HeroTrustCard({
 }
 
 export default function Welcome({
-    collections = [],
+    heroBanners = [],
+    categories = [],
     flashDeals = [],
     newArrivals = [],
 }: Props) {
-    const categoryLinks = [
-        { label: 'New Arrivals', href: '/list?type=new_arrival', icon: Star },
-        {
-            label: 'Best Sellers',
-            href: '/list?type=best_seller',
-            icon: BadgeCheck,
-        },
-        { label: 'Sneakers', href: '/list?search=sneakers', icon: Footprints },
-        {
-            label: 'Streetwear',
-            href: '/list?search=streetwear',
-            icon: Sparkles,
-        },
-        {
-            label: 'Limited Drops',
-            href: '/list?type=featured',
-            icon: CircleDollarSign,
-        },
-        { label: 'View All', href: '/list', icon: Gift },
-    ];
+    const banners = heroBanners.filter(
+        (banner) =>
+            banner && (banner.image_desktop_url || banner.image_mobile_url),
+    );
+    const campaignBanners = banners.length
+        ? banners
+        : [
+              {
+                  id: 0,
+                  title: 'Featured products',
+                  subtitle: null,
+                  image_desktop_url: '/img/banner.png',
+                  image_mobile_url: null,
+                  button_text: null,
+                  button_url: null,
+              },
+          ];
+    const categoryLinks = categories.map((category) => ({
+        label: category.name,
+        href: `/list?category=${encodeURIComponent(category.slug)}`,
+        icon: Footprints,
+    }));
 
     return (
         <ShopLayout>
@@ -488,8 +428,8 @@ export default function Welcome({
                         <Search className="size-5 shrink-0 text-ink" />
                         <input
                             name="search"
-                            aria-label="Search sneakers, brands, or collections"
-                            placeholder="Search sneakers, brands, or collections"
+                            aria-label="Search products, brands, or SKU"
+                            placeholder="Search products, brands, or SKU"
                             className="h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[12px] outline-none"
                         />
                         <button
@@ -531,7 +471,7 @@ export default function Welcome({
                         </div>
                     </section>
 
-                    <CampaignCarousel />
+                    <CampaignCarousel banners={campaignBanners} />
 
                     <section>
                         <SectionHeader
@@ -550,18 +490,19 @@ export default function Welcome({
                     </section>
 
                     <section className="grid gap-4 md:grid-cols-2">
-                        {categoryCards.map((category) => (
+                        {categories.map((category) => (
                             <Link
-                                key={category.title}
-                                href={category.href}
+                                key={category.id}
+                                href={`/list?category=${encodeURIComponent(category.slug)}`}
                                 className="group relative min-h-[220px] overflow-hidden rounded-[14px] border border-hairline bg-surface-subtle p-7 sm:min-h-[250px]"
                             >
                                 <div className="relative z-10 max-w-[180px]">
                                     <h2 className="text-[38px] leading-none text-ink uppercase sm:text-[44px]">
-                                        {category.title}
+                                        {category.name}
                                     </h2>
                                     <p className="mt-3 text-[12px] leading-5 text-body">
-                                        {category.description}
+                                        {category.description ??
+                                            'Explore this category.'}
                                     </p>
                                     <span className="mt-6 inline-flex items-center gap-2 text-[12px] font-bold text-ink uppercase">
                                         Shop Now{' '}
@@ -569,7 +510,10 @@ export default function Welcome({
                                     </span>
                                 </div>
                                 <img
-                                    src={category.image}
+                                    src={
+                                        category.image_url ??
+                                        '/img/all-product.webp'
+                                    }
                                     alt=""
                                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                                 />

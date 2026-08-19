@@ -1,34 +1,448 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Archive, Copy, Eye, Package, Pencil, Plus, RotateCcw, Search, Trash2, TrendingDown } from 'lucide-react';
+import {
+    Archive,
+    Copy,
+    Eye,
+    Package,
+    Pencil,
+    Plus,
+    RotateCcw,
+    Search,
+    Trash2,
+    TrendingDown,
+} from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Pagination, PageHeader, StatusBadge, Thumbnail, formatPrice } from '@/pages/admin/catalog/shared';
+import {
+    Pagination,
+    PageHeader,
+    StatusBadge,
+    Thumbnail,
+    formatPrice,
+} from '@/pages/admin/catalog/shared';
 
-type Product = { id: number; name: string; sku: string | null; brand_name: string | null; category: string | null; collection: string | null; thumbnail: string | null; regular_price: number; sale_price: number | null; total_stock: number; total_reserved_stock: number; available_stock: number; variants_count: number; status: string; is_featured: boolean; is_new_arrival: boolean; is_best_seller: boolean; created_at: string | null };
-type Products = { data: Product[]; links: { url: string | null; label: string; active: boolean }[]; from: number | null; to: number | null; total: number; per_page: number };
+type Product = {
+    id: number;
+    name: string;
+    sku: string | null;
+    brand_name: string | null;
+    category: string | null;
+    thumbnail: string | null;
+    price: number;
+    total_stock: number;
+    total_reserved_stock: number;
+    available_stock: number;
+    variants_count: number;
+    status: string;
+    is_featured: boolean;
+    is_new_arrival: boolean;
+    is_best_seller: boolean;
+    created_at: string | null;
+};
+type Products = {
+    data: Product[];
+    links: { url: string | null; label: string; active: boolean }[];
+    from: number | null;
+    to: number | null;
+    total: number;
+    per_page: number;
+};
 type Option = { id: number; name: string };
-type Filters = { search: string; category_id: string; collection_id: string; status: string; stock_status: string; is_featured: string; is_new_arrival: string; is_best_seller: string; sort: string; direction: string };
-type Props = { products: Products; filters: Filters; options: { categories: Option[]; collections: Option[]; statuses: string[] }; stats: { total: number; published: number; draft: number; archived: number; low_stock: number; out_of_stock: number } };
+type Filters = {
+    search: string;
+    category_id: string;
+    status: string;
+    stock_status: string;
+    is_featured: string;
+    is_new_arrival: string;
+    is_best_seller: string;
+    sort: string;
+    direction: string;
+};
+type Props = {
+    products: Products;
+    filters: Filters;
+    options: { categories: Option[]; statuses: string[] };
+    stats: {
+        total: number;
+        published: number;
+        draft: number;
+        archived: number;
+        low_stock: number;
+        out_of_stock: number;
+    };
+};
 
-const selectClass = 'h-10 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-zinc-950 focus:outline-none';
+const selectClass =
+    'h-10 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-zinc-950 focus:outline-none';
 
-export default function ProductsIndex({ products, filters, options, stats }: Props) {
+export default function ProductsIndex({
+    products,
+    filters,
+    options,
+    stats,
+}: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
-    const apply = (key: keyof Filters, value: string) => router.get('/admin/products', { ...filters, [key]: value, page: 1 }, { preserveState: true, replace: true });
-    const submit = (event: FormEvent) => { event.preventDefault(); apply('search', search); };
-    const remove = (product: Product) => { if (confirm(`Delete or archive ${product.name}?`)) router.delete(`/admin/products/${product.id}`, { preserveScroll: true }); };
+    const apply = (key: keyof Filters, value: string) =>
+        router.get(
+            '/admin/products',
+            { ...filters, [key]: value, page: 1 },
+            { preserveState: true, replace: true },
+        );
+    const submit = (event: FormEvent) => {
+        event.preventDefault();
+        apply('search', search);
+    };
+    const remove = (product: Product) => {
+        if (confirm(`Delete or archive ${product.name}?`))
+            router.delete(`/admin/products/${product.id}`, {
+                preserveScroll: true,
+            });
+    };
     const metrics = [
-        ['Products', stats.total, Package], ['Published', stats.published, Eye], ['Draft', stats.draft, Pencil], ['Archived', stats.archived, Archive], ['Low stock', stats.low_stock, TrendingDown], ['Sold out', stats.out_of_stock, Trash2],
+        ['Products', stats.total, Package],
+        ['Published', stats.published, Eye],
+        ['Draft', stats.draft, Pencil],
+        ['Archived', stats.archived, Archive],
+        ['Low stock', stats.low_stock, TrendingDown],
+        ['Sold out', stats.out_of_stock, Trash2],
     ] as const;
 
-    return <><Head title="Products" /><div className="flex flex-1 flex-col gap-6 p-4 md:p-6"><PageHeader eyebrow="Catalog" title="Products" description="Kelola model sepatu, harga, status, gambar, dan stok varian." action={<Button className="bg-black hover:bg-black/[0.84]" asChild><Link href="/admin/products/create"><Plus />Add product</Link></Button>} />
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">{metrics.map(([label, value, Icon]) => <Card key={label} className="border-zinc-200 py-4 shadow-none"><CardContent className="flex items-center justify-between px-4"><div><p className="text-xs text-zinc-500">{label}</p><p className="mt-1 text-2xl font-semibold text-zinc-950">{value}</p></div><Icon className="size-5 text-zinc-400" /></CardContent></Card>)}</div>
-        <Card className="border-zinc-200 shadow-none"><CardContent className="space-y-4 pt-6"><form onSubmit={submit} className="flex flex-col gap-3 lg:flex-row"><div className="relative min-w-0 flex-1"><Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" /><Input className="h-10 border-zinc-200 pl-9" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search model or SKU" /></div><select className={selectClass} value={filters.category_id} onChange={(event) => apply('category_id', event.target.value)}><option value="">All categories</option>{options.categories.map((option) => <option key={option.id} value={option.id}>{option.name}</option>)}</select><select className={selectClass} value={filters.status} onChange={(event) => apply('status', event.target.value)}><option value="">All statuses</option>{options.statuses.map((status) => <option key={status}>{status}</option>)}</select><select className={selectClass} value={filters.stock_status} onChange={(event) => apply('stock_status', event.target.value)}><option value="">All stock</option><option value="in_stock">In stock</option><option value="low_stock">Low stock</option><option value="sold_out">Sold out</option></select><select className={selectClass} value={`${filters.sort}:${filters.direction}`} onChange={(event) => { const [sort, direction] = event.target.value.split(':'); router.get('/admin/products', { ...filters, sort, direction, page: 1 }, { preserveState: true, replace: true }); }}><option value="created:desc">Newest</option><option value="created:asc">Oldest</option><option value="product:asc">Name A-Z</option><option value="product:desc">Name Z-A</option><option value="price:asc">Lowest price</option><option value="price:desc">Highest price</option></select><Button type="submit" variant="outline">Search</Button><Button type="button" variant="ghost" size="icon" aria-label="Reset filters" onClick={() => router.get('/admin/products')}><RotateCcw /></Button></form>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200"><table className="w-full min-w-[980px] text-sm"><thead className="bg-zinc-50 text-left text-xs font-medium text-zinc-500"><tr><th className="px-4 py-3">Product</th><th className="px-4 py-3">Price</th><th className="px-4 py-3">Stock</th><th className="px-4 py-3">Variants</th><th className="px-4 py-3">Status</th><th className="px-4 py-3 text-right">Actions</th></tr></thead><tbody>{products.data.map((product) => { const flags = [product.is_featured && 'Featured', product.is_new_arrival && 'New', product.is_best_seller && 'Best seller'].filter(Boolean); const stockClass = product.available_stock === 0 ? 'border-black/[0.32] bg-black/[0.04] text-black' : product.available_stock <= 5 ? 'border-black/[0.32] bg-black/[0.04] text-black' : 'border-black/[0.32] bg-black/[0.04] text-black'; return <tr key={product.id} className="border-t border-zinc-100 align-middle"><td className="px-4 py-3"><div className="flex items-center gap-3"><Thumbnail src={product.thumbnail} alt={product.name} /><div className="min-w-0"><Link href={`/admin/products/${product.id}`} className="font-medium text-zinc-950 hover:underline">{product.name}</Link><p className="text-xs text-zinc-500">{product.brand_name || 'No brand'} · {product.category || 'No category'} · {product.sku || 'No parent SKU'}</p>{flags.length > 0 && <p className="mt-1 text-[11px] text-zinc-400">{flags.join(' · ')}</p>}</div></div></td><td className="px-4 py-3">{product.sale_price ? <div><strong>{formatPrice(product.sale_price)}</strong><p className="text-xs text-zinc-400 line-through">{formatPrice(product.regular_price)}</p></div> : <strong>{formatPrice(product.regular_price)}</strong>}</td><td className="px-4 py-3"><Badge variant="outline" className={stockClass}>{product.available_stock} available</Badge><p className="mt-1 text-xs text-zinc-400">{product.total_reserved_stock} reserved / {product.total_stock} total</p></td><td className="px-4 py-3">{product.variants_count}</td><td className="px-4 py-3"><StatusBadge status={product.status} /></td><td className="px-4 py-3"><div className="flex justify-end gap-1"><Button size="icon" variant="ghost" asChild><Link href={`/admin/products/${product.id}`} aria-label="View product"><Eye /></Link></Button><Button size="icon" variant="ghost" asChild><Link href={`/admin/products/${product.id}/edit`} aria-label="Edit product"><Pencil /></Link></Button><Button size="icon" variant="ghost" aria-label="Duplicate product" onClick={() => router.post(`/admin/products/${product.id}/duplicate`)}><Copy /></Button>{product.status === 'published' ? <Button size="icon" variant="ghost" aria-label="Archive product" onClick={() => router.post(`/admin/products/${product.id}/archive`)}><Archive /></Button> : <Button size="icon" variant="ghost" aria-label="Publish product" onClick={() => router.post(`/admin/products/${product.id}/publish`)}><Eye /></Button>}<Button size="icon" variant="ghost" aria-label="Delete product" onClick={() => remove(product)}><Trash2 className="text-black" /></Button></div></td></tr>; })}</tbody></table>{products.data.length === 0 && <div className="py-14 text-center text-sm text-zinc-500">No products match these filters.</div>}</div><Pagination paginator={products} />
-        </CardContent></Card>
-    </div></>;
+    return (
+        <>
+            <Head title="Products" />
+            <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+                <PageHeader
+                    eyebrow="Catalog"
+                    title="Products"
+                    description="Kelola model sepatu, harga, status, gambar, dan stok varian."
+                    action={
+                        <Button
+                            className="bg-black hover:bg-black/[0.84]"
+                            asChild
+                        >
+                            <Link href="/admin/products/create">
+                                <Plus />
+                                Add product
+                            </Link>
+                        </Button>
+                    }
+                />
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                    {metrics.map(([label, value, Icon]) => (
+                        <Card
+                            key={label}
+                            className="border-zinc-200 py-4 shadow-none"
+                        >
+                            <CardContent className="flex items-center justify-between px-4">
+                                <div>
+                                    <p className="text-xs text-zinc-500">
+                                        {label}
+                                    </p>
+                                    <p className="mt-1 text-2xl font-semibold text-zinc-950">
+                                        {value}
+                                    </p>
+                                </div>
+                                <Icon className="size-5 text-zinc-400" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+                <Card className="border-zinc-200 shadow-none">
+                    <CardContent className="space-y-4 pt-6">
+                        <form
+                            onSubmit={submit}
+                            className="flex flex-col gap-3 lg:flex-row"
+                        >
+                            <div className="relative min-w-0 flex-1">
+                                <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+                                <Input
+                                    className="h-10 border-zinc-200 pl-9"
+                                    value={search}
+                                    onChange={(event) =>
+                                        setSearch(event.target.value)
+                                    }
+                                    placeholder="Search model or SKU"
+                                />
+                            </div>
+                            <select
+                                className={selectClass}
+                                value={filters.category_id}
+                                onChange={(event) =>
+                                    apply('category_id', event.target.value)
+                                }
+                            >
+                                <option value="">All categories</option>
+                                {options.categories.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <select
+                                className={selectClass}
+                                value={filters.status}
+                                onChange={(event) =>
+                                    apply('status', event.target.value)
+                                }
+                            >
+                                <option value="">All statuses</option>
+                                {options.statuses.map((status) => (
+                                    <option key={status}>{status}</option>
+                                ))}
+                            </select>
+                            <select
+                                className={selectClass}
+                                value={filters.stock_status}
+                                onChange={(event) =>
+                                    apply('stock_status', event.target.value)
+                                }
+                            >
+                                <option value="">All stock</option>
+                                <option value="in_stock">In stock</option>
+                                <option value="low_stock">Low stock</option>
+                                <option value="sold_out">Sold out</option>
+                            </select>
+                            <select
+                                className={selectClass}
+                                value={`${filters.sort}:${filters.direction}`}
+                                onChange={(event) => {
+                                    const [sort, direction] =
+                                        event.target.value.split(':');
+                                    router.get(
+                                        '/admin/products',
+                                        {
+                                            ...filters,
+                                            sort,
+                                            direction,
+                                            page: 1,
+                                        },
+                                        { preserveState: true, replace: true },
+                                    );
+                                }}
+                            >
+                                <option value="created:desc">Newest</option>
+                                <option value="created:asc">Oldest</option>
+                                <option value="product:asc">Name A-Z</option>
+                                <option value="product:desc">Name Z-A</option>
+                                <option value="price:asc">Lowest price</option>
+                                <option value="price:desc">
+                                    Highest price
+                                </option>
+                            </select>
+                            <Button type="submit" variant="outline">
+                                Search
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                aria-label="Reset filters"
+                                onClick={() => router.get('/admin/products')}
+                            >
+                                <RotateCcw />
+                            </Button>
+                        </form>
+                        <div className="overflow-x-auto rounded-lg border border-zinc-200">
+                            <table className="w-full min-w-[980px] text-sm">
+                                <thead className="bg-zinc-50 text-left text-xs font-medium text-zinc-500">
+                                    <tr>
+                                        <th className="px-4 py-3">Product</th>
+                                        <th className="px-4 py-3">Price</th>
+                                        <th className="px-4 py-3">Stock</th>
+                                        <th className="px-4 py-3">Variants</th>
+                                        <th className="px-4 py-3">Status</th>
+                                        <th className="px-4 py-3 text-right">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {products.data.map((product) => {
+                                        const flags = [
+                                            product.is_featured && 'Featured',
+                                            product.is_new_arrival && 'New',
+                                            product.is_best_seller &&
+                                                'Best seller',
+                                        ].filter(Boolean);
+                                        const stockClass =
+                                            product.available_stock === 0
+                                                ? 'border-black/[0.32] bg-black/[0.04] text-black'
+                                                : product.available_stock <= 5
+                                                  ? 'border-black/[0.32] bg-black/[0.04] text-black'
+                                                  : 'border-black/[0.32] bg-black/[0.04] text-black';
+                                        return (
+                                            <tr
+                                                key={product.id}
+                                                className="border-t border-zinc-100 align-middle"
+                                            >
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <Thumbnail
+                                                            src={
+                                                                product.thumbnail
+                                                            }
+                                                            alt={product.name}
+                                                        />
+                                                        <div className="min-w-0">
+                                                            <Link
+                                                                href={`/admin/products/${product.id}`}
+                                                                className="font-medium text-zinc-950 hover:underline"
+                                                            >
+                                                                {product.name}
+                                                            </Link>
+                                                            <p className="text-xs text-zinc-500">
+                                                                {product.brand_name ||
+                                                                    'No brand'}{' '}
+                                                                ·{' '}
+                                                                {product.category ||
+                                                                    'No category'}{' '}
+                                                                ·{' '}
+                                                                {product.sku ||
+                                                                    'No parent SKU'}
+                                                            </p>
+                                                            {flags.length >
+                                                                0 && (
+                                                                <p className="mt-1 text-[11px] text-zinc-400">
+                                                                    {flags.join(
+                                                                        ' · ',
+                                                                    )}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <strong>
+                                                        {formatPrice(
+                                                            product.price,
+                                                        )}
+                                                    </strong>
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={stockClass}
+                                                    >
+                                                        {
+                                                            product.available_stock
+                                                        }{' '}
+                                                        available
+                                                    </Badge>
+                                                    <p className="mt-1 text-xs text-zinc-400">
+                                                        {
+                                                            product.total_reserved_stock
+                                                        }{' '}
+                                                        reserved /{' '}
+                                                        {product.total_stock}{' '}
+                                                        total
+                                                    </p>
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    {product.variants_count}
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <StatusBadge
+                                                        status={product.status}
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <div className="flex justify-end gap-1">
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={`/admin/products/${product.id}`}
+                                                                aria-label="View product"
+                                                            >
+                                                                <Eye />
+                                                            </Link>
+                                                        </Button>
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={`/admin/products/${product.id}/edit`}
+                                                                aria-label="Edit product"
+                                                            >
+                                                                <Pencil />
+                                                            </Link>
+                                                        </Button>
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            aria-label="Duplicate product"
+                                                            onClick={() =>
+                                                                router.post(
+                                                                    `/admin/products/${product.id}/duplicate`,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Copy />
+                                                        </Button>
+                                                        {product.status ===
+                                                        'published' ? (
+                                                            <Button
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                aria-label="Archive product"
+                                                                onClick={() =>
+                                                                    router.post(
+                                                                        `/admin/products/${product.id}/archive`,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Archive />
+                                                            </Button>
+                                                        ) : (
+                                                            <Button
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                aria-label="Publish product"
+                                                                onClick={() =>
+                                                                    router.post(
+                                                                        `/admin/products/${product.id}/publish`,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Eye />
+                                                            </Button>
+                                                        )}
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            aria-label="Delete product"
+                                                            onClick={() =>
+                                                                remove(product)
+                                                            }
+                                                        >
+                                                            <Trash2 className="text-black" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                            {products.data.length === 0 && (
+                                <div className="py-14 text-center text-sm text-zinc-500">
+                                    No products match these filters.
+                                </div>
+                            )}
+                        </div>
+                        <Pagination paginator={products} />
+                    </CardContent>
+                </Card>
+            </div>
+        </>
+    );
 }

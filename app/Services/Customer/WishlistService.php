@@ -2,8 +2,8 @@
 
 namespace App\Services\Customer;
 
-use App\Models\ProductVariant;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -14,15 +14,14 @@ class WishlistService
     {
         $wishlistItems = Wishlist::query()
             ->with([
-                'product:id,category_id,name,slug,sku,regular_price,sale_price,status,is_new_arrival,is_best_seller,is_featured',
-                'product.category:id,name,slug',
+                'product:id,name,slug,sku,price,status,is_new_arrival,is_best_seller,is_featured',
+                'product.categories:id,name,slug',
                 'product.primaryImage:id,product_id,image_url,alt_text',
                 'product.images:id,product_id,image_url,alt_text,sort_order',
                 'product.variants' => fn ($query) => $query
-                    ->select('id', 'product_id', 'color_name', 'color_hex', 'size', 'stock', 'reserved_stock', 'image_url', 'is_active')
+                    ->select('id', 'product_id', 'size', 'price', 'stock', 'reserved_stock', 'image_url', 'is_active')
                     ->where('is_active', true)
                     ->orderByRaw('(stock - reserved_stock) > 0 desc')
-                    ->orderBy('color_name')
                     ->orderBy('size'),
             ])
             ->where('user_id', $user->id)
@@ -81,19 +80,12 @@ class WishlistService
             'product_id' => $product->id,
             'slug' => $product->slug,
             'title' => $product->name,
-            'category' => $product->category?->name,
-            'price' => (float) $product->regular_price,
-            'sale_price' => $product->sale_price !== null ? (float) $product->sale_price : null,
+            'category' => $product->categories->first()?->name,
+            'price' => (float) $product->price,
+            'sale_price' => null,
             'image' => $image,
             'badge' => $this->badge($product),
-            'colors' => $variants
-                ->filter(fn (ProductVariant $variant) => filled($variant->color_hex))
-                ->unique('color_hex')
-                ->values()
-                ->map(fn (ProductVariant $variant) => [
-                    'name' => $variant->color_name,
-                    'hex' => $variant->color_hex,
-                ]),
+            'colors' => [],
             'available_stock' => $variants->sum(fn (ProductVariant $variant) => max(0, $variant->stock - $variant->reserved_stock)),
             'is_available' => $product->status === 'published',
         ];
@@ -102,7 +94,7 @@ class WishlistService
     private function badge($product): ?string
     {
         return match (true) {
-            $product->sale_price !== null => 'Sale',
+            false => 'Sale',
             (bool) $product->is_new_arrival => 'New',
             (bool) $product->is_best_seller => 'Best',
             (bool) $product->is_featured => 'Featured',

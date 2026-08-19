@@ -28,17 +28,14 @@ class ProductRequest extends FormRequest
         }
 
         return [
-            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'collection_id' => ['nullable', 'integer', 'exists:collections,id'],
+            'category_ids' => ['nullable', 'array'],
+            'category_ids.*' => ['integer', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:200'],
             'slug' => ['required', 'string', 'max:220', Rule::unique('products', 'slug')->ignore($product)],
             'sku' => ['nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($product)],
             'brand_name' => ['nullable', 'string', 'max:150'],
-            'regular_price' => ['required', 'numeric', 'min:0'],
-            'sale_price' => ['nullable', 'numeric', 'min:0', 'lte:regular_price'],
-            'short_description' => ['nullable', 'string', 'max:1000'],
+            'price' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string'],
-            'stock_status' => ['nullable', 'string', 'max:50'],
             'weight' => ['required', 'integer', 'min:0'],
             'length' => ['nullable', 'integer', 'min:0'],
             'width' => ['nullable', 'integer', 'min:0'],
@@ -47,8 +44,6 @@ class ProductRequest extends FormRequest
             'is_featured' => ['sometimes', 'boolean'],
             'is_new_arrival' => ['sometimes', 'boolean'],
             'is_best_seller' => ['sometimes', 'boolean'],
-            'meta_title' => ['nullable', 'string', 'max:255'],
-            'meta_description' => ['nullable', 'string', 'max:500'],
             'images' => ['nullable', 'array'],
             'images.*.id' => ['nullable', 'integer', $imageIdRule],
             'images.*.image' => ['nullable', 'file', 'image', 'max:4096'],
@@ -56,12 +51,8 @@ class ProductRequest extends FormRequest
             'images.*.is_primary' => ['sometimes', 'boolean'],
             'variants' => ['nullable', 'array'],
             'variants.*.id' => ['nullable', 'integer', $variantIdRule],
-            'variants.*.sku' => ['nullable', 'string', 'max:100'],
-            'variants.*.color_name' => ['nullable', 'string', 'max:100'],
-            'variants.*.color_hex' => ['nullable'],
             'variants.*.size' => ['nullable', 'string', 'max:100'],
-            'variants.*.regular_price' => ['nullable', 'numeric', 'min:0'],
-            'variants.*.sale_price' => ['nullable', 'numeric', 'min:0'],
+            'variants.*.price' => ['nullable', 'numeric', 'min:0.01'],
             'variants.*.stock' => ['nullable', 'integer', 'min:0'],
             'variants.*.reserved_stock' => ['nullable', 'integer', 'min:0'],
             'variants.*.weight' => ['nullable', 'integer', 'min:0'],
@@ -81,25 +72,11 @@ class ProductRequest extends FormRequest
         return [
             function ($validator): void {
                 $variants = collect($this->input('variants', []))
-                    ->filter(fn (array $variant): bool => filled($variant['sku'] ?? null));
+                    ->filter(fn (array $variant): bool => filled($variant['size'] ?? null));
 
                 $variants->each(function (array $variant, int $index) use ($validator): void {
-                    if (filled($variant['sale_price'] ?? null) && blank($variant['regular_price'] ?? null)) {
-                        $validator->errors()->add("variants.{$index}.sale_price", 'Sale price membutuhkan regular price.');
-                    } elseif ((float) ($variant['sale_price'] ?? 0) > (float) ($variant['regular_price'] ?? 0)) {
-                        $validator->errors()->add("variants.{$index}.sale_price", 'Sale price tidak boleh lebih besar dari regular price.');
-                    }
-
                     if ((int) ($variant['reserved_stock'] ?? 0) > (int) ($variant['stock'] ?? 0)) {
                         $validator->errors()->add("variants.{$index}.reserved_stock", 'Reserved stock tidak boleh lebih besar dari stock.');
-                    }
-
-                    if (blank($variant['color_name'] ?? null)) {
-                        $validator->errors()->add("variants.{$index}.color_name", 'Color wajib diisi jika SKU varian diisi.');
-                    }
-
-                    if (blank($variant['size'] ?? null)) {
-                        $validator->errors()->add("variants.{$index}.size", 'Size wajib diisi jika SKU varian diisi.');
                     }
                 });
 

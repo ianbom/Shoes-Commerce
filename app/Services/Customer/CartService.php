@@ -67,7 +67,7 @@ class CartService
                 ]);
             }
 
-            $priceSnapshot = $variant->sale_price ?? $variant->regular_price ?? $product->sale_price ?? $product->regular_price;
+            $priceSnapshot = $variant->price;
 
             return CartItem::query()->updateOrCreate(
                 [
@@ -79,8 +79,8 @@ class CartService
                     'quantity' => $nextQuantity,
                     'product_name_snapshot' => $product->name,
                     'product_sku_snapshot' => $product->sku,
-                    'variant_sku_snapshot' => $variant->sku,
-                    'color_name_snapshot' => $variant->color_name,
+                    'variant_sku_snapshot' => $variant->size,
+                    'color_name_snapshot' => '',
                     'size_snapshot' => $variant->size,
                     'price_snapshot' => $priceSnapshot,
                     'image_url_snapshot' => $variant->image_url ?? $product->primaryImage?->image_url,
@@ -119,10 +119,10 @@ class CartService
                 'quantity' => $quantity,
                 'product_name_snapshot' => $product->name,
                 'product_sku_snapshot' => $product->sku,
-                'variant_sku_snapshot' => $variant->sku,
-                'color_name_snapshot' => $variant->color_name,
+                'variant_sku_snapshot' => $variant->size,
+                'color_name_snapshot' => '',
                 'size_snapshot' => $variant->size,
-                'price_snapshot' => $variant->sale_price ?? $variant->regular_price ?? $product->sale_price ?? $product->regular_price,
+                'price_snapshot' => $variant->price,
                 'image_url_snapshot' => $variant->image_url ?? $product->primaryImage?->image_url,
             ])->save();
 
@@ -141,9 +141,9 @@ class CartService
             ->with([
                 'items' => fn ($query) => $query
                     ->with([
-                        'product:id,name,slug,status,sale_price,regular_price',
+                        'product:id,name,slug,status,price',
                         'product.primaryImage:id,product_id,image_url,alt_text',
-                        'variant:id,product_id,sku,color_name,color_hex,size,stock,reserved_stock,regular_price,sale_price,image_url,is_active',
+                        'variant:id,product_id,size,price,stock,reserved_stock,image_url,is_active',
                     ])
                     ->latest('id'),
             ])
@@ -166,8 +166,6 @@ class CartService
                 'product_id' => $item->product_id,
                 'product_slug' => $product?->slug,
                 'title' => $product?->name ?? 'Produk tidak tersedia',
-                'color' => $variant?->color_name,
-                'color_hex' => $variant?->color_hex,
                 'size' => $variant?->size,
                 'image' => $variant?->image_url ?? $product?->primaryImage?->image_url,
                 'price' => (float) $item->price_snapshot,
@@ -176,7 +174,6 @@ class CartService
                 'is_available' => $isAvailable,
                 'variant' => [
                     'id' => $variant?->id,
-                    'sku' => $variant?->sku,
                 ],
                 'subtotal' => (float) $item->price_snapshot * $item->quantity,
             ];
@@ -218,7 +215,7 @@ class CartService
                 'id' => $product->id,
                 'slug' => $product->slug,
                 'title' => $product->name,
-                'price' => (float) ($product->sale_price ?? $product->regular_price),
+                'price' => (float) $product->price,
                 'image' => $product->primaryImage?->image_url,
                 'available_stock' => $product->variants->sum(
                     fn (ProductVariant $variant) => max(0, $variant->stock - $variant->reserved_stock),

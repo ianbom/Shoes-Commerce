@@ -22,12 +22,8 @@ it('creates a standalone variant with an automatically stored image', function (
     $this->actingAs($this->admin)
         ->post(route('admin.product-variants.store'), [
             'product_id' => $product->id,
-            'sku' => 'RUN-BLK-42',
-            'color_name' => 'Black',
-            'color_hex' => '#111111',
             'size' => 'EU 42',
-            'regular_price' => 1200000,
-            'sale_price' => 999000,
+            'price' => 1200000,
             'stock' => 10,
             'reserved_stock' => 3,
             'weight' => 850,
@@ -40,10 +36,9 @@ it('creates a standalone variant with an automatically stored image', function (
         ])
         ->assertRedirect();
 
-    $variant = ProductVariant::query()->where('sku', 'RUN-BLK-42')->firstOrFail();
+    $variant = ProductVariant::query()->whereBelongsTo($product)->where('size', 'EU 42')->firstOrFail();
 
-    expect((float) $variant->regular_price)->toBe(1200000.00)
-        ->and((float) $variant->sale_price)->toBe(999000.00)
+    expect((float) $variant->price)->toBe(1200000.00)
         ->and($variant->reserved_stock)->toBe(3)
         ->and($variant->weight)->toBe(850)
         ->and($variant->length)->toBe(34)
@@ -60,16 +55,13 @@ it('rejects invalid standalone variant prices and reserved stock', function () {
         ->from(route('admin.product-variants.create'))
         ->post(route('admin.product-variants.store'), [
             'product_id' => $product->id,
-            'sku' => 'RUN-WHT-42',
-            'color_name' => 'White',
             'size' => 'EU 42',
-            'regular_price' => 900000,
-            'sale_price' => 1000000,
+            'price' => 900000,
             'stock' => 2,
             'reserved_stock' => 3,
         ])
         ->assertRedirect(route('admin.product-variants.create'))
-        ->assertSessionHasErrors(['sale_price', 'reserved_stock']);
+        ->assertSessionHasErrors(['reserved_stock']);
 });
 
 it('filters and counts products using available stock', function () {
@@ -97,7 +89,7 @@ function adminProduct(string $slug): Product
         'name' => str($slug)->headline()->toString(),
         'slug' => $slug,
         'brand_name' => 'Axegear',
-        'regular_price' => 1200000,
+        'price' => 1200000,
         'weight' => 800,
         'status' => 'draft',
     ]);

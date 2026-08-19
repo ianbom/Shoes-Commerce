@@ -26,9 +26,7 @@ class ProductVariantService
                 ->withCount('orderItems')
                 ->when($product, fn ($query) => $query->whereBelongsTo($product))
                 ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
-                    ->where('sku', 'like', "%{$search}%")
-                    ->orWhere('color_name', 'like', "%{$search}%")
-                    ->orWhere('size', 'like', "%{$search}%")
+                    ->where('size', 'like', "%{$search}%")
                     ->orWhereHas('product', fn ($query) => $query->where('name', 'like', "%{$search}%"))))
                 ->when($status === 'active', fn ($query) => $query->where('is_active', true))
                 ->when($status === 'inactive', fn ($query) => $query->where('is_active', false))
@@ -96,7 +94,7 @@ class ProductVariantService
         $variant->load('product:id,name');
 
         return [
-            ...$variant->only(['id', 'product_id', 'sku', 'color_name', 'color_hex', 'size', 'regular_price', 'sale_price', 'stock', 'reserved_stock', 'weight', 'length', 'width', 'height', 'image_url', 'is_active']),
+            ...$variant->only(['id', 'product_id', 'size', 'price', 'stock', 'reserved_stock', 'weight', 'length', 'width', 'height', 'image_url', 'is_active']),
             'available_stock' => max(0, $variant->stock - $variant->reserved_stock),
             'product' => $variant->product?->name,
         ];
@@ -108,12 +106,8 @@ class ProductVariantService
             'id' => $variant->id,
             'product_id' => $variant->product_id,
             'product' => $variant->product?->name,
-            'sku' => $variant->sku,
-            'color_name' => $variant->color_name,
-            'color_hex' => $variant->color_hex,
             'size' => $variant->size,
-            'regular_price' => $variant->regular_price,
-            'sale_price' => $variant->sale_price,
+            'price' => $variant->price,
             'stock' => $variant->stock,
             'reserved_stock' => $variant->reserved_stock,
             'available_stock' => max(0, $variant->stock - $variant->reserved_stock),

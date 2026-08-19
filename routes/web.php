@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BiteshipWebhookLogController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\CustomerAddressController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -15,6 +14,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PaymentLogController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductImportController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\ShipmentController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\WishlistInsightController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\BiteshipAreaController;
 use App\Http\Controllers\Customer\CartController;
@@ -32,7 +33,6 @@ use App\Http\Controllers\Customer\MidtransWebhookController;
 use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\ProductController as CustomerProductController;
-use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Customer\WishlistController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Http\Request;
@@ -97,6 +97,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'admin', 'admin.activity'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', AdminDashboardController::class)->name('dashboard');
 
+    Route::get('product-imports', [ProductImportController::class, 'index'])->name('product-imports.index');
+    Route::post('product-imports', [ProductImportController::class, 'store'])->name('product-imports.store');
+    Route::get('product-imports/{productImportBatch}', [ProductImportController::class, 'show'])->name('product-imports.show');
+    Route::post('product-imports/{batch}/items/{item}/candidate', [ProductImportController::class, 'selectCandidate'])->name('product-imports.items.candidate');
+    Route::post('product-imports/{batch}/items/{item}/save', [ProductImportController::class, 'saveItem'])->name('product-imports.items.save');
+    Route::post('product-imports/{batch}/save-all', [ProductImportController::class, 'saveAll'])->name('product-imports.save-all');
+
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products', [ProductController::class, 'store'])->name('products.store');
@@ -124,13 +131,6 @@ Route::middleware(['auth', 'admin', 'admin.activity'])->prefix('admin')->name('a
     Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-
-    Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
-    Route::get('collections/create', [CollectionController::class, 'create'])->name('collections.create');
-    Route::post('collections', [CollectionController::class, 'store'])->name('collections.store');
-    Route::get('collections/{collection}/edit', [CollectionController::class, 'edit'])->name('collections.edit');
-    Route::put('collections/{collection}', [CollectionController::class, 'update'])->name('collections.update');
-    Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
 
     Route::get('stock', [StockController::class, 'index'])->name('stock.index');
     Route::get('stock/logs', [StockController::class, 'logs'])->name('stock.logs');

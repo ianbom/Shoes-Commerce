@@ -276,8 +276,8 @@ class CheckoutService
                     'product_variant_id' => $variant->id,
                     'product_name' => $product->name,
                     'product_sku' => $product->sku,
-                    'variant_sku' => $variant->sku,
-                    'color_name' => $variant->color_name,
+                    'variant_sku' => $variant->size,
+                    'color_name' => '',
                     'size' => $variant->size,
                     'price' => $item->price_snapshot,
                     'quantity' => $item->quantity,
@@ -371,8 +371,7 @@ class CheckoutService
                     'product_variant_id' => $item->product_variant_id,
                     'title' => $product?->name ?? 'Produk tidak tersedia',
                     'sku' => $product?->sku,
-                    'variant_sku' => $variant?->sku,
-                    'color' => $variant?->color_name,
+                    'variant_sku' => null,
                     'size' => $variant?->size,
                     'image' => $variant?->image_url ?? $product?->primaryImage?->image_url,
                     'price' => (float) $item->price_snapshot,
@@ -522,7 +521,7 @@ class CheckoutService
 
     private function currentUnitPrice(ProductVariant $variant): float
     {
-        return (float) ($variant->sale_price ?? $variant->regular_price ?? $variant->product?->sale_price ?? $variant->product?->regular_price ?? 0);
+        return (float) $variant->price;
     }
 
     private function forgetExpiredCheckoutSession(): void

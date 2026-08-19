@@ -22,12 +22,8 @@ type Variant = {
     id: number;
     product_id: number;
     product: string | null;
-    sku: string;
-    color_name: string;
-    color_hex: string | null;
     size: string;
-    regular_price: string | number | null;
-    sale_price: string | number | null;
+    price: string | number | null;
     stock: number;
     reserved_stock: number;
     weight: number | null;
@@ -46,8 +42,6 @@ type Props = {
 const inputClass =
     'h-11 border-black bg-white focus-visible:border-black focus-visible:ring-black';
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024;
-const hasNumber = (value: string | number) =>
-    value !== '' && Number.isFinite(Number(value));
 const selectClass =
     'admin-form-select h-11 rounded-md border border-black bg-white px-3 text-sm focus:border-black focus:ring-2 focus:ring-black/20 focus:outline-none disabled:bg-black/[0.04]';
 
@@ -85,12 +79,8 @@ export default function ProductVariantForm({
     const { data, setData, post, processing, errors } = useForm({
         _method: isEdit ? 'PUT' : 'POST',
         product_id: variant?.product_id ?? selectedProductId ?? '',
-        sku: variant?.sku ?? '',
-        color_name: variant?.color_name ?? '',
-        color_hex: variant?.color_hex ?? '#111111',
         size: variant?.size ?? '',
-        regular_price: variant?.regular_price ?? '',
-        sale_price: variant?.sale_price ?? '',
+        price: variant?.price ?? '',
         stock: variant?.stock ?? 0,
         reserved_stock: variant?.reserved_stock ?? 0,
         weight: variant?.weight ?? '',
@@ -104,7 +94,7 @@ export default function ProductVariantForm({
         0,
         Number(data.stock) - Number(data.reserved_stock),
     );
-    const label = `${data.color_name || 'Color'} / ${data.size || 'Size'}`;
+    const label = data.size || 'Variant';
     const fieldError = (key: string) =>
         clientErrors[key] ??
         (errors as Record<string, string | undefined>)[key];
@@ -119,31 +109,6 @@ export default function ProductVariantForm({
 
             return { ...current, [key]: message };
         });
-    const updatePrice = (
-        field: 'regular_price' | 'sale_price',
-        value: string,
-    ) => {
-        const nextRegular =
-            field === 'regular_price' ? value : data.regular_price;
-        const nextSale = field === 'sale_price' ? value : data.sale_price;
-
-        if (
-            hasNumber(nextRegular) &&
-            hasNumber(nextSale) &&
-            Number(nextSale) > Number(nextRegular)
-        ) {
-            setClientError(
-                field,
-                'Sale price tidak boleh lebih besar dari regular price.',
-            );
-
-            return;
-        }
-
-        setClientError('regular_price');
-        setClientError('sale_price');
-        setData(field, value);
-    };
     const selectImage = (event: ChangeEvent<HTMLInputElement>) => {
         const image = event.target.files?.[0] ?? null;
 
@@ -182,7 +147,7 @@ export default function ProductVariantForm({
                 <PageHeader
                     eyebrow="Catalog"
                     title={isEdit ? 'Edit variant' : 'Create variant'}
-                    description="Varian adalah kombinasi warna dan ukuran unik dengan SKU serta stok sendiri."
+                    description="Varian adalah ukuran produk dengan harga dan stok sendiri."
                     action={
                         <Button variant="outline" asChild>
                             <Link href="/admin/product-variants">Cancel</Link>
@@ -225,42 +190,6 @@ export default function ProductVariantForm({
                                     ))}
                                 </select>
                             </Field>
-                            <Field label="Variant SKU" error={errors.sku}>
-                                <Input
-                                    className={inputClass}
-                                    value={data.sku}
-                                    placeholder="Contoh: USB-BLK-42"
-                                    onChange={(event) =>
-                                        setData('sku', event.target.value)
-                                    }
-                                    required
-                                />
-                            </Field>
-                            <Field label="Color name" error={errors.color_name}>
-                                <Input
-                                    className={inputClass}
-                                    value={data.color_name}
-                                    placeholder="Contoh: Black"
-                                    onChange={(event) =>
-                                        setData(
-                                            'color_name',
-                                            event.target.value,
-                                        )
-                                    }
-                                    required
-                                />
-                            </Field>
-                            <Field label="Color hex" error={errors.color_hex}>
-                                <input
-                                    type="color"
-                                    aria-label="Variant color"
-                                    value={data.color_hex || '#111111'}
-                                    onChange={(event) =>
-                                        setData('color_hex', event.target.value)
-                                    }
-                                    className="h-11 w-full cursor-pointer rounded-md border border-black bg-white p-1"
-                                />
-                            </Field>
                             <Field label="Size" error={errors.size}>
                                 <Input
                                     className={inputClass}
@@ -272,41 +201,16 @@ export default function ProductVariantForm({
                                     required
                                 />
                             </Field>
-                            <div className="hidden md:block" />
-                            <Field
-                                label="Regular price override"
-                                error={fieldError('regular_price')}
-                            >
+                            <Field label="Price" error={fieldError('price')}>
                                 <Input
                                     className={inputClass}
                                     type="number"
                                     min="0"
-                                    value={data.regular_price}
+                                    value={data.price}
                                     onChange={(event) =>
-                                        updatePrice(
-                                            'regular_price',
-                                            event.target.value,
-                                        )
+                                        setData('price', event.target.value)
                                     }
-                                    placeholder="Use product price"
-                                />
-                            </Field>
-                            <Field
-                                label="Sale price override"
-                                error={fieldError('sale_price')}
-                            >
-                                <Input
-                                    className={inputClass}
-                                    type="number"
-                                    min="0"
-                                    value={data.sale_price}
-                                    onChange={(event) =>
-                                        updatePrice(
-                                            'sale_price',
-                                            event.target.value,
-                                        )
-                                    }
-                                    placeholder="Optional"
+                                    required
                                 />
                             </Field>
                             <Field label="Stock" error={errors.stock}>

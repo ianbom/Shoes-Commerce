@@ -8,8 +8,8 @@ use Illuminate\Validation\ValidationException;
 
 class CategoryManagementService
 {
-    use StoresUploadedFiles;
     use ResolvesAdminPagination;
+    use StoresUploadedFiles;
 
     public function indexData(Request $request): array
     {

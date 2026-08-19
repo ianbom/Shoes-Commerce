@@ -3,6 +3,7 @@
 namespace App\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -10,7 +11,7 @@ class LoginResponse implements LoginResponseContract
     /**
      * Create login response.
      */
-    public function toResponse($request): JsonResponse|\Illuminate\Http\RedirectResponse
+    public function toResponse($request): JsonResponse|RedirectResponse
     {
         $user = $request->user();
 

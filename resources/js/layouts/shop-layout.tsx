@@ -19,11 +19,6 @@ type SharedShopProps = {
     };
     shop?: {
         cart_count?: number;
-        featured_collections?: Array<{
-            id: number;
-            name: string;
-            slug: string;
-        }>;
         whatsapp_number?: string | null;
     };
 };
@@ -31,7 +26,6 @@ type SharedShopProps = {
 export default function ShopLayout({ children }: ShopLayoutProps) {
     const { url, props } = usePage<SharedShopProps>();
     const cartCount = props.shop?.cart_count ?? 0;
-    const featuredCollections = props.shop?.featured_collections ?? [];
     const isAuthenticated = Boolean(props.auth.user);
     const whatsappNumber =
         props.shop?.whatsapp_number?.replace(/\D/g, '') ?? '';
@@ -40,7 +34,6 @@ export default function ShopLayout({ children }: ShopLayoutProps) {
         <div className="flex min-h-screen flex-col overflow-x-hidden bg-white font-sans text-ink selection:bg-primary selection:text-white">
             <Navbar
                 cartCount={cartCount}
-                collections={featuredCollections}
                 currentUrl={url}
                 isAuthenticated={isAuthenticated}
                 logoSrc={navbarLogo}

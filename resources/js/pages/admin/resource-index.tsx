@@ -74,7 +74,7 @@ function renderCell(value: string | number | boolean | null) {
 
     if (normalized.includes('pending') || normalized.includes('processing')) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full border border-black border-dashed bg-white px-2.5 py-1 text-xs font-semibold text-black">
+            <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-black bg-white px-2.5 py-1 text-xs font-semibold text-black">
                 <span className="h-1.5 w-1.5 rounded-full border border-black bg-white" />
                 {value}
             </span>

@@ -4,23 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'category_id',
     'name',
     'slug',
     'sku',
     'brand_name',
-    'regular_price',
-    'sale_price',
-    'short_description',
+    'price',
     'description',
-    'stock_status',
     'weight',
     'length',
     'width',
@@ -29,8 +24,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'is_featured',
     'is_new_arrival',
     'is_best_seller',
-    'meta_title',
-    'meta_description',
 ])]
 class Product extends Model
 {
@@ -38,6 +31,7 @@ class Product extends Model
 
     protected $attributes = [
         'brand_name' => 'Axegear',
+        'price' => 1,
     ];
 
     public function cartItems(): HasMany
@@ -45,14 +39,9 @@ class Product extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function category(): BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function collections(): BelongsToMany
-    {
-        return $this->belongsToMany(Collection::class, 'product_collections')->withPivot('sort_order')->withTimestamps();
+        return $this->belongsToMany(Category::class, 'product_categories')->withTimestamps();
     }
 
     public function images(): HasMany
@@ -93,8 +82,7 @@ class Product extends Model
             'is_featured' => 'boolean',
             'is_new_arrival' => 'boolean',
             'length' => 'integer',
-            'regular_price' => 'decimal:2',
-            'sale_price' => 'decimal:2',
+            'price' => 'decimal:2',
             'weight' => 'integer',
             'width' => 'integer',
         ];

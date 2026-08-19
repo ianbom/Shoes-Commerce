@@ -44,6 +44,7 @@ class SiteSettingSeeder extends Seeder
             // ─── Payment ─────────────────────────────────────────────────────────
             ['key' => 'payment_expiry_duration', 'value' => '1440',                                      'type' => 'integer'],
             ['key' => 'payment_service_fee',    'value' => '0',                                         'type' => 'integer'],
+            ['key' => 'cny_to_idr_rate',          'value' => '2644.40',                                    'type' => 'decimal'],
 
         ];
 

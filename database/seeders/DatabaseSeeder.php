@@ -17,10 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
-            CollectionSeeder::class,
             // AxeGearSeeder::class,
             SepatuSeeder::class,
-            YupooKobe6Seeder::class,
+            // YupooKobe6Seeder::class,
             BannerSeeder::class,
             PageSeeder::class,
             SiteSettingSeeder::class,

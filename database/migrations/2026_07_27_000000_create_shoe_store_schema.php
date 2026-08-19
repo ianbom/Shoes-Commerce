@@ -135,29 +135,6 @@ return new class extends Migration
             $table->foreign('parent_id', 'categories_parent_id_foreign')->references('id')->on('categories')->nullOnDelete();
         });
 
-        Schema::create('collections', function (Blueprint $table): void {
-            $table->id();
-            $table->string('name', 150);
-            $table->string('slug', 180);
-            $table->text('description')->nullable();
-            $table->string('banner_desktop_url', 255)->nullable();
-            $table->string('banner_mobile_url', 255)->nullable();
-            $table->integer('sort_order')->default(0);
-            $table->boolean('is_featured')->default(0);
-            $table->boolean('is_active')->default(1);
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->timestamp('deleted_at')->nullable();
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
-            $table->unique('slug', 'collections_slug_unique');
-            $table->index('slug', 'collections_slug_index');
-            $table->index('is_featured', 'collections_is_featured_index');
-            $table->index('is_active', 'collections_is_active_index');
-            $table->index('starts_at', 'collections_starts_at_index');
-            $table->index('ends_at', 'collections_ends_at_index');
-        });
-
         Schema::create('customer_addresses', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -185,16 +162,12 @@ return new class extends Migration
 
         Schema::create('products', function (Blueprint $table): void {
             $table->id();
-            $table->unsignedBigInteger('category_id')->nullable();
             $table->string('name', 200);
             $table->string('slug', 220);
             $table->string('sku', 100)->nullable();
             $table->string('brand_name', 150);
-            $table->decimal('regular_price', 15, 2);
-            $table->decimal('sale_price', 15, 2)->nullable();
-            $table->text('short_description')->nullable();
+            $table->decimal('price', 15, 2);
             $table->longText('description')->nullable();
-            $table->string('stock_status', 50)->default('in_stock');
             $table->string('status', 30)->default('draft');
             $table->integer('weight')->default(0);
             $table->integer('length')->nullable();
@@ -203,36 +176,29 @@ return new class extends Migration
             $table->boolean('is_featured')->default(0);
             $table->boolean('is_new_arrival')->default(0);
             $table->boolean('is_best_seller')->default(0);
-            $table->string('meta_title', 255)->nullable();
-            $table->text('meta_description')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->unique('slug', 'products_slug_unique');
             $table->unique('sku', 'products_sku_unique');
-            $table->index('category_id', 'products_category_id_index');
             $table->index('sku', 'products_sku_index');
             $table->index('brand_name', 'products_brand_name_index');
-            $table->index('stock_status', 'products_stock_status_index');
             $table->index('status', 'products_status_index');
             $table->index('is_featured', 'products_is_featured_index');
             $table->index('is_new_arrival', 'products_is_new_arrival_index');
             $table->index('is_best_seller', 'products_is_best_seller_index');
-            $table->foreign('category_id', 'products_category_id_foreign')->references('id')->on('categories')->nullOnDelete();
         });
 
-        Schema::create('product_collections', function (Blueprint $table): void {
+        Schema::create('product_categories', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('collection_id');
-            $table->integer('sort_order')->default(0);
+            $table->unsignedBigInteger('category_id');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->unique(['product_id', 'collection_id'], 'product_collections_product_id_collection_id_unique');
-            $table->index('product_id', 'product_collections_product_id_index');
-            $table->index('collection_id', 'product_collections_collection_id_index');
-            $table->foreign('collection_id', 'product_collections_collection_id_foreign')->references('id')->on('collections')->cascadeOnDelete();
-            $table->foreign('product_id', 'product_collections_product_id_foreign')->references('id')->on('products')->cascadeOnDelete();
+            $table->unique(['product_id', 'category_id'], 'product_categories_product_id_category_id_unique');
+            $table->index('category_id', 'product_categories_category_id_index');
+            $table->foreign('category_id', 'product_categories_category_id_foreign')->references('id')->on('categories')->cascadeOnDelete();
+            $table->foreign('product_id', 'product_categories_product_id_foreign')->references('id')->on('products')->cascadeOnDelete();
         });
 
         Schema::create('product_images', function (Blueprint $table): void {
@@ -255,12 +221,8 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->string('sku', 100);
-            $table->string('color_name', 100);
-            $table->string('color_hex', 20)->nullable();
             $table->string('size', 100);
-            $table->decimal('regular_price', 15, 2)->nullable();
-            $table->decimal('sale_price', 15, 2)->nullable();
+            $table->decimal('price', 15, 2);
             $table->integer('stock')->default(0);
             $table->integer('reserved_stock')->default(0);
             $table->integer('weight')->nullable();
@@ -272,11 +234,8 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->unique('sku', 'product_variants_sku_unique');
-            $table->unique(['product_id', 'color_name', 'size'], 'product_variants_product_color_size_unique');
+            $table->unique(['product_id', 'size'], 'product_variants_product_id_size_unique');
             $table->index('product_id', 'product_variants_product_id_index');
-            $table->index('sku', 'product_variants_sku_index');
-            $table->index('color_name', 'product_variants_color_name_index');
             $table->index('size', 'product_variants_size_index');
             $table->index('is_active', 'product_variants_is_active_index');
             $table->foreign('product_id', 'product_variants_product_id_foreign')->references('id')->on('products')->cascadeOnDelete();
@@ -665,8 +624,6 @@ return new class extends Migration
             $table->string('placement', 100)->default('homepage');
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(1);
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->index(['placement', 'is_active', 'sort_order'], 'banners_placement_is_active_sort_order_index');
@@ -727,16 +684,13 @@ return new class extends Migration
         }
 
         foreach ([
-            ['products', 'products_regular_price_positive', '`regular_price` > 0'],
-            ['products', 'products_sale_price_valid', '`sale_price` IS NULL OR (`sale_price` >= 0 AND `sale_price` <= `regular_price`)'],
+            ['products', 'products_price_positive', '`price` > 0'],
             ['products', 'products_weight_non_negative', '`weight` >= 0'],
-            ['products', 'products_stock_status_allowed', "`stock_status` IN ('in_stock', 'low_stock', 'out_of_stock')"],
             ['products', 'products_status_allowed', "`status` IN ('draft', 'published', 'archived')"],
             ['product_variants', 'product_variants_stock_non_negative', '`stock` >= 0'],
             ['product_variants', 'product_variants_reserved_stock_non_negative', '`reserved_stock` >= 0'],
             ['product_variants', 'product_variants_reserved_stock_lte_stock', '`reserved_stock` <= `stock`'],
-            ['product_variants', 'product_variants_regular_price_valid', '`regular_price` IS NULL OR `regular_price` > 0'],
-            ['product_variants', 'product_variants_sale_price_valid', '`sale_price` IS NULL OR (`sale_price` >= 0 AND (`regular_price` IS NULL OR `sale_price` <= `regular_price`))'],
+            ['product_variants', 'product_variants_price_positive', '`price` > 0'],
             ['cart_items', 'cart_items_quantity_positive', '`quantity` > 0'],
             ['cart_items', 'cart_items_price_non_negative', '`price_snapshot` >= 0'],
             ['orders', 'orders_order_status_allowed', "`order_status` IN ('pending_payment', 'paid', 'processing', 'ready_to_ship', 'shipment_created', 'shipped', 'delivered', 'completed', 'cancelled', 'payment_failed', 'payment_expired', 'shipment_failed', 'shipment_problem', 'lost', 'returned', 'refunded')"],
@@ -779,10 +733,9 @@ return new class extends Migration
         Schema::dropIfExists('stock_logs');
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('product_images');
-        Schema::dropIfExists('product_collections');
+        Schema::dropIfExists('product_categories');
         Schema::dropIfExists('products');
         Schema::dropIfExists('customer_addresses');
-        Schema::dropIfExists('collections');
         Schema::dropIfExists('categories');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('job_batches');

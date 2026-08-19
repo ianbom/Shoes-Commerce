@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Cart;
-use App\Models\Collection;
+use App\Models\Category;
 use App\Services\Settings\SiteSettingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -56,7 +56,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'shop' => [
                 'cart_count' => fn (): int => $this->cartCount($request),
-                'featured_collections' => fn (): array => $this->featuredCollections(),
+                'featured_collections' => fn (): array => $this->featuredCategories(),
                 'whatsapp_number' => fn (): ?string => $this->settings->get('whatsapp_number'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
@@ -78,17 +78,16 @@ class HandleInertiaRequests extends Middleware
     /**
      * @return list<array{id: int, name: string, slug: string}>
      */
-    private function featuredCollections(): array
+    private function featuredCategories(): array
     {
-        return Collection::query()
+        return Category::query()
             ->where('is_active', true)
-            ->where('is_featured', true)
             ->orderBy('name')
             ->get(['id', 'name', 'slug'])
-            ->map(fn (Collection $collection): array => [
-                'id' => $collection->id,
-                'name' => $collection->name,
-                'slug' => $collection->slug,
+            ->map(fn (Category $category): array => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
             ])
             ->values()
             ->all();

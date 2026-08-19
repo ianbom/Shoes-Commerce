@@ -22,7 +22,8 @@ it('shows flash deals and latest new arrivals on home page', function () {
 
     createHomeProduct([
         'name' => 'Sale Only Product',
-        'sale_price' => 90000,
+        'price' => 90000,
+        'is_featured' => true,
         'is_new_arrival' => false,
         'created_at' => $baseTime->copy()->addMinutes(20),
     ]);
@@ -46,8 +47,9 @@ it('shows flash deals and latest new arrivals on home page', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('welcome')
-            ->has('flashDeals', 1)
-            ->where('flashDeals.0.name', 'Sale Only Product')
+            ->has('flashDeals', 2)
+            ->where('flashDeals.0.name', 'Featured Only Product')
+            ->where('flashDeals.1.name', 'Sale Only Product')
             ->has('newArrivals', 6)
             ->where('newArrivals.0.name', 'New Arrival 6')
             ->where('newArrivals.5.name', 'New Arrival 1'));
@@ -89,7 +91,7 @@ function createHomeProduct(array $overrides = []): Product
         ...[
             'name' => $name,
             'slug' => Str::slug($name).'-'.Str::lower(Str::random(6)),
-            'regular_price' => 100000,
+            'price' => 100000,
             'status' => 'published',
         ],
         ...$attributes,

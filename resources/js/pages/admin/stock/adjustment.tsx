@@ -18,7 +18,7 @@ type Variant = {
     id: number;
     product_id: number | null;
     product: string | null;
-    sku: string;
+    size: string | null;
     stock: number;
     reserved_stock: number;
     available_stock: number;
@@ -62,7 +62,7 @@ export default function StockAdjustment({ variant }: Props) {
                                     className="rounded-md transition-colors hover:text-black focus-visible:ring-2 focus-visible:ring-black/[0.16] focus-visible:outline-none"
                                     aria-disabled={!variant.product_id}
                                 >
-                                    {variant.sku}
+                                    {variant.size ?? 'Variant'}
                                 </Link>
                             </CardTitle>
                             <CardDescription>

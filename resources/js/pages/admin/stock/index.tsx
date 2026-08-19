@@ -28,8 +28,6 @@ interface VariantStock {
     id: number;
     product_id: number | null;
     product: string | null;
-    sku: string;
-    color_name: string | null;
     size: string | null;
     stock: number;
     reserved_stock: number;
@@ -404,7 +402,7 @@ export default function StockIndex({
                                                     }
                                                 >
                                                     <span className="font-semibold text-zinc-900">
-                                                        {v.sku}
+                                                        {v.size ?? 'Variant'}
                                                     </span>
                                                     <span className="text-xs text-zinc-400">
                                                         {v.product ?? '-'}
@@ -414,7 +412,6 @@ export default function StockIndex({
 
                                             <td className="px-4 py-3.5">
                                                 <span className="text-sm text-zinc-600">
-                                                    {v.color_name ?? '-'} /{' '}
                                                     {v.size ?? '-'}
                                                 </span>
                                             </td>

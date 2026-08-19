@@ -33,7 +33,6 @@ type Paginated<T> = {
 type OrderItem = {
     id: number;
     title: string;
-    color: string | null;
     size: string | null;
     qty: number;
     image: string | null;
@@ -288,7 +287,6 @@ export default function ListOrder({ orders, filters }: Props) {
                                                     {item.title}
                                                 </h4>
                                                 <p className="mb-1 text-[11px] text-black/60">
-                                                    {item.color ?? '-'} •{' '}
                                                     {item.size ?? '-'}
                                                 </p>
                                                 <p className="text-[11px] text-black/60">

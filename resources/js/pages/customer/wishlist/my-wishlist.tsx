@@ -12,13 +12,7 @@ type WishlistItem = {
     title: string;
     category: string | null;
     price: number;
-    sale_price: number | null;
     image: string | null;
-    badge: string | null;
-    colors: Array<{
-        name: string;
-        hex: string;
-    }>;
     available_stock: number;
     is_available: boolean;
 };
@@ -189,13 +183,6 @@ function WishlistTile({ item, index }: { item: WishlistItem; index: number }) {
                             decoding="async"
                             className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.035]"
                         />
-                        {item.badge && (
-                            <span className="absolute top-4 left-0 z-10 flex min-h-26 w-9 [transform:rotate(180deg)] items-center justify-center bg-black px-1 py-2 text-[11px] font-extrabold tracking-[0.08em] text-white uppercase [text-orientation:mixed] [writing-mode:vertical-rl] sm:w-10 sm:text-[12px]">
-                                {item.badge === 'DISCOUNT'
-                                    ? 'SALE'
-                                    : item.badge}
-                            </span>
-                        )}
                     </div>
                 </Link>
 
@@ -222,16 +209,9 @@ function WishlistTile({ item, index }: { item: WishlistItem; index: number }) {
                     <p className="mt-1 line-clamp-1 text-[15px] leading-5 text-black/60">
                         {item.category ?? 'Performance Gear'}
                     </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-4 text-[18px] leading-none font-extrabold">
-                        {item.sale_price !== null && (
-                            <span className="text-black/48 line-through decoration-1">
-                                {formatPrice(item.price)}
-                            </span>
-                        )}
-                        <span className="text-black">
-                            {formatPrice(item.sale_price ?? item.price)}
-                        </span>
-                    </div>
+                    <p className="mt-2 text-[18px] leading-none font-extrabold text-black">
+                        {formatPrice(item.price)}
+                    </p>
                 </Link>
             </article>
         </FadeInOnScroll>

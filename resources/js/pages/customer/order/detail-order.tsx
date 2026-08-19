@@ -144,6 +144,11 @@ const FALLBACK_IMAGE = '/img/hasan-almasi-_X2UAmIcpko-unsplash.webp';
 const formatPrice = (amount: number) =>
     `Rp ${new Intl.NumberFormat('id-ID').format(amount)}`;
 
+const displayVariantValue = (
+    value: string | null,
+    productValue: string | null,
+) => (value && value !== productValue ? value : null);
+
 const formatDateTime = (value: string | null) => {
     if (!value) {
         return '-';
@@ -719,7 +724,10 @@ export default function DetailOrder({ order }: Props) {
                                                                 </Link>
                                                                 <p className="mt-0.5 text-[11px] text-black/60">
                                                                     SKU:{' '}
-                                                                    {item.variant_sku ??
+                                                                    {displayVariantValue(
+                                                                        item.variant_sku,
+                                                                        item.product_sku,
+                                                                    ) ??
                                                                         item.product_sku ??
                                                                         '-'}
                                                                 </p>
@@ -817,7 +825,10 @@ export default function DetailOrder({ order }: Props) {
                                                         </strong>
                                                     </span>
                                                 )}
-                                                {item.size && (
+                                                {displayVariantValue(
+                                                    item.size,
+                                                    null,
+                                                ) && (
                                                     <span>
                                                         Ukuran:{' '}
                                                         <strong className="text-black">
@@ -836,7 +847,10 @@ export default function DetailOrder({ order }: Props) {
                                             </div>
                                             <p className="mt-0.5 text-[11px] text-black/60">
                                                 SKU:{' '}
-                                                {item.variant_sku ??
+                                                {displayVariantValue(
+                                                    item.variant_sku,
+                                                    item.product_sku,
+                                                ) ??
                                                     item.product_sku ??
                                                     '-'}
                                             </p>

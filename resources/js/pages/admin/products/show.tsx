@@ -30,18 +30,13 @@ type ImageRow = {
     id: number;
     image_url: string | null;
     alt_text: string | null;
-    color_name: string | null;
     sort_order: number;
     is_primary: boolean;
 };
 type Variant = {
     id: number;
-    sku: string;
-    color_name: string | null;
-    color_hex: string | null;
     size: string | null;
-    regular_price: string | number | null;
-    sale_price: string | number | null;
+    price: string | number | null;
     stock: number;
     reserved_stock: number;
     available_stock?: number;
@@ -71,17 +66,13 @@ type StockLog = {
 };
 type Product = {
     id: number;
-    category_id: number | null;
-    collection_id: number | null;
+    category_ids: number[];
     name: string;
     slug: string;
     sku: string | null;
     brand_name: string | null;
-    short_description: string | null;
+    price: string | number;
     description: string | null;
-    stock_status: string | null;
-    regular_price: string | number;
-    sale_price: string | number | null;
     weight: number;
     length: number | null;
     width: number | null;
@@ -90,10 +81,7 @@ type Product = {
     is_featured: boolean;
     is_new_arrival: boolean;
     is_best_seller: boolean;
-    meta_title: string | null;
-    meta_description: string | null;
     category: string | null;
-    collection: string | null;
     images: ImageRow[];
     variants: Variant[];
     orders: Order[];
@@ -136,7 +124,7 @@ export default function ProductShow({ product }: { product: Product }) {
                 <PageHeader
                     eyebrow="Catalog"
                     title={product.name}
-                    description={`${product.brand_name || 'No brand'} · ${product.category || 'No category'} · ${product.collection || 'No collection'} · ${product.sku || 'No parent SKU'}`}
+                    description={`${product.brand_name || 'No brand'} · ${product.category || 'No category'} · ${product.sku || 'No parent SKU'}`}
                     action={
                         <div className="flex flex-wrap gap-2">
                             <StatusBadge status={product.status} />
@@ -247,10 +235,8 @@ export default function ProductShow({ product }: { product: Product }) {
                                                             variant.reserved_stock,
                                                     );
                                                 const price =
-                                                    variant.sale_price ??
-                                                    variant.regular_price ??
-                                                    product.sale_price ??
-                                                    product.regular_price;
+                                                    variant.price ??
+                                                    product.price;
 
                                                 return (
                                                     <tr
@@ -258,30 +244,10 @@ export default function ProductShow({ product }: { product: Product }) {
                                                         key={variant.id}
                                                     >
                                                         <td className="px-5 py-3">
-                                                            <div className="flex items-center gap-2">
-                                                                <span
-                                                                    className="size-3 rounded-full border"
-                                                                    style={{
-                                                                        backgroundColor:
-                                                                            variant.color_hex ||
-                                                                            '#fff',
-                                                                    }}
-                                                                />
-                                                                <div>
-                                                                    <p className="font-medium">
-                                                                        {variant.color_name ||
-                                                                            'No color'}{' '}
-                                                                        /{' '}
-                                                                        {variant.size ||
-                                                                            'No size'}
-                                                                    </p>
-                                                                    <p className="text-xs text-zinc-500">
-                                                                        {
-                                                                            variant.sku
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </div>
+                                                            <p className="font-medium">
+                                                                {variant.size ||
+                                                                    'No size'}
+                                                            </p>
                                                         </td>
                                                         <td className="px-5 py-3">
                                                             {formatPrice(price)}
@@ -344,8 +310,7 @@ export default function ProductShow({ product }: { product: Product }) {
                             <CardHeader>
                                 <CardTitle>Description</CardTitle>
                                 <CardDescription>
-                                    {product.short_description ||
-                                        'No short description.'}
+                                    {product.description || 'No description.'}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="prose prose-sm max-w-none text-zinc-700">
@@ -366,24 +331,9 @@ export default function ProductShow({ product }: { product: Product }) {
                                     <p className="text-xs text-zinc-500">
                                         Price
                                     </p>
-                                    {product.sale_price ? (
-                                        <>
-                                            <p className="text-2xl font-semibold">
-                                                {formatPrice(
-                                                    product.sale_price,
-                                                )}
-                                            </p>
-                                            <p className="text-sm text-zinc-400 line-through">
-                                                {formatPrice(
-                                                    product.regular_price,
-                                                )}
-                                            </p>
-                                        </>
-                                    ) : (
-                                        <p className="text-2xl font-semibold">
-                                            {formatPrice(product.regular_price)}
-                                        </p>
-                                    )}
+                                    <p className="text-2xl font-semibold">
+                                        {formatPrice(product.price)}
+                                    </p>
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 border-t border-zinc-100 pt-4 text-center">
                                     <div>
@@ -429,12 +379,6 @@ export default function ProductShow({ product }: { product: Product }) {
                                         ].every(Boolean)
                                             ? `${product.length} × ${product.width} × ${product.height} cm`
                                             : '—'}
-                                    </p>
-                                    <p>
-                                        <span className="text-zinc-500">
-                                            Stock label:
-                                        </span>{' '}
-                                        {product.stock_status || '—'}
                                     </p>
                                 </div>
                                 <div className="flex flex-wrap gap-2">

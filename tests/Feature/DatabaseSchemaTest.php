@@ -8,10 +8,10 @@ uses(RefreshDatabase::class);
 it('matches the db.sql table contract', function () {
     $tables = [
         'admin_activity_logs', 'banners', 'biteship_webhook_logs', 'cache', 'cache_locks',
-        'carts', 'cart_items', 'categories', 'collections', 'customer_addresses',
+        'carts', 'cart_items', 'categories', 'customer_addresses',
         'failed_jobs', 'jobs', 'job_batches', 'notifications', 'order_addresses',
         'order_items', 'orders', 'pages', 'password_reset_tokens', 'payment_logs',
-        'payments', 'personal_access_tokens', 'product_collections', 'product_images',
+        'payments', 'personal_access_tokens', 'product_categories', 'product_images',
         'product_reviews', 'product_variants', 'products', 'sessions', 'shipment_trackings',
         'shipments', 'site_settings', 'stock_logs', 'users', 'voucher_categories',
         'voucher_products', 'vouchers', 'wishlists',
@@ -30,11 +30,11 @@ it('matches the db.sql table contract', function () {
     }
 
     expect(Schema::hasColumns('products', [
-        'brand_name', 'regular_price', 'sale_price', 'stock_status', 'status',
+        'brand_name', 'price', 'status',
     ]))->toBeTrue();
 
     expect(Schema::hasColumns('product_variants', [
-        'sku', 'color_name', 'color_hex', 'size', 'stock', 'reserved_stock',
+        'size', 'price', 'stock', 'reserved_stock', 'image_url',
     ]))->toBeTrue();
 
     expect(Schema::hasColumns('cart_items', [

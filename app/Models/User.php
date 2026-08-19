@@ -56,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Wishlist::class);
     }
 
+    public function productImportBatches(): HasMany
+    {
+        return $this->hasMany(ProductImportBatch::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

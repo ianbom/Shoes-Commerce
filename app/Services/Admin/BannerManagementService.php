@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 class BannerManagementService
 {
     use ResolvesAdminPagination;
-
     use StoresUploadedFiles;
 
     public function indexData(Request $request): array
@@ -90,8 +89,6 @@ class BannerManagementService
             'placement' => $banner->placement,
             'sort_order' => $banner->sort_order,
             'is_active' => $banner->is_active,
-            'starts_at' => $banner->starts_at?->format('Y-m-d\TH:i'),
-            'ends_at' => $banner->ends_at?->format('Y-m-d\TH:i'),
             'created_at' => $banner->created_at?->toFormattedDateString(),
         ];
     }

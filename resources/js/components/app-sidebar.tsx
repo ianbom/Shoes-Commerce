@@ -66,6 +66,11 @@ const adminNavGroups: NavGroup[] = [
                 icon: Package,
             },
             {
+                title: 'Import Produk',
+                href: '/admin/product-imports',
+                icon: Package,
+            },
+            {
                 title: 'Varian',
                 href: '/admin/product-variants',
                 icon: Boxes,
@@ -74,11 +79,6 @@ const adminNavGroups: NavGroup[] = [
                 title: 'Kategori',
                 href: '/admin/categories',
                 icon: Tags,
-            },
-            {
-                title: 'Koleksi',
-                href: '/admin/collections',
-                icon: Layers3,
             },
             {
                 title: 'Stok',

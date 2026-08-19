@@ -26,8 +26,6 @@ type CartItem = {
     product_id: number | null;
     product_slug: string | null;
     title: string;
-    color: string | null;
-    color_hex: string | null;
     size: string | null;
     image: string | null;
     price: number;
@@ -82,9 +80,7 @@ const formatPrice = (price: number) =>
         .format(price)
         .replace('Rp', 'Rp ');
 
-const itemMeta = (item: CartItem) =>
-    [item.color, item.size].filter(Boolean).join(' / ') ||
-    'AxeGear Performance';
+const itemMeta = (item: CartItem) => item.size || 'AxeGear Performance';
 
 export default function MyCart({
     cartItems,

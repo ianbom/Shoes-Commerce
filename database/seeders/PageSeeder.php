@@ -14,113 +14,113 @@ class PageSeeder extends Seeder
         DB::table('pages')->insert([
             // ─── Privacy Policy ──────────────────────────────────────────────────
             [
-                'title'            => 'Kebijakan Privasi',
-                'slug'             => 'privacy-policy',
-                'content'          => $this->privacyPolicyContent(),
-                'type'             => 'policy',
-                'meta_title'       => 'Kebijakan Privasi — Auréa Syar\'i',
+                'title' => 'Kebijakan Privasi',
+                'slug' => 'privacy-policy',
+                'content' => $this->privacyPolicyContent(),
+                'type' => 'policy',
+                'meta_title' => 'Kebijakan Privasi — Auréa Syar\'i',
                 'meta_description' => 'Pelajari bagaimana Auréa Syar\'i melindungi dan mengelola data pribadi pelanggan kami.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── No Return Policy ────────────────────────────────────────────────
             [
-                'title'            => 'Kebijakan Tidak Ada Pengembalian',
-                'slug'             => 'no-return-policy',
-                'content'          => $this->noReturnPolicyContent(),
-                'type'             => 'policy',
-                'meta_title'       => 'Kebijakan Pengembalian Barang — Auréa Syar\'i',
+                'title' => 'Kebijakan Tidak Ada Pengembalian',
+                'slug' => 'no-return-policy',
+                'content' => $this->noReturnPolicyContent(),
+                'type' => 'policy',
+                'meta_title' => 'Kebijakan Pengembalian Barang — Auréa Syar\'i',
                 'meta_description' => 'Informasi lengkap mengenai kebijakan pengembalian dan penukaran produk di Auréa Syar\'i.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── Shipping Policy ─────────────────────────────────────────────────
             [
-                'title'            => 'Kebijakan Pengiriman',
-                'slug'             => 'shipping-policy',
-                'content'          => $this->shippingPolicyContent(),
-                'type'             => 'policy',
-                'meta_title'       => 'Kebijakan Pengiriman — Auréa Syar\'i',
+                'title' => 'Kebijakan Pengiriman',
+                'slug' => 'shipping-policy',
+                'content' => $this->shippingPolicyContent(),
+                'type' => 'policy',
+                'meta_title' => 'Kebijakan Pengiriman — Auréa Syar\'i',
                 'meta_description' => 'Informasi mengenai metode pengiriman, estimasi waktu, dan biaya pengiriman di Auréa Syar\'i.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── Terms & Conditions ──────────────────────────────────────────────
             [
-                'title'            => 'Syarat & Ketentuan',
-                'slug'             => 'terms-conditions',
-                'content'          => $this->termsContent(),
-                'type'             => 'policy',
-                'meta_title'       => 'Syarat & Ketentuan — Auréa Syar\'i',
+                'title' => 'Syarat & Ketentuan',
+                'slug' => 'terms-conditions',
+                'content' => $this->termsContent(),
+                'type' => 'policy',
+                'meta_title' => 'Syarat & Ketentuan — Auréa Syar\'i',
                 'meta_description' => 'Syarat dan ketentuan penggunaan layanan dan pembelian produk di Auréa Syar\'i.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── About Us ────────────────────────────────────────────────────────
             [
-                'title'            => 'Tentang Kami',
-                'slug'             => 'about-us',
-                'content'          => $this->aboutUsContent(),
-                'type'             => 'about',
-                'meta_title'       => 'Tentang Auréa Syar\'i — Fashion Muslimah Premium',
+                'title' => 'Tentang Kami',
+                'slug' => 'about-us',
+                'content' => $this->aboutUsContent(),
+                'type' => 'about',
+                'meta_title' => 'Tentang Auréa Syar\'i — Fashion Muslimah Premium',
                 'meta_description' => 'Auréa Syar\'i adalah brand fashion muslimah premium yang menghadirkan koleksi abaya, khimar, dan busana modest berkualitas tinggi.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── FAQ ─────────────────────────────────────────────────────────────
             [
-                'title'            => 'Pertanyaan yang Sering Diajukan',
-                'slug'             => 'faq',
-                'content'          => $this->faqContent(),
-                'type'             => 'faq',
-                'meta_title'       => 'FAQ — Auréa Syar\'i',
+                'title' => 'Pertanyaan yang Sering Diajukan',
+                'slug' => 'faq',
+                'content' => $this->faqContent(),
+                'type' => 'faq',
+                'meta_title' => 'FAQ — Auréa Syar\'i',
                 'meta_description' => 'Temukan jawaban atas pertanyaan umum seputar produk, pemesanan, pembayaran, dan pengiriman di Auréa Syar\'i.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── Care Guide ──────────────────────────────────────────────────────
             [
-                'title'            => 'Panduan Perawatan Pakaian',
-                'slug'             => 'care-guide',
-                'content'          => $this->careGuideContent(),
-                'type'             => 'guide',
-                'meta_title'       => 'Panduan Perawatan — Auréa Syar\'i',
+                'title' => 'Panduan Perawatan Pakaian',
+                'slug' => 'care-guide',
+                'content' => $this->careGuideContent(),
+                'type' => 'guide',
+                'meta_title' => 'Panduan Perawatan — Auréa Syar\'i',
                 'meta_description' => 'Tips dan panduan merawat produk fashion muslimah Auréa Syar\'i agar tetap awet dan indah.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
 
             // ─── Size Guide ──────────────────────────────────────────────────────
             [
-                'title'            => 'Panduan Ukuran',
-                'slug'             => 'size-guide',
-                'content'          => $this->sizeGuideContent(),
-                'type'             => 'guide',
-                'meta_title'       => 'Panduan Ukuran — Auréa Syar\'i',
+                'title' => 'Panduan Ukuran',
+                'slug' => 'size-guide',
+                'content' => $this->sizeGuideContent(),
+                'type' => 'guide',
+                'meta_title' => 'Panduan Ukuran — Auréa Syar\'i',
                 'meta_description' => 'Tabel ukuran lengkap untuk membantu Anda memilih size yang tepat.',
-                'is_active'        => true,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         ]);
     }
 
     private function privacyPolicyContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>1. Informasi yang Kami Kumpulkan</h2>
 <p>Auréa Syar'i mengumpulkan informasi yang Anda berikan secara langsung, termasuk nama lengkap, alamat email, nomor telepon, alamat pengiriman, dan informasi pembayaran saat Anda melakukan pembelian atau mendaftar sebagai anggota.</p>
 
@@ -146,7 +146,7 @@ HTML;
 
     private function noReturnPolicyContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Kebijakan Penjualan Akhir</h2>
 <p>Demi menjaga kualitas dan kebersihan produk fashion muslimah kami, Auréa Syar'i menerapkan kebijakan <strong>no-return & no-exchange</strong> setelah produk diterima oleh pelanggan.</p>
 
@@ -173,7 +173,7 @@ HTML;
 
     private function shippingPolicyContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Metode Pengiriman</h2>
 <p>Auréa Syar'i bekerja sama dengan mitra kurir terpercaya untuk mengantarkan pesanan Anda:</p>
 <ul>
@@ -202,7 +202,7 @@ HTML;
 
     private function termsContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>1. Penerimaan Syarat</h2>
 <p>Dengan mengakses dan menggunakan layanan Auréa Syar'i, Anda menyetujui untuk terikat dengan syarat dan ketentuan ini. Jika Anda tidak menyetujui, harap tidak menggunakan layanan kami.</p>
 
@@ -225,7 +225,7 @@ HTML;
 
     private function aboutUsContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Kisah Kami</h2>
 <p>Auréa Syar'i lahir dari kecintaan mendalam terhadap keindahan dan kesopanan dalam berpakaian. Didirikan pada tahun 2022, kami hadir untuk menjawab kebutuhan wanita muslimah modern yang ingin tampil elegan tanpa mengorbankan nilai-nilai syar'i.</p>
 
@@ -250,7 +250,7 @@ HTML;
 
     private function faqContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Pemesanan</h2>
 
 <h3>Bagaimana cara memesan?</h3>
@@ -287,7 +287,7 @@ HTML;
 
     private function careGuideContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Panduan Umum Perawatan</h2>
 <p>Untuk menjaga kualitas dan keindahan produk Auréa Syar'i, ikuti panduan perawatan berikut:</p>
 
@@ -326,7 +326,7 @@ HTML;
 
     private function sizeGuideContent(): string
     {
-        return <<<HTML
+        return <<<'HTML'
 <h2>Panduan Ukuran Auréa Syar'i</h2>
 <p>Gunakan tabel berikut sebagai referensi. Untuk hasil terbaik, ukur tubuh Anda dan bandingkan dengan tabel di bawah.</p>
 

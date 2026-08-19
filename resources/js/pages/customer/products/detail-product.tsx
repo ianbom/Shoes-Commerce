@@ -22,9 +22,9 @@ import { cart, login } from '@/routes';
 
 type ProductVariant = {
     id: number;
-    color_name: string | null;
-    color_hex: string;
     size: string | null;
+    price: number;
+    image_url: string | null;
     available_stock: number;
     cart_quantity: number;
 };
@@ -61,7 +61,6 @@ export default function DetailProduct({
 
     const [image, setImage] = useState(images[0]);
 
-    const availableColors = product.colors || [];
     const availableSizes = product.sizes || [];
     const variants = (product.variants ?? []) as ProductVariant[];
     const initialVariant =
@@ -69,9 +68,6 @@ export default function DetailProduct({
             (variant) => variant.available_stock - variant.cart_quantity > 0,
         ) ?? variants[0];
 
-    const [selectedColor, setSelectedColor] = useState(
-        initialVariant?.color_hex ?? '',
-    );
     const [selectedSize, setSelectedSize] = useState(
         initialVariant?.size ?? '',
     );
@@ -82,9 +78,7 @@ export default function DetailProduct({
     const [cartProcessing, setCartProcessing] = useState(false);
 
     const selectedVariant = variants.find(
-        (variant) =>
-            (variant.color_hex ?? '') === selectedColor &&
-            variant.size === selectedSize,
+        (variant) => variant.size === selectedSize,
     );
     const available_stock = selectedVariant
         ? Math.max(
@@ -92,23 +86,6 @@ export default function DetailProduct({
               selectedVariant.available_stock - selectedVariant.cart_quantity,
           )
         : 0;
-
-    const selectColor = (color: string) => {
-        const firstAvailableVariant = variants.find(
-            (variant) =>
-                (variant.color_hex ?? '') === color &&
-                variant.available_stock - variant.cart_quantity > 0,
-        );
-        const firstVariant = variants.find(
-            (variant) => (variant.color_hex ?? '') === color,
-        );
-
-        setSelectedColor(color);
-        setSelectedSize(
-            firstAvailableVariant?.size ?? firstVariant?.size ?? '',
-        );
-        setQuantity(1);
-    };
 
     const addToCart = (buyNow = false) => {
         if (!auth.user) {
@@ -152,7 +129,7 @@ export default function DetailProduct({
         () => [
             [
                 'Product Description',
-                product.short_description || 'No description available.',
+                product.description || 'No description available.',
             ],
             ['Material & Fit', 'Premium materials. Fits true to size.'],
             [
@@ -199,17 +176,14 @@ export default function DetailProduct({
                         <PurchasePanel
                             product={product}
                             quantity={quantity}
-                            selectedColor={selectedColor}
                             selectedSize={selectedSize}
                             wishlisted={wishlisted}
-                            availableColors={availableColors}
                             availableSizes={availableSizes}
                             variants={variants}
                             available_stock={available_stock}
                             cartProcessing={cartProcessing}
                             addToCart={addToCart}
                             setQuantity={setQuantity}
-                            setSelectedColor={selectColor}
                             setSelectedSize={setSelectedSize}
                             setWishlisted={setWishlisted}
                         />
@@ -339,25 +313,22 @@ function ProductGallery({
 function PurchasePanel({
     product,
     quantity,
-    selectedColor,
     selectedSize,
     wishlisted,
-    availableColors,
     availableSizes,
     variants,
     available_stock,
     cartProcessing,
     addToCart,
     setQuantity,
-    setSelectedColor,
     setSelectedSize,
     setWishlisted,
 }: any) {
     const isOutOfStock = available_stock <= 0;
-    const price = product.sale_price
-        ? formatPrice(product.sale_price)
-        : formatPrice(product.price);
-    const oldPrice = product.sale_price ? formatPrice(product.price) : null;
+    const selectedVariant = variants.find(
+        (variant: ProductVariant) => variant.size === selectedSize,
+    );
+    const price = formatPrice(selectedVariant?.price ?? product.price);
 
     return (
         <aside className="lg:sticky lg:top-24">
@@ -367,9 +338,9 @@ function PurchasePanel({
             <h1 className="mt-2 text-[32px] leading-[1.02] font-black tracking-[-0.02em] break-words text-ink sm:text-[48px]">
                 {product.title}
             </h1>
-            {product.short_description && (
+            {product.description && (
                 <p className="mt-3 max-w-[520px] text-[16px] leading-6 text-body">
-                    {product.short_description}
+                    {product.description.replace(/<[^>]*>/g, '')}
                 </p>
             )}
 
@@ -377,11 +348,6 @@ function PurchasePanel({
                 <span className="text-[28px] font-extrabold sm:text-[32px]">
                     {price}
                 </span>
-                {oldPrice && (
-                    <span className="text-[24px] font-bold text-muted-foreground line-through">
-                        {oldPrice}
-                    </span>
-                )}
                 {product.label && (
                     <span className="bg-primary-soft rounded px-3 py-2 text-[12px] font-extrabold text-primary">
                         {product.label}
@@ -404,39 +370,6 @@ function PurchasePanel({
                 )}
             </div>
 
-            {availableColors.length > 0 && (
-                <section className="mt-6">
-                    <p className="text-[14px] font-medium">
-                        Color:{' '}
-                        <span className="font-bold">
-                            {availableColors.find(
-                                (c: any) => c.hex === selectedColor,
-                            )?.name || selectedColor}
-                        </span>
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-3">
-                        {availableColors.map((color: any) => (
-                            <button
-                                type="button"
-                                key={color.hex}
-                                onClick={() => setSelectedColor(color.hex)}
-                                className={`grid h-10 w-10 place-items-center rounded-full border ${
-                                    selectedColor === color.hex
-                                        ? 'border-primary'
-                                        : 'border-hairline'
-                                }`}
-                                aria-label={`Select color ${color.name}`}
-                            >
-                                <span
-                                    className="h-7 w-7 rounded-full border border-hairline"
-                                    style={{ backgroundColor: color.hex }}
-                                />
-                            </button>
-                        ))}
-                    </div>
-                </section>
-            )}
-
             {availableSizes.length > 0 && (
                 <section className="mt-5 sm:mt-6">
                     <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -452,8 +385,6 @@ function PurchasePanel({
                         {availableSizes.map((size: string) => {
                             const variant = variants.find(
                                 (candidate: ProductVariant) =>
-                                    (candidate.color_hex ?? '') ===
-                                        selectedColor &&
                                     candidate.size === size,
                             );
                             const unavailable =
@@ -623,9 +554,7 @@ function ProductRow({ title, products }: { title: string; products: any[] }) {
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {products.map((p) => {
-                    const price = p.sale_price
-                        ? formatPrice(p.sale_price)
-                        : formatPrice(p.price);
+                    const price = formatPrice(p.price);
                     return (
                         <Link
                             key={p.id}

@@ -28,12 +28,8 @@ type ImageRow = {
 };
 type VariantRow = {
     id?: number;
-    sku: string;
-    color_name: string;
-    color_hex: string;
     size: string;
-    regular_price: string | number;
-    sale_price: string | number;
+    price: string | number;
     stock: string | number;
     reserved_stock: string | number;
     weight: string | number;
@@ -46,17 +42,13 @@ type VariantRow = {
 };
 type FormData = {
     _method: 'POST' | 'PUT';
-    category_id: string | number;
-    collection_id: string | number;
+    category_ids: Array<string | number>;
     name: string;
     slug: string;
     sku: string;
     brand_name: string;
-    regular_price: string | number;
-    sale_price: string | number;
-    short_description: string;
+    price: string | number;
     description: string;
-    stock_status: string;
     weight: string | number;
     length: string | number;
     width: string | number;
@@ -65,8 +57,6 @@ type FormData = {
     is_featured: boolean;
     is_new_arrival: boolean;
     is_best_seller: boolean;
-    meta_title: string;
-    meta_description: string;
     images: ImageRow[];
     variants: VariantRow[];
 };
@@ -87,7 +77,6 @@ type Props = {
     product: Product | null;
     options: {
         categories: Option[];
-        collections: Option[];
         statuses: string[];
     };
 };
@@ -103,8 +92,6 @@ const slugify = (value: string) =>
         .trim()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
-const hasNumber = (value: string | number) =>
-    value !== '' && Number.isFinite(Number(value));
 const blankImage = (sortOrder: number): ImageRow => ({
     image: null,
     preview: null,
@@ -112,12 +99,8 @@ const blankImage = (sortOrder: number): ImageRow => ({
     is_primary: sortOrder === 0,
 });
 const blankVariant = (): VariantRow => ({
-    sku: '',
-    color_name: '',
-    color_hex: '#111111',
     size: '',
-    regular_price: '',
-    sale_price: '',
+    price: '',
     stock: 0,
     reserved_stock: 0,
     weight: '',
@@ -176,17 +159,13 @@ export default function ProductForm({ mode, product, options }: Props) {
     );
     const { data, setData, post, processing, errors } = useForm<FormData>({
         _method: isEdit ? 'PUT' : 'POST',
-        category_id: product?.category_id ?? '',
-        collection_id: product?.collection_id ?? '',
+        category_ids: product?.category_ids ?? [],
         name: product?.name ?? '',
         slug: product?.slug ?? '',
         sku: product?.sku ?? '',
         brand_name: product?.brand_name ?? 'Axegear',
-        regular_price: product?.regular_price ?? '',
-        sale_price: product?.sale_price ?? '',
-        short_description: product?.short_description ?? '',
+        price: product?.price ?? '',
         description: product?.description ?? '',
-        stock_status: product?.stock_status ?? 'in_stock',
         weight: product?.weight ?? 0,
         length: product?.length ?? '',
         width: product?.width ?? '',
@@ -195,8 +174,6 @@ export default function ProductForm({ mode, product, options }: Props) {
         is_featured: product?.is_featured ?? false,
         is_new_arrival: product?.is_new_arrival ?? false,
         is_best_seller: product?.is_best_seller ?? false,
-        meta_title: product?.meta_title ?? '',
-        meta_description: product?.meta_description ?? '',
         images:
             product?.images.map((image, index) => ({
                 id: image.id,
@@ -208,12 +185,8 @@ export default function ProductForm({ mode, product, options }: Props) {
         variants:
             product?.variants.map((variant) => ({
                 id: variant.id,
-                sku: variant.sku,
-                color_name: variant.color_name,
-                color_hex: variant.color_hex || '#111111',
                 size: variant.size,
-                regular_price: variant.regular_price,
-                sale_price: variant.sale_price,
+                price: variant.price,
                 stock: variant.stock,
                 reserved_stock: variant.reserved_stock,
                 weight: variant.weight,
@@ -259,59 +232,6 @@ export default function ProductForm({ mode, product, options }: Props) {
                 variantIndex === index ? { ...variant, ...patch } : variant,
             ),
         );
-    const updateBasePrice = (
-        field: 'regular_price' | 'sale_price',
-        value: string,
-    ) => {
-        const nextRegular =
-            field === 'regular_price' ? value : data.regular_price;
-        const nextSale = field === 'sale_price' ? value : data.sale_price;
-
-        if (
-            hasNumber(nextRegular) &&
-            hasNumber(nextSale) &&
-            Number(nextSale) > Number(nextRegular)
-        ) {
-            setClientError(
-                field,
-                'Sale price tidak boleh lebih besar dari regular price.',
-            );
-
-            return;
-        }
-
-        setClientError('regular_price');
-        setClientError('sale_price');
-        setData(field, value);
-    };
-    const updateVariantPrice = (
-        index: number,
-        field: 'regular_price' | 'sale_price',
-        value: string,
-    ) => {
-        const variant = data.variants[index];
-        const nextRegular =
-            field === 'regular_price' ? value : variant.regular_price;
-        const nextSale = field === 'sale_price' ? value : variant.sale_price;
-        const errorKey = 'variants.' + index + '.' + field;
-
-        if (
-            hasNumber(nextRegular) &&
-            hasNumber(nextSale) &&
-            Number(nextSale) > Number(nextRegular)
-        ) {
-            setClientError(
-                errorKey,
-                'Sale price tidak boleh lebih besar dari regular price.',
-            );
-
-            return;
-        }
-
-        setClientError('variants.' + index + '.regular_price');
-        setClientError('variants.' + index + '.sale_price');
-        updateVariant(index, { [field]: value });
-    };
     const selectImage = (
         index: number,
         event: ChangeEvent<HTMLInputElement>,
@@ -383,7 +303,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                 <PageHeader
                     eyebrow="Catalog"
                     title={isEdit ? 'Edit product' : 'Create product'}
-                    description="Produk adalah satu model sepatu; warna dan ukuran disimpan sebagai varian unik."
+                    description="Kelola identitas, kategori, harga, gambar, ukuran, dan stok produk."
                     action={
                         <Button variant="outline" asChild>
                             <Link href="/admin/products">Cancel</Link>
@@ -477,81 +397,45 @@ export default function ProductForm({ mode, product, options }: Props) {
                                     />
                                 </Field>
                                 <Field
-                                    label="Category"
-                                    error={errors.category_id}
+                                    label="Categories"
+                                    error={errors.category_ids}
+                                    className="md:col-span-2"
                                 >
-                                    <select
-                                        className={selectClass}
-                                        value={data.category_id}
-                                        onChange={(event) =>
-                                            setData(
-                                                'category_id',
-                                                event.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="">No category</option>
+                                    <div className="grid gap-3 rounded-md border border-black p-3 sm:grid-cols-2">
                                         {options.categories.map((category) => (
-                                            <option
+                                            <label
                                                 key={category.id}
-                                                value={category.id}
+                                                className="flex items-center gap-2 text-sm"
                                             >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={data.category_ids.some(
+                                                        (id) =>
+                                                            Number(id) ===
+                                                            category.id,
+                                                    )}
+                                                    onChange={(event) =>
+                                                        setData(
+                                                            'category_ids',
+                                                            event.target.checked
+                                                                ? [
+                                                                      ...data.category_ids,
+                                                                      category.id,
+                                                                  ]
+                                                                : data.category_ids.filter(
+                                                                      (id) =>
+                                                                          Number(
+                                                                              id,
+                                                                          ) !==
+                                                                          category.id,
+                                                                  ),
+                                                        )
+                                                    }
+                                                />
                                                 {category.name}
-                                            </option>
+                                            </label>
                                         ))}
-                                    </select>
-                                </Field>
-                                <Field
-                                    label="Collection"
-                                    error={errors.collection_id}
-                                >
-                                    <select
-                                        className={selectClass}
-                                        value={data.collection_id}
-                                        onChange={(event) =>
-                                            setData(
-                                                'collection_id',
-                                                event.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="">No collection</option>
-                                        {options.collections.map(
-                                            (collection) => (
-                                                <option
-                                                    key={collection.id}
-                                                    value={collection.id}
-                                                >
-                                                    {collection.name}
-                                                </option>
-                                            ),
-                                        )}
-                                    </select>
-                                </Field>
-                                <Field
-                                    label="Stock label"
-                                    error={errors.stock_status}
-                                >
-                                    <select
-                                        className={selectClass}
-                                        value={data.stock_status}
-                                        onChange={(event) =>
-                                            setData(
-                                                'stock_status',
-                                                event.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="in_stock">
-                                            In stock
-                                        </option>
-                                        <option value="out_of_stock">
-                                            Out of stock
-                                        </option>
-                                        <option value="preorder">
-                                            Preorder
-                                        </option>
-                                    </select>
+                                    </div>
                                 </Field>
                             </div>
                         </Section>
@@ -561,41 +445,18 @@ export default function ProductForm({ mode, product, options }: Props) {
                             description="Harga dasar dan ukuran pengiriman produk."
                         >
                             <div className="grid gap-5 md:grid-cols-2">
-                                <Field
-                                    label="Regular price"
-                                    error={fieldError('regular_price')}
-                                >
+                                <Field label="Price" error={errors.price}>
                                     <Input
                                         className={inputClass}
                                         type="number"
-                                        min="0"
-                                        value={data.regular_price}
+                                        min="0.01"
+                                        step="0.01"
+                                        value={data.price}
                                         placeholder="0"
                                         onChange={(event) =>
-                                            updateBasePrice(
-                                                'regular_price',
-                                                event.target.value,
-                                            )
+                                            setData('price', event.target.value)
                                         }
                                         required
-                                    />
-                                </Field>
-                                <Field
-                                    label="Sale price"
-                                    error={fieldError('sale_price')}
-                                >
-                                    <Input
-                                        className={inputClass}
-                                        type="number"
-                                        min="0"
-                                        value={data.sale_price}
-                                        placeholder="Optional"
-                                        onChange={(event) =>
-                                            updateBasePrice(
-                                                'sale_price',
-                                                event.target.value,
-                                            )
-                                        }
                                     />
                                 </Field>
                                 <Field
@@ -650,22 +511,6 @@ export default function ProductForm({ mode, product, options }: Props) {
                             description="Tuliskan material, teknologi, penggunaan, fit, dan care guidance."
                         >
                             <div className="grid gap-5">
-                                <Field
-                                    label="Short description"
-                                    error={errors.short_description}
-                                >
-                                    <Textarea
-                                        className="min-h-24 border-black"
-                                        value={data.short_description}
-                                        placeholder="Ringkasan singkat produk"
-                                        onChange={(event) =>
-                                            setData(
-                                                'short_description',
-                                                event.target.value,
-                                            )
-                                        }
-                                    />
-                                </Field>
                                 <Field
                                     label="Full description"
                                     error={errors.description}
@@ -813,7 +658,6 @@ export default function ProductForm({ mode, product, options }: Props) {
                                         index={index}
                                         error={fieldError}
                                         update={updateVariant}
-                                        updatePrice={updateVariantPrice}
                                         selectImage={selectVariantImage}
                                         remove={() => {
                                             setClientErrors({});
@@ -839,46 +683,6 @@ export default function ProductForm({ mode, product, options }: Props) {
                                 >
                                     <Plus /> Add variant
                                 </Button>
-                            </div>
-                        </Section>
-
-                        <Section
-                            title="SEO"
-                            description="Metadata opsional untuk mesin pencarian."
-                        >
-                            <div className="grid gap-5">
-                                <Field
-                                    label="Meta title"
-                                    error={errors.meta_title}
-                                >
-                                    <Input
-                                        className={inputClass}
-                                        value={data.meta_title}
-                                        placeholder="Judul halaman untuk mesin pencarian"
-                                        onChange={(event) =>
-                                            setData(
-                                                'meta_title',
-                                                event.target.value,
-                                            )
-                                        }
-                                    />
-                                </Field>
-                                <Field
-                                    label="Meta description"
-                                    error={errors.meta_description}
-                                >
-                                    <Textarea
-                                        className="min-h-24 border-black"
-                                        value={data.meta_description}
-                                        placeholder="Deskripsi singkat untuk hasil pencarian"
-                                        onChange={(event) =>
-                                            setData(
-                                                'meta_description',
-                                                event.target.value,
-                                            )
-                                        }
-                                    />
-                                </Field>
                             </div>
                         </Section>
                     </div>
@@ -940,8 +744,7 @@ export default function ProductForm({ mode, product, options }: Props) {
                                     {imageCount} image(s), {activeVariants}{' '}
                                     active variant(s)
                                     <br />
-                                    Base price:{' '}
-                                    {formatPrice(data.regular_price)}
+                                    Base price: {formatPrice(data.price)}
                                 </div>
                                 <Button
                                     className="h-11 bg-black hover:bg-black/[0.84]"
@@ -969,7 +772,6 @@ function VariantEditor({
     index,
     error,
     update,
-    updatePrice,
     remove,
     selectImage,
 }: {
@@ -977,11 +779,6 @@ function VariantEditor({
     index: number;
     error: (key: string) => string | undefined;
     update: (index: number, patch: Partial<VariantRow>) => void;
-    updatePrice: (
-        index: number,
-        field: 'regular_price' | 'sale_price',
-        value: string,
-    ) => void;
     remove: () => void;
     selectImage: (index: number, event: ChangeEvent<HTMLInputElement>) => void;
 }) {
@@ -994,12 +791,7 @@ function VariantEditor({
         <div className="rounded-lg border border-black/20 p-4">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-black/10 pb-3">
                 <div className="flex items-center gap-2">
-                    <span
-                        className="size-3 rounded-full border border-black"
-                        style={{ backgroundColor: variant.color_hex }}
-                    />
                     <strong className="text-sm">
-                        {variant.color_name || 'Color'} /{' '}
                         {variant.size || 'Size'}
                     </strong>
                     <Badge variant="outline">Available: {available}</Badge>
@@ -1024,48 +816,6 @@ function VariantEditor({
                 </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <Field
-                    label="Variant SKU"
-                    error={error(`variants.${index}.sku`)}
-                >
-                    <Input
-                        className={inputClass}
-                        value={variant.sku}
-                        placeholder="Contoh: USB-BLK-42"
-                        onChange={(event) =>
-                            update(index, { sku: event.target.value })
-                        }
-                        required
-                    />
-                </Field>
-                <Field
-                    label="Color"
-                    error={error(`variants.${index}.color_name`)}
-                >
-                    <Input
-                        className={inputClass}
-                        value={variant.color_name}
-                        placeholder="Contoh: Black"
-                        onChange={(event) =>
-                            update(index, { color_name: event.target.value })
-                        }
-                        required
-                    />
-                </Field>
-                <Field
-                    label="Color hex"
-                    error={error(`variants.${index}.color_hex`)}
-                >
-                    <input
-                        type="color"
-                        aria-label="Variant color"
-                        value={variant.color_hex}
-                        onChange={(event) =>
-                            update(index, { color_hex: event.target.value })
-                        }
-                        className="h-11 w-full cursor-pointer rounded-md border border-black bg-white p-1"
-                    />
-                </Field>
                 <Field label="Size" error={error(`variants.${index}.size`)}>
                     <Input
                         className={inputClass}
@@ -1078,36 +828,18 @@ function VariantEditor({
                     />
                 </Field>
                 <Field
-                    label="Regular price override"
-                    error={error(`variants.${index}.regular_price`)}
+                    label="Price override"
+                    error={error(`variants.${index}.price`)}
                 >
                     <Input
                         className={inputClass}
                         type="number"
-                        min="0"
-                        value={variant.regular_price}
+                        min="0.01"
+                        step="0.01"
+                        value={variant.price}
                         placeholder="Use product price"
                         onChange={(event) =>
-                            updatePrice(
-                                index,
-                                'regular_price',
-                                event.target.value,
-                            )
-                        }
-                    />
-                </Field>
-                <Field
-                    label="Sale price override"
-                    error={error(`variants.${index}.sale_price`)}
-                >
-                    <Input
-                        className={inputClass}
-                        type="number"
-                        min="0"
-                        value={variant.sale_price}
-                        placeholder="Optional"
-                        onChange={(event) =>
-                            updatePrice(index, 'sale_price', event.target.value)
+                            update(index, { price: event.target.value })
                         }
                     />
                 </Field>
@@ -1182,7 +914,7 @@ function VariantEditor({
                 {variant.preview && (
                     <img
                         src={variant.preview}
-                        alt={`${variant.color_name || 'Variant'} preview`}
+                        alt={`${variant.size || 'Variant'} preview`}
                         className="aspect-square h-20 rounded-md border border-black/20 object-cover"
                     />
                 )}

@@ -82,7 +82,7 @@ function checkoutPaymentFixture(): array
     $product = Product::query()->create([
         'name' => $name,
         'slug' => Str::slug($name).'-'.Str::lower(Str::random(6)),
-        'regular_price' => 100000,
+        'price' => 100000,
         'weight' => 500,
         'status' => 'published',
     ]);
@@ -102,8 +102,8 @@ function checkoutPaymentFixture(): array
         'product_variant_id' => $variant->id,
         'quantity' => 2,
         'product_name_snapshot' => $product->name,
-        'variant_sku_snapshot' => $variant->sku,
-        'color_name_snapshot' => $variant->color_name,
+        'variant_sku_snapshot' => $variant->size,
+        'color_name_snapshot' => '',
         'size_snapshot' => $variant->size,
         'price_snapshot' => 100000,
     ]);
