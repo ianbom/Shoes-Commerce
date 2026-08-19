@@ -1,7 +1,8 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Feather, Mountain, ShieldCheck, Target } from 'lucide-react';
 import type { ComponentType } from 'react';
 
+import SeoHead from '@/components/seo-head';
 import ShopLayout from '@/layouts/shop-layout';
 
 type ValueCard = {
@@ -211,13 +212,11 @@ const collections: CollectionCard[] = [
 export default function AboutPage() {
     return (
         <ShopLayout>
-            <Head>
-                <title>About AxeGear Shop</title>
-                <meta
-                    name="description"
-                    content="Learn how AxeGear Shop builds premium performance eyewear and gear for athletes who demand clarity, durability, and confidence."
-                />
-            </Head>
+            <SeoHead
+                title="About AxeGear | Premium Sneakers and Streetwear"
+                description="Learn about AxeGear and our approach to premium sneakers, limited releases, and streetwear essentials."
+                canonical={`${window.location.origin}/about`}
+            />
 
             <div className="bg-white">
                 <HeroSection />

@@ -1,4 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import SeoHead from '@/components/seo-head';
 import {
     ArrowRight,
     BadgeCheck,
@@ -343,7 +344,27 @@ export default function Welcome({
 
     return (
         <ShopLayout>
-            <Head title="GodKillerGoods — Sneakers For Your Rhythm" />
+            <SeoHead
+                title="AxeGear | Premium Sneakers and Streetwear"
+                description="Shop premium sneakers, limited releases, and streetwear essentials curated for everyday rotation at AxeGear."
+                canonical={`${window.location.origin}/`}
+                image={`${window.location.origin}/img/sepatu-hero.png`}
+                structuredData={[
+                    {
+                        '@context': 'https://schema.org',
+                        '@type': 'Organization',
+                        name: 'AxeGear',
+                        url: `${window.location.origin}/`,
+                        logo: `${window.location.origin}/logo-shay/axegear-logo.webp`,
+                    },
+                    {
+                        '@context': 'https://schema.org',
+                        '@type': 'WebSite',
+                        name: 'AxeGear',
+                        url: `${window.location.origin}/`,
+                    },
+                ]}
+            />
 
             <div className="mx-auto max-w-[1440px] px-4 pt-4 pb-10 sm:px-7 lg:px-10">
                 <section className="relative overflow-hidden rounded-[24px] border border-hairline bg-[radial-gradient(circle_at_68%_45%,#ffffff_0,#f7f7f7_48%,#f2f2f2_100%)] px-7 py-8 sm:px-10 md:min-h-[455px] md:px-8 md:py-10 lg:px-12">

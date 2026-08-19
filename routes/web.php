@@ -35,10 +35,13 @@ use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\ProductController as CustomerProductController;
 use App\Http\Controllers\Customer\WishlistController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CustomerHomeController::class, 'index'])->name('home');
+Route::get('/robots.txt', fn () => response(file_get_contents(public_path('robots.txt')), 200, ['Content-Type' => 'text/plain']))->name('robots');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::inertia('/about', 'about/index')->name('about');
 
 Route::middleware('guest')->group(function () {

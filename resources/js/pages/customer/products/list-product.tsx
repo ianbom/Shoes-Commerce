@@ -1,4 +1,4 @@
-import { Head, InfiniteScroll, Link, router, usePage } from '@inertiajs/react';
+import { InfiniteScroll, Link, router, usePage } from '@inertiajs/react';
 import {
     ChevronDown,
     Grid3X3,
@@ -12,6 +12,7 @@ import {
     destroyProduct as removeWishlistProduct,
     store as addWishlistItem,
 } from '@/actions/App/Http/Controllers/Customer/WishlistController';
+import SeoHead from '@/components/seo-head';
 import ShopLayout from '@/layouts/shop-layout';
 import { detail, list, login } from '@/routes';
 
@@ -200,7 +201,12 @@ export default function ListProduct({ products, filters, options }: Props) {
 
     return (
         <ShopLayout>
-            <Head title={`${pageTitle} - AxeGear`} />
+            <SeoHead
+                title={`${pageTitle} | AxeGear`}
+                description="Browse published sneakers and streetwear products at AxeGear."
+                canonical={`${window.location.origin}/list`}
+                robots={Object.values(filters).some((value) => value && value !== 'all' && value !== 'featured' && value !== 12) ? 'noindex,follow' : 'index,follow'}
+            />
 
             <section className="pt-8 pb-9 sm:pt-10 lg:pt-12">
                 <button

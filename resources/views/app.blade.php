@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        @if (request()->is('admin/*', 'dashboard', 'my-profile*', 'my-cart*', 'checkout*', 'my-order*', 'wishlist*', 'notifications*', 'address*', 'settings/*', 'login', 'register', 'forgot-password', 'reset-password*', 'confirm-password', 'verify-email'))
+            <meta name="robots" content="noindex,nofollow">
+        @endif
 
         {{-- Inline style to keep app in light mode before hydration --}}
         <style>

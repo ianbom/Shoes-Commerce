@@ -194,6 +194,7 @@ class ProductBrowsingService
             'slug' => $product->slug,
             $nameKey => $product->name,
             'sku' => $product->sku,
+            'brand_name' => $product->brand_name,
             'price' => $basePrice,
             'image' => $image,
             'hover_image' => $hoverImage,

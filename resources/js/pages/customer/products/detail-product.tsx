@@ -1,4 +1,4 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     ChevronLeft,
@@ -17,6 +17,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { addProductVariantToCart } from '@/actions/App/Http/Controllers/Customer/CartController';
+import SeoHead from '@/components/seo-head';
 import ShopLayout from '@/layouts/shop-layout';
 import { cart, login } from '@/routes';
 
@@ -142,7 +143,29 @@ export default function DetailProduct({
 
     return (
         <ShopLayout>
-            <Head title={`${product.title} | NEXSTEP`} />
+            <SeoHead
+                title={`${product.title} | AxeGear`}
+                description={(product.description || `${product.title} by ${product.brand_name || 'AxeGear'}`).replace(/<[^>]*>/g, '').slice(0, 160)}
+                canonical={`${window.location.origin}/detail?product=${encodeURIComponent(product.slug)}`}
+                image={product.image ? new URL(product.image, window.location.origin).href : `${window.location.origin}/logo-shay/axegear-logo.webp`}
+                type="product"
+                structuredData={{
+                    '@context': 'https://schema.org',
+                    '@type': 'Product',
+                    name: product.title,
+                    image: images.map((value: string) => new URL(value, window.location.origin).href),
+                    description: (product.description || product.title).replace(/<[^>]*>/g, '').slice(0, 500),
+                    sku: product.sku || undefined,
+                    brand: product.brand_name ? { '@type': 'Brand', name: product.brand_name } : undefined,
+                    offers: {
+                        '@type': 'Offer',
+                        url: `${window.location.origin}/detail?product=${encodeURIComponent(product.slug)}`,
+                        priceCurrency: 'IDR',
+                        price: product.price,
+                        availability: product.available_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                    },
+                }}
+            />
 
             <main className="bg-white text-ink">
                 <div className="mx-auto max-w-[1440px] px-4 py-4 sm:px-8 sm:py-5 lg:px-12">
