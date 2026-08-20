@@ -16,7 +16,11 @@ class KicksDbProductNormalizer
     public function normalizeProduct(array $payload): array
     {
         $payload = $payload['data'] ?? $payload;
-        $images = array_values(array_unique(array_filter([$payload['image'] ?? null, ...($payload['gallery'] ?? [])])));
+        $images = array_values(array_unique(array_filter([
+            $payload['image'] ?? null,
+            ...($payload['gallery'] ?? []),
+            ...($payload['gallery_360'] ?? []),
+        ])));
 
         return [
             'id' => $payload['id'] ?? $payload['slug'] ?? null,

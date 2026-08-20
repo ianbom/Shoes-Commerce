@@ -102,14 +102,18 @@ Route::middleware(['auth', 'admin', 'admin.activity'])->prefix('admin')->name('a
 
     Route::get('product-imports', [ProductImportController::class, 'index'])->name('product-imports.index');
     Route::post('product-imports', [ProductImportController::class, 'store'])->name('product-imports.store');
+    Route::delete('product-imports/{batch}', [ProductImportController::class, 'destroy'])->name('product-imports.destroy');
     Route::get('product-imports/{productImportBatch}', [ProductImportController::class, 'show'])->name('product-imports.show');
     Route::post('product-imports/{batch}/items/{item}/candidate', [ProductImportController::class, 'selectCandidate'])->name('product-imports.items.candidate');
     Route::post('product-imports/{batch}/items/{item}/save', [ProductImportController::class, 'saveItem'])->name('product-imports.items.save');
+    Route::delete('product-imports/{batch}/items/{item}', [ProductImportController::class, 'destroyItem'])->name('product-imports.items.destroy');
     Route::post('product-imports/{batch}/save-all', [ProductImportController::class, 'saveAll'])->name('product-imports.save-all');
 
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products', [ProductController::class, 'store'])->name('products.store');
+    Route::patch('products/bulk-status', [ProductController::class, 'bulkStatus'])->name('products.bulk-status');
+    Route::delete('products/bulk', [ProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
     Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');

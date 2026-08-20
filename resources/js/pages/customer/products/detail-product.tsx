@@ -60,7 +60,11 @@ export default function DetailProduct({
               ? [product.image]
               : ['/img/sepatu-hero.png'];
 
-    const [image, setImage] = useState(images[0]);
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+    const selectImage = (index: number) => {
+        setActiveImageIndex(index);
+    };
 
     const availableSizes = product.sizes || [];
     const variants = (product.variants ?? []) as ProductVariant[];
@@ -145,24 +149,43 @@ export default function DetailProduct({
         <ShopLayout>
             <SeoHead
                 title={`${product.title} | AxeGear`}
-                description={(product.description || `${product.title} by ${product.brand_name || 'AxeGear'}`).replace(/<[^>]*>/g, '').slice(0, 160)}
+                description={(
+                    product.description ||
+                    `${product.title} by ${product.brand_name || 'AxeGear'}`
+                )
+                    .replace(/<[^>]*>/g, '')
+                    .slice(0, 160)}
                 canonical={`${window.location.origin}/detail?product=${encodeURIComponent(product.slug)}`}
-                image={product.image ? new URL(product.image, window.location.origin).href : `${window.location.origin}/logo-shay/axegear-logo.webp`}
+                image={
+                    product.image
+                        ? new URL(product.image, window.location.origin).href
+                        : `${window.location.origin}/logo-shay/axegear-logo.webp`
+                }
                 type="product"
                 structuredData={{
                     '@context': 'https://schema.org',
                     '@type': 'Product',
                     name: product.title,
-                    image: images.map((value: string) => new URL(value, window.location.origin).href),
-                    description: (product.description || product.title).replace(/<[^>]*>/g, '').slice(0, 500),
+                    image: images.map(
+                        (value: string) =>
+                            new URL(value, window.location.origin).href,
+                    ),
+                    description: (product.description || product.title)
+                        .replace(/<[^>]*>/g, '')
+                        .slice(0, 500),
                     sku: product.sku || undefined,
-                    brand: product.brand_name ? { '@type': 'Brand', name: product.brand_name } : undefined,
+                    brand: product.brand_name
+                        ? { '@type': 'Brand', name: product.brand_name }
+                        : undefined,
                     offers: {
                         '@type': 'Offer',
                         url: `${window.location.origin}/detail?product=${encodeURIComponent(product.slug)}`,
                         priceCurrency: 'IDR',
                         price: product.price,
-                        availability: product.available_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                        availability:
+                            product.available_stock > 0
+                                ? 'https://schema.org/InStock'
+                                : 'https://schema.org/OutOfStock',
                     },
                 }}
             />
@@ -178,9 +201,9 @@ export default function DetailProduct({
                     <section className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
                         <div>
                             <ProductGallery
-                                image={image}
-                                setImage={setImage}
+                                activeIndex={activeImageIndex}
                                 images={images}
+                                onSelect={selectImage}
                             />
 
                             {/* Render rich text description if available */}
@@ -266,14 +289,24 @@ function Breadcrumb({
 }
 
 function ProductGallery({
-    image,
-    setImage,
+    activeIndex,
     images,
+    onSelect,
 }: {
-    image: string;
-    setImage: (image: string) => void;
+    activeIndex: number;
     images: string[];
+    onSelect: (index: number) => void;
 }) {
+    const image = images[activeIndex] ?? images[0];
+    const thumbnailStart = Math.min(
+        Math.max(0, activeIndex - 3),
+        Math.max(0, images.length - 4),
+    );
+    const thumbnails = images.slice(thumbnailStart, thumbnailStart + 4);
+    const previous = () =>
+        onSelect((activeIndex - 1 + images.length) % images.length);
+    const next = () => onSelect((activeIndex + 1) % images.length);
+
     return (
         <section>
             <div className="relative flex aspect-square min-h-0 items-center justify-center overflow-hidden rounded-md sm:aspect-[1.05] sm:min-h-[360px]">
@@ -297,33 +330,39 @@ function ProductGallery({
                         type="button"
                         className="h-10 hover:text-primary"
                         aria-label="Previous product image"
+                        onClick={previous}
                     >
                         <ChevronLeft className="mx-auto h-6 w-6" />
                     </button>
                     <div className="grid min-w-0 grid-cols-4 gap-2 sm:gap-3">
-                        {images.slice(0, 4).map((item, index) => (
-                            <button
-                                type="button"
-                                key={index}
-                                onClick={() => setImage(item)}
-                                className={`aspect-[1.25] overflow-hidden rounded-md border ${
-                                    image === item
-                                        ? 'border-primary'
-                                        : 'border-hairline hover:border-ink'
-                                }`}
-                            >
-                                <img
-                                    src={item}
-                                    alt=""
-                                    className="h-full w-full object-cover"
-                                />
-                            </button>
-                        ))}
+                        {thumbnails.map((item, index) => {
+                            const imageIndex = thumbnailStart + index;
+
+                            return (
+                                <button
+                                    type="button"
+                                    key={item}
+                                    onClick={() => onSelect(imageIndex)}
+                                    className={`aspect-[1.25] overflow-hidden rounded-md border ${
+                                        activeIndex === imageIndex
+                                            ? 'border-primary'
+                                            : 'border-hairline hover:border-ink'
+                                    }`}
+                                >
+                                    <img
+                                        src={item}
+                                        alt=""
+                                        className="h-full w-full object-cover"
+                                    />
+                                </button>
+                            );
+                        })}
                     </div>
                     <button
                         type="button"
                         className="h-10 hover:text-primary"
                         aria-label="Next product image"
+                        onClick={next}
                     >
                         <ChevronRight className="mx-auto h-6 w-6" />
                     </button>
@@ -578,6 +617,7 @@ function ProductRow({ title, products }: { title: string; products: any[] }) {
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {products.map((p) => {
                     const price = formatPrice(p.price);
+
                     return (
                         <Link
                             key={p.id}

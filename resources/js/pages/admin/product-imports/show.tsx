@@ -1,6 +1,7 @@
 import { Head, Link, router, usePoll } from '@inertiajs/react';
 import { useState } from 'react';
 import {
+    destroyItem,
     saveAll,
     saveItem,
     selectCandidate,
@@ -75,6 +76,13 @@ export default function ProductImportsShow({
     const save = (item: Item) =>
         router.post(saveItem.url({ batch: batch.id, item: item.id }));
     const saveEverything = () => router.post(saveAll.url(batch.id));
+    const remove = (item: Item) => {
+        if (window.confirm('Hapus produk ini dari preview import?')) {
+            router.delete(destroyItem.url({ batch: batch.id, item: item.id }), {
+                onSuccess: () => setDetail(null),
+            });
+        }
+    };
     const choose = (item: Item, candidate: Candidate) =>
         router.post(
             selectCandidate.url({ batch: batch.id, item: item.id }),
@@ -153,6 +161,14 @@ export default function ProductImportsShow({
                                 {item.status === 'ready' && (
                                     <Button onClick={() => save(item)}>
                                         Simpan
+                                    </Button>
+                                )}
+                                {item.status !== 'saved' && (
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => remove(item)}
+                                    >
+                                        Hapus
                                     </Button>
                                 )}
                             </div>

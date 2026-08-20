@@ -33,7 +33,7 @@ class ProductImportPersistenceService
             for ($suffix = 2; Product::query()->where('slug', $slug)->exists(); $suffix++) {
                 $slug = $base.'-'.$suffix;
             }
-            $product = Product::query()->create(['name' => $payload['title'], 'slug' => $slug, 'sku' => $payload['sku'], 'brand_name' => $payload['brand'] ?: 'Unknown', 'price' => $item->price_idr, 'description' => $payload['description'], 'status' => 'draft', 'is_featured' => false, 'is_new_arrival' => false, 'is_best_seller' => false]);
+            $product = Product::query()->create(['name' => $payload['title'], 'slug' => $slug, 'sku' => $payload['sku'], 'brand_name' => $payload['brand'] ?: 'Unknown', 'price' => $item->price_idr, 'description' => $payload['description'], 'weight' => 500, 'length' => 23, 'width' => 9, 'height' => 10, 'status' => 'draft', 'is_featured' => false, 'is_new_arrival' => false, 'is_best_seller' => false]);
             if (filled($payload['category'] ?? null)) {
                 $category = Category::query()->firstOrCreate(['slug' => Str::slug($payload['category'])], ['name' => $payload['category'], 'is_active' => true]);
                 $product->categories()->syncWithoutDetaching($category);
@@ -42,7 +42,7 @@ class ProductImportPersistenceService
                 $product->images()->create(['image_url' => $url, 'alt_text' => $product->name, 'sort_order' => $order, 'is_primary' => $order === 0]);
             }
             foreach (array_unique($payload['variants']) as $size) {
-                $product->variants()->create(['size' => $size, 'price' => $item->price_idr, 'stock' => 10, 'reserved_stock' => 0, 'is_active' => true]);
+                $product->variants()->create(['size' => $size, 'price' => $item->price_idr, 'stock' => 10, 'reserved_stock' => 0, 'weight' => 500, 'length' => 23, 'width' => 9, 'height' => 10, 'is_active' => true]);
             }
             $item->update(['status' => 'saved', 'saved_product_id' => $product->id]);
 

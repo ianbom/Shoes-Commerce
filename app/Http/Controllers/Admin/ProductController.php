@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ProductBulkDeleteRequest;
+use App\Http\Requests\Admin\ProductBulkStatusRequest;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Product;
 use App\Services\Admin\ProductManagementService;
@@ -54,6 +56,20 @@ class ProductController extends Controller
         $products->update($product, $request);
 
         return redirect()->route('admin.products.show', $product)->with('success', 'Product berhasil diperbarui.');
+    }
+
+    public function bulkStatus(ProductBulkStatusRequest $request, ProductManagementService $products): RedirectResponse
+    {
+        $result = $products->bulkUpdateStatus($request->validated('product_ids'), $request->validated('status'));
+
+        return back()->with('success', "{$result['updated']} produk diperbarui, {$result['failed']} gagal.");
+    }
+
+    public function bulkDestroy(ProductBulkDeleteRequest $request, ProductManagementService $products): RedirectResponse
+    {
+        $result = $products->bulkDelete($request->validated('product_ids'));
+
+        return back()->with('success', "{$result['deleted']} produk dihapus, {$result['archived']} diarsipkan.");
     }
 
     public function publish(Product $product, ProductManagementService $products): RedirectResponse

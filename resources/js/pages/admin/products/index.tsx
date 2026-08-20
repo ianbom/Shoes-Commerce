@@ -87,6 +87,11 @@ export default function ProductsIndex({
     stats,
 }: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const [bulkStatus, setBulkStatus] = useState('draft');
+    const pageIds = products.data.map((product) => product.id);
+    const allSelected =
+        pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
     const apply = (key: keyof Filters, value: string) =>
         router.get(
             '/admin/products',
@@ -98,10 +103,42 @@ export default function ProductsIndex({
         apply('search', search);
     };
     const remove = (product: Product) => {
-        if (confirm(`Delete or archive ${product.name}?`))
+        if (confirm(`Delete or archive ${product.name}?`)) {
             router.delete(`/admin/products/${product.id}`, {
                 preserveScroll: true,
             });
+        }
+    };
+    const toggleAll = () =>
+        setSelectedIds((current) =>
+            allSelected
+                ? current.filter((id) => !pageIds.includes(id))
+                : Array.from(new Set([...current, ...pageIds])),
+        );
+    const toggleProduct = (id: number) =>
+        setSelectedIds((current) =>
+            current.includes(id)
+                ? current.filter((selected) => selected !== id)
+                : [...current, id],
+        );
+    const applyBulkStatus = () =>
+        router.patch(
+            '/admin/products/bulk-status',
+            { product_ids: selectedIds, status: bulkStatus },
+            { preserveScroll: true, onSuccess: () => setSelectedIds([]) },
+        );
+    const bulkDelete = () => {
+        if (
+            confirm(
+                `Delete or archive ${selectedIds.length} selected products?`,
+            )
+        ) {
+            router.delete('/admin/products/bulk', {
+                data: { product_ids: selectedIds },
+                preserveScroll: true,
+                onSuccess: () => setSelectedIds([]),
+            });
+        }
     };
     const metrics = [
         ['Products', stats.total, Package],
@@ -247,10 +284,46 @@ export default function ProductsIndex({
                                 <RotateCcw />
                             </Button>
                         </form>
+                        {selectedIds.length > 0 && (
+                            <div className="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                                <span className="text-sm font-medium">
+                                    {selectedIds.length} selected
+                                </span>
+                                <select
+                                    className={selectClass}
+                                    value={bulkStatus}
+                                    onChange={(event) =>
+                                        setBulkStatus(event.target.value)
+                                    }
+                                >
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                    <option value="archived">Archived</option>
+                                </select>
+                                <Button onClick={applyBulkStatus} size="sm">
+                                    Update status
+                                </Button>
+                                <Button
+                                    onClick={bulkDelete}
+                                    size="sm"
+                                    variant="destructive"
+                                >
+                                    Bulk delete
+                                </Button>
+                            </div>
+                        )}
                         <div className="overflow-x-auto rounded-lg border border-zinc-200">
-                            <table className="w-full min-w-[980px] text-sm">
+                            <table className="w-full min-w-[1040px] text-sm">
                                 <thead className="bg-zinc-50 text-left text-xs font-medium text-zinc-500">
                                     <tr>
+                                        <th className="w-12 px-4 py-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={allSelected}
+                                                onChange={toggleAll}
+                                                aria-label="Select all products on this page"
+                                            />
+                                        </th>
                                         <th className="px-4 py-3">Product</th>
                                         <th className="px-4 py-3">Price</th>
                                         <th className="px-4 py-3">Stock</th>
@@ -275,11 +348,26 @@ export default function ProductsIndex({
                                                 : product.available_stock <= 5
                                                   ? 'border-black/[0.32] bg-black/[0.04] text-black'
                                                   : 'border-black/[0.32] bg-black/[0.04] text-black';
+
                                         return (
                                             <tr
                                                 key={product.id}
                                                 className="border-t border-zinc-100 align-middle"
                                             >
+                                                <td className="px-4 py-3">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.includes(
+                                                            product.id,
+                                                        )}
+                                                        onChange={() =>
+                                                            toggleProduct(
+                                                                product.id,
+                                                            )
+                                                        }
+                                                        aria-label={`Select ${product.name}`}
+                                                    />
+                                                </td>
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center gap-3">
                                                         <Thumbnail
@@ -375,47 +463,7 @@ export default function ProductsIndex({
                                                             >
                                                                 <Pencil />
                                                             </Link>
-                                                        </Button>
-                                                        <Button
-                                                            size="icon"
-                                                            variant="ghost"
-                                                            aria-label="Duplicate product"
-                                                            onClick={() =>
-                                                                router.post(
-                                                                    `/admin/products/${product.id}/duplicate`,
-                                                                )
-                                                            }
-                                                        >
-                                                            <Copy />
-                                                        </Button>
-                                                        {product.status ===
-                                                        'published' ? (
-                                                            <Button
-                                                                size="icon"
-                                                                variant="ghost"
-                                                                aria-label="Archive product"
-                                                                onClick={() =>
-                                                                    router.post(
-                                                                        `/admin/products/${product.id}/archive`,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Archive />
-                                                            </Button>
-                                                        ) : (
-                                                            <Button
-                                                                size="icon"
-                                                                variant="ghost"
-                                                                aria-label="Publish product"
-                                                                onClick={() =>
-                                                                    router.post(
-                                                                        `/admin/products/${product.id}/publish`,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Eye />
-                                                            </Button>
-                                                        )}
+                                                        </Button>       
                                                         <Button
                                                             size="icon"
                                                             variant="ghost"

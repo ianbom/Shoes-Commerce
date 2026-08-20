@@ -105,6 +105,38 @@ class ProductManagementService
         });
     }
 
+    public function bulkUpdateStatus(array $productIds, string $status): array
+    {
+        $results = ['updated' => 0, 'failed' => 0];
+
+        Product::query()->whereIn('id', $productIds)->each(function (Product $product) use ($status, &$results): void {
+            try {
+                if ($status === 'published') {
+                    $this->publish($product);
+                } else {
+                    $product->update(['status' => $status]);
+                }
+                $results['updated']++;
+            } catch (ValidationException) {
+                $results['failed']++;
+            }
+        });
+
+        return $results;
+    }
+
+    public function bulkDelete(array $productIds): array
+    {
+        $results = ['deleted' => 0, 'archived' => 0];
+
+        Product::query()->whereIn('id', $productIds)->each(function (Product $product) use (&$results): void {
+            $result = $this->delete($product);
+            $results[$result['archived'] ? 'archived' : 'deleted']++;
+        });
+
+        return $results;
+    }
+
     public function publish(Product $product): void
     {
         $product->loadCount(['images as primary_images_count' => fn ($query) => $query->where('is_primary', true)]);

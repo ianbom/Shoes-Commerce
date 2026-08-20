@@ -14,9 +14,16 @@ use Inertia\Response;
 
 class ProductImportController extends Controller
 {
-    public function index(): Response
+    public function index(ProductImportService $service): Response
     {
-        return inertia('admin/product-imports/index');
+        return inertia('admin/product-imports/index', $service->indexData());
+    }
+
+    public function destroy(ProductImportBatch $batch, ProductImportService $service): RedirectResponse
+    {
+        $service->removeBatch($batch);
+
+        return redirect()->route('admin.product-imports.index')->with('success', 'Riwayat import dihapus.');
     }
 
     public function store(ProductImportRequest $request, ProductImportService $service): RedirectResponse
@@ -27,6 +34,14 @@ class ProductImportController extends Controller
     public function show(ProductImportBatch $productImportBatch, ProductImportService $service): Response
     {
         return inertia('admin/product-imports/show', $service->data($productImportBatch));
+    }
+
+    public function destroyItem(ProductImportBatch $batch, ProductImportItem $item, ProductImportService $service): RedirectResponse
+    {
+        abort_unless($item->product_import_batch_id === $batch->id, 404);
+        $service->removeItem($item);
+
+        return back()->with('success', 'Preview produk dihapus.');
     }
 
     public function selectCandidate(ProductImportCandidateRequest $request, ProductImportBatch $batch, ProductImportItem $item, ProductImportService $service): RedirectResponse

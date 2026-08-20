@@ -1,11 +1,5 @@
 import { InfiniteScroll, Link, router, usePage } from '@inertiajs/react';
-import {
-    ChevronDown,
-    Grid3X3,
-    Heart,
-    List as ListIcon,
-    Search,
-} from 'lucide-react';
+import { ChevronDown, Heart, Search } from 'lucide-react';
 import type { FormEvent, MouseEvent, ReactNode } from 'react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -55,6 +49,7 @@ type PaginatedProducts = {
     per_page: number;
     to: number | null;
     total: number;
+    next_page_url?: string | null;
 };
 
 type FilterOption = {
@@ -146,30 +141,25 @@ export default function ListProduct({ products, filters, options }: Props) {
     const openFilter = useCallback(() => setIsFilterOpen(true), []);
     const closeFilter = useCallback(() => setIsFilterOpen(false), []);
 
+    const visit = useCallback((nextFilters: FilterState) => {
+        setForm(nextFilters);
+        router.get(list.url(), cleanQuery(nextFilters), {
+            preserveScroll: false,
+            preserveState: true,
+            replace: true,
+            reset: ['products'],
+        });
+    }, []);
+
     useEffect(() => {
         if (form.search === (filters.search ?? '')) {
             return;
         }
 
-        const timeout = window.setTimeout(() => {
-            router.get(list.url(), cleanQuery(form), {
-                preserveScroll: true,
-                preserveState: true,
-                replace: true,
-            });
-        }, 350);
+        const timeout = window.setTimeout(() => visit(form), 350);
 
         return () => window.clearTimeout(timeout);
-    }, [filters.search, form]);
-
-    const visit = (nextFilters: FilterState) => {
-        setForm(nextFilters);
-        router.get(list.url(), cleanQuery(nextFilters), {
-            preserveScroll: true,
-            preserveState: true,
-            replace: true,
-        });
-    };
+    }, [filters.search, form, visit]);
 
     const setFilter = (key: keyof FilterState, value: string) => {
         visit({
@@ -205,7 +195,17 @@ export default function ListProduct({ products, filters, options }: Props) {
                 title={`${pageTitle} | AxeGear`}
                 description="Browse published sneakers and streetwear products at AxeGear."
                 canonical={`${window.location.origin}/list`}
-                robots={Object.values(filters).some((value) => value && value !== 'all' && value !== 'featured' && value !== 12) ? 'noindex,follow' : 'index,follow'}
+                robots={
+                    Object.values(filters).some(
+                        (value) =>
+                            value &&
+                            value !== 'all' &&
+                            value !== 'featured' &&
+                            value !== 12,
+                    )
+                        ? 'noindex,follow'
+                        : 'index,follow'
+                }
             />
 
             <section className="pt-8 pb-9 sm:pt-10 lg:pt-12">
@@ -353,6 +353,10 @@ export default function ListProduct({ products, filters, options }: Props) {
                             <ProductGrid
                                 products={products.data}
                                 isAuthenticated={isAuthenticated}
+                                nextPageUrl={products.next_page_url ?? null}
+                                resetKey={JSON.stringify(
+                                    cleanQuery(initialFilters),
+                                )}
                             />
                         ) : (
                             <div className="flex min-h-[460px] flex-col items-center justify-center border border-hairline bg-surface-soft px-6 text-center">
@@ -570,25 +574,45 @@ function FilterRadio({
 const ProductGrid = memo(function ProductGrid({
     products,
     isAuthenticated,
+    nextPageUrl,
+    resetKey,
 }: {
     products: ProductCard[];
     isAuthenticated: boolean;
+    nextPageUrl: string | null;
+    resetKey: string;
 }) {
     return (
-        <InfiniteScroll data="products" buffer={400}>
+        <InfiniteScroll key={resetKey} data="products" buffer={400}>
             {({ loading }) => (
                 <>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
-                        {products.map((product, index) => (
+                        {products.map((product) => (
                             <ProductTile
                                 key={product.id}
                                 product={product}
-                                index={index}
                                 isAuthenticated={isAuthenticated}
                             />
                         ))}
                     </div>
                     {loading && <ProductGridSkeleton />}
+                    {!loading && nextPageUrl && (
+                        <div className="mt-6 text-center">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    router.visit(nextPageUrl, {
+                                        preserveScroll: true,
+                                        preserveState: true,
+                                        only: ['products'],
+                                    })
+                                }
+                                className="h-11 border border-ink px-6 text-[13px] font-extrabold uppercase hover:bg-ink hover:text-white"
+                            >
+                                Muat produk berikutnya
+                            </button>
+                        </div>
+                    )}
                 </>
             )}
         </InfiniteScroll>
@@ -611,11 +635,9 @@ function ProductGridSkeleton() {
 
 const ProductTile = memo(function ProductTile({
     product,
-    index,
     isAuthenticated,
 }: {
     product: ProductCard;
-    index: number;
     isAuthenticated: boolean;
 }) {
     const [isWishlistProcessing, setIsWishlistProcessing] = useState(false);
