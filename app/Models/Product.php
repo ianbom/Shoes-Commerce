@@ -30,7 +30,7 @@ class Product extends Model
     use SoftDeletes;
 
     protected $attributes = [
-        'brand_name' => 'Axegear',
+        'brand_name' => 'GodKillerGoods',
         'price' => 1,
     ];
 

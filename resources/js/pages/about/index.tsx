@@ -120,7 +120,7 @@ const timeline: TimelineItem[] = [
     {
         year: "2018's",
         title: 'Global Adventure',
-        body: 'AxeGear reached athletes worldwide across every terrain and condition.',
+        body: 'GodKillerGoods reached athletes worldwide across every terrain and condition.',
     },
     {
         year: "2022's",
@@ -213,8 +213,8 @@ export default function AboutPage() {
     return (
         <ShopLayout>
             <SeoHead
-                title="About AxeGear | Premium Sneakers and Streetwear"
-                description="Learn about AxeGear and our approach to premium sneakers, limited releases, and streetwear essentials."
+                title="About GodKillerGoods | Premium Sneakers and Streetwear"
+                description="Learn about GodKillerGoods and our approach to premium sneakers, limited releases, and streetwear essentials."
                 canonical={`${window.location.origin}/about`}
             />
 
@@ -238,12 +238,12 @@ function HeroSection() {
             <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[0.98fr_1.02fr]">
                 <div className="flex items-center px-6 py-10 md:px-10 lg:px-14 lg:py-16">
                     <div className="max-w-[650px]">
-                        <SectionTag>About AxeGear Shop</SectionTag>
+                        <SectionTag>About GodKillerGoods Shop</SectionTag>
                         <h1 className="mt-6 text-[52px] leading-[0.9] font-black text-[#000000] uppercase italic md:text-[74px] xl:text-[92px]">
                             Built for speed. Designed for clarity.
                         </h1>
                         <p className="mt-6 max-w-[600px] text-[18px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
-                            At AxeGear Shop, we create premium performance
+                            At GodKillerGoods Shop, we create premium performance
                             eyewear and gear for athletes who demand clarity,
                             durability, and confidence on every ride, run, and
                             adventure.
@@ -268,7 +268,7 @@ function HeroSection() {
                 <div className="min-h-[360px] lg:min-h-[620px]">
                     <img
                         src={heroImage}
-                        alt="Cyclist wearing AxeGear performance eyewear"
+                        alt="Cyclist wearing GodKillerGoods performance eyewear"
                         className="h-full w-full object-cover"
                     />
                 </div>
@@ -290,7 +290,7 @@ function WhoWeAreSection() {
                         Built different.
                     </h2>
                     <p className="mt-5 text-[17px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
-                        AxeGear Shop was built on a simple belief: athletes
+                        GodKillerGoods Shop was built on a simple belief: athletes
                         deserve gear that keeps up with their drive. We design
                         high-performance eyewear and accessories that combine
                         precision engineering, athlete feedback, and modern
@@ -304,7 +304,7 @@ function WhoWeAreSection() {
                 <div>
                     <img
                         src={storyImage}
-                        alt="AxeGear performance eyewear on rock surface"
+                        alt="GodKillerGoods performance eyewear on rock surface"
                         className="aspect-[16/7] w-full border border-[rgba(0,0,0,0.16)] object-cover"
                     />
                 </div>

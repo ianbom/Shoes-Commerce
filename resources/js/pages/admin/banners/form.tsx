@@ -52,7 +52,7 @@ export default function BannerForm({ mode, banner, placements }: Props) {
                 <PageHeader
                     eyebrow="Content Management"
                     title={isEdit ? 'Edit Banner' : 'Create Banner'}
-                    description="Upload banner melalui Laravel public storage agar bisa diakses dari customer landing page."
+                    description="Upload banner melalui public storage agar bisa diakses dari customer landing page."
                 />
                 <Card className="max-w-4xl">
                     <CardHeader>

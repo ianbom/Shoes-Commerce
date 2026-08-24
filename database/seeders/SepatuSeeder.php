@@ -21,6 +21,38 @@ class SepatuSeeder extends Seeder
         'womens-shoes',
     ];
 
+    // ponytail: snapshot keeps fresh seeds deterministic; refresh it when the source catalog changes materially.
+    private const LOCAL_SNAPSHOT = [
+        'mens-shoes' => [
+            [
+                'id' => 90001,
+                'title' => 'Court Alpha Sneaker',
+                'description' => 'Everyday court sneaker with cushioned comfort.',
+                'price' => 90,
+                'stock' => 12,
+                'brand' => 'GodKillerGoods',
+                'sku' => 'SNAPSHOT-MEN-001',
+                'weight' => 0.9,
+                'dimensions' => ['width' => 24, 'height' => 14, 'depth' => 35],
+                'images' => ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80'],
+            ],
+        ],
+        'womens-shoes' => [
+            [
+                'id' => 90002,
+                'title' => 'Run Nova Sneaker',
+                'description' => 'Lightweight sneaker for daily movement.',
+                'price' => 85,
+                'stock' => 10,
+                'brand' => 'GodKillerGoods',
+                'sku' => 'SNAPSHOT-WOMEN-001',
+                'weight' => 0.8,
+                'dimensions' => ['width' => 23, 'height' => 13, 'depth' => 34],
+                'images' => ['https://images.unsplash.com/photo-1600269452121-4f2416e55c28?auto=format&fit=crop&w=1200&q=80'],
+            ],
+        ],
+    ];
+
     private const USD_TO_IDR = 16000;
 
     /**
@@ -39,6 +71,8 @@ class SepatuSeeder extends Seeder
         ['us' => 11, 'eu' => 43],
         ['us' => 12, 'eu' => 44],
     ];
+
+    private bool $usedLocalSnapshot = false;
 
     public function run(): void
     {
@@ -106,10 +140,12 @@ class SepatuSeeder extends Seeder
              * Menghapus produk sepatu dari hasil seeder lama yang sudah
              * tidak ditemukan lagi pada response DummyJSON terbaru.
              */
-            Product::query()
-                ->where('sku', 'like', 'SHOE-%')
-                ->whereNotIn('sku', $seededSkus)
-                ->delete();
+            if (! $this->usedLocalSnapshot) {
+                Product::query()
+                    ->where('sku', 'like', 'SHOE-%')
+                    ->whereNotIn('sku', $seededSkus)
+                    ->delete();
+            }
         });
     }
 
@@ -120,6 +156,7 @@ class SepatuSeeder extends Seeder
      */
     private function catalog(): array
     {
+        $this->usedLocalSnapshot = false;
         $products = [];
 
         foreach (self::CATEGORIES as $category) {
@@ -134,19 +171,13 @@ class SepatuSeeder extends Seeder
                     ]
                 );
 
-            if (! $response->successful()) {
-                throw new RuntimeException(
-                    "DummyJSON {$category} gagal diakses "
-                    ."(HTTP {$response->status()})."
-                );
-            }
-
-            $categoryProducts = $response->json('products');
+            $categoryProducts = $response->successful()
+                ? $response->json('products')
+                : null;
 
             if (! is_array($categoryProducts)) {
-                throw new RuntimeException(
-                    "Response DummyJSON {$category} tidak valid."
-                );
+                $this->usedLocalSnapshot = true;
+                $categoryProducts = self::LOCAL_SNAPSHOT[$category];
             }
 
             $products = [

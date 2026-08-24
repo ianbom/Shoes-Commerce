@@ -80,7 +80,7 @@ const formatPrice = (price: number) =>
         .format(price)
         .replace('Rp', 'Rp ');
 
-const itemMeta = (item: CartItem) => item.size || 'AxeGear Performance';
+const itemMeta = (item: CartItem) => item.size || 'GodKillerGoods Performance';
 
 export default function MyCart({
     cartItems,
@@ -178,7 +178,7 @@ export default function MyCart({
 
     return (
         <ShopLayout>
-            <Head title="My Cart - AxeGear" />
+            <Head title="My Cart - GodKillerGoods" />
 
             <main className="bg-white px-4 py-5 text-[#000000] md:px-9 md:py-7">
                 <div className="mx-auto max-w-[1760px]">
@@ -319,7 +319,7 @@ export default function MyCart({
                                                             <p className="mt-1 text-sm font-medium text-[rgba(0,0,0,0.72)]">
                                                                 {item.variant
                                                                     .sku ??
-                                                                    'AxeGear'}
+                                                                    'GodKillerGoods'}
                                                             </p>
                                                             {!item.is_available && (
                                                                 <p className="mt-2 text-xs font-extrabold text-[#000000]">
@@ -602,7 +602,7 @@ function SuggestedProducts({ products }: { products: SuggestedProduct[] }) {
                                 {product.title}
                             </h3>
                             <p className="mt-1 text-sm font-medium text-[rgba(0,0,0,0.72)]">
-                                AxeGear Performance
+                                GodKillerGoods Performance
                             </p>
                             <p className="mt-1 text-sm font-black">
                                 {formatPrice(product.price)}

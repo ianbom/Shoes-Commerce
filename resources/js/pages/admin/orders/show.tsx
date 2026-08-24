@@ -685,7 +685,7 @@ export default function OrderShow({ order }: Props) {
                                         <CardHeader
                                             icon={PackagePlus}
                                             title="Create shipment"
-                                            description="Shipment dibuat sekali untuk order paid. Foto label disimpan ke Laravel public storage."
+                                            description="Shipment dibuat sekali untuk order paid. Foto label disimpan ke public storage."
                                         />
                                         <form
                                             onSubmit={submitShipment}

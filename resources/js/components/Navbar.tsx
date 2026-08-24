@@ -13,6 +13,7 @@ type NavbarProps = {
 };
 
 const navItems = [
+    { label: 'Shop All', href: list.url() },
     { label: 'New Arrivals', href: '/list?type=new_arrival' },
     { label: 'Best Sellers', href: '/list?type=best_seller' },
     { label: 'Sneakers', href: '/list?search=sneakers' },

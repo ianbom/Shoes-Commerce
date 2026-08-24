@@ -223,7 +223,7 @@ function CheckoutScreen() {
 
     return (
         <ShopLayout>
-            <Head title="Checkout - AxeGear" />
+            <Head title="Checkout - GodKillerGoods" />
 
             <main className="mx-auto min-h-screen max-w-[1320px] px-4 py-7 md:px-6 lg:px-8 lg:py-10">
                 <div className="mb-8 flex items-center gap-2 text-[12px] font-semibold tracking-[0.02em] text-[rgba(0,0,0,0.72)] uppercase md:text-[13px]">

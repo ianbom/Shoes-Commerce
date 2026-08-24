@@ -62,26 +62,29 @@ it('seeds DummyJSON shoe products idempotently', function () {
         ->and((float) $product->variants->first()->price)->toBe(1843200.00);
 });
 
-it('preserves seeded products when the remote catalog fails', function () {
+it('uses the local snapshot when the remote catalog is rate limited', function () {
     Http::preventStrayRequests();
 
     Http::fake([
         'https://dummyjson.com/products/category/mens-shoes?limit=0' => Http::sequence()
             ->push(['products' => [dummyJsonShoe()]])
-            ->push([], 403)
-            ->push([], 403)
-            ->push([], 403),
-        'https://dummyjson.com/products/category/womens-shoes?limit=0' => Http::response([
-            'products' => [],
-        ]),
+            ->push([], 429)
+            ->push([], 429)
+            ->push([], 429),
+        'https://dummyjson.com/products/category/womens-shoes?limit=0' => Http::sequence()
+            ->push(['products' => []])
+            ->push([], 429)
+            ->push([], 429)
+            ->push([], 429),
     ]);
 
     (new SepatuSeeder)->run();
+    (new SepatuSeeder)->run();
 
-    expect(fn () => (new SepatuSeeder)->run())
-        ->toThrow(RuntimeException::class, 'DummyJSON mens-shoes gagal diakses (HTTP 403)');
-
-    expect(Product::query()->where('sku', 'SHOE-MEN-001')->exists())->toBeTrue();
+    expect(Product::query()->where('sku', 'like', 'SHOE-%')->count())->toBe(3)
+        ->and(Product::query()->where('sku', 'SHOE-MEN-001')->exists())->toBeTrue()
+        ->and(Product::query()->where('sku', 'SHOE-SNAPSHOT-MEN-001')->exists())->toBeTrue()
+        ->and(Product::query()->where('sku', 'SHOE-SNAPSHOT-WOMEN-001')->exists())->toBeTrue();
 });
 
 /**

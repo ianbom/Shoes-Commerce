@@ -163,7 +163,7 @@ export default function ProductForm({ mode, product, options }: Props) {
         name: product?.name ?? '',
         slug: product?.slug ?? '',
         sku: product?.sku ?? '',
-        brand_name: product?.brand_name ?? 'Axegear',
+        brand_name: product?.brand_name ?? 'GodKillerGoods',
         price: product?.price ?? '',
         description: product?.description ?? '',
         weight: product?.weight ?? 0,
@@ -419,16 +419,16 @@ export default function ProductForm({ mode, product, options }: Props) {
                                                             'category_ids',
                                                             event.target.checked
                                                                 ? [
-                                                                      ...data.category_ids,
-                                                                      category.id,
-                                                                  ]
+                                                                    ...data.category_ids,
+                                                                    category.id,
+                                                                ]
                                                                 : data.category_ids.filter(
-                                                                      (id) =>
-                                                                          Number(
-                                                                              id,
-                                                                          ) !==
-                                                                          category.id,
-                                                                  ),
+                                                                    (id) =>
+                                                                        Number(
+                                                                            id,
+                                                                        ) !==
+                                                                        category.id,
+                                                                ),
                                                         )
                                                     }
                                                 />
@@ -532,7 +532,7 @@ export default function ProductForm({ mode, product, options }: Props) {
 
                         <Section
                             title="Product images"
-                            description="Gambar disimpan otomatis ke Laravel public storage."
+                            description="Gambar disimpan otomatis ke public storage."
                         >
                             <div className="space-y-4">
                                 {data.images.map((image, index) => (
@@ -755,8 +755,8 @@ export default function ProductForm({ mode, product, options }: Props) {
                                     {processing
                                         ? 'Saving…'
                                         : isEdit
-                                          ? 'Save changes'
-                                          : 'Create product'}
+                                            ? 'Save changes'
+                                            : 'Create product'}
                                 </Button>
                             </div>
                         </Section>

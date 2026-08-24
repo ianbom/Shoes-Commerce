@@ -25,7 +25,7 @@ export default function SeoHead({
     robots = 'index,follow',
     keywords,
     structuredData,
-    siteName = 'AxeGear',
+    siteName = 'GodKillerGoods',
     locale = 'id_ID',
     twitterHandle,
 }: SeoHeadProps) {

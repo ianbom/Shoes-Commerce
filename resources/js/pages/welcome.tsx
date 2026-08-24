@@ -345,22 +345,22 @@ export default function Welcome({
     return (
         <ShopLayout>
             <SeoHead
-                title="AxeGear | Premium Sneakers and Streetwear"
-                description="Shop premium sneakers, limited releases, and streetwear essentials curated for everyday rotation at AxeGear."
+                title="GodKillerGoods | Premium Sneakers and Streetwear"
+                description="Shop premium sneakers, limited releases, and streetwear essentials curated for everyday rotation at GodKillerGoods."
                 canonical={`${window.location.origin}/`}
                 image={`${window.location.origin}/img/sepatu-hero.png`}
                 structuredData={[
                     {
                         '@context': 'https://schema.org',
                         '@type': 'Organization',
-                        name: 'AxeGear',
+                        name: 'GodKillerGoods',
                         url: `${window.location.origin}/`,
                         logo: `${window.location.origin}/logo-shay/axegear-logo.webp`,
                     },
                     {
                         '@context': 'https://schema.org',
                         '@type': 'WebSite',
-                        name: 'AxeGear',
+                        name: 'GodKillerGoods',
                         url: `${window.location.origin}/`,
                     },
                 ]}

@@ -148,10 +148,10 @@ export default function DetailProduct({
     return (
         <ShopLayout>
             <SeoHead
-                title={`${product.title} | AxeGear`}
+                title={`${product.title} | GodKillerGoods`}
                 description={(
                     product.description ||
-                    `${product.title} by ${product.brand_name || 'AxeGear'}`
+                    `${product.title} by ${product.brand_name || 'GodKillerGoods'}`
                 )
                     .replace(/<[^>]*>/g, '')
                     .slice(0, 160)}

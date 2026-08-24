@@ -242,7 +242,7 @@ class ProductManagementService
     {
         return [
             ...collect($validated)->except(['images', 'variants', 'category_ids'])->all(),
-            'brand_name' => $validated['brand_name'] ?? 'Axegear',
+            'brand_name' => $validated['brand_name'] ?? 'GodKillerGoods',
             'is_featured' => $request->boolean('is_featured'),
             'is_new_arrival' => $request->boolean('is_new_arrival'),
             'is_best_seller' => $request->boolean('is_best_seller'),

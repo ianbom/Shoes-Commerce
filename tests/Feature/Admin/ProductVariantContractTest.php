@@ -88,7 +88,7 @@ function adminProduct(string $slug): Product
     return Product::query()->create([
         'name' => str($slug)->headline()->toString(),
         'slug' => $slug,
-        'brand_name' => 'Axegear',
+        'brand_name' => 'GodKillerGoods',
         'price' => 1200000,
         'weight' => 800,
         'status' => 'draft',

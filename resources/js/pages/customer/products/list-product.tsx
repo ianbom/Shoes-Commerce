@@ -192,8 +192,8 @@ export default function ListProduct({ products, filters, options }: Props) {
     return (
         <ShopLayout>
             <SeoHead
-                title={`${pageTitle} | AxeGear`}
-                description="Browse published sneakers and streetwear products at AxeGear."
+                title={`${pageTitle} | GodKillerGoods`}
+                description="Browse published sneakers and streetwear products at GodKillerGoods."
                 canonical={`${window.location.origin}/list`}
                 robots={
                     Object.values(filters).some(

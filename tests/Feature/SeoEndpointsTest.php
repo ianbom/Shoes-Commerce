@@ -16,7 +16,7 @@ it('includes only published products in the sitemap', function () {
         'name' => 'Published Shoe',
         'slug' => 'published-shoe',
         'sku' => 'PUB-1',
-        'brand_name' => 'Axegear',
+        'brand_name' => 'GodKillerGoods',
         'price' => 100000,
         'status' => 'published',
     ]);
@@ -24,7 +24,7 @@ it('includes only published products in the sitemap', function () {
         'name' => 'Draft Shoe',
         'slug' => 'draft-shoe',
         'sku' => 'DRAFT-1',
-        'brand_name' => 'Axegear',
+        'brand_name' => 'GodKillerGoods',
         'price' => 100000,
         'status' => 'draft',
     ]);

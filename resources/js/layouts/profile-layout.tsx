@@ -70,13 +70,13 @@ export default function ProfileLayout({
 }: ProfileLayoutProps) {
     return (
         <ShopLayout>
-            <Head title={`${pageTitle} - AxeGear`} />
+            <Head title={`${pageTitle} - GodKillerGoods`} />
 
             <section className="relative min-h-[190px] overflow-hidden border-b border-black/16 bg-white md:min-h-[230px]">
                 <div className="absolute inset-y-0 right-0 hidden w-[48%] md:block">
                     <img
                         src={heroImage}
-                        alt="AxeGear cyclist performance profile banner"
+                        alt="GodKillerGoods cyclist performance profile banner"
                         className="h-full w-full object-cover grayscale"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-white via-white/45 to-white/10" />
