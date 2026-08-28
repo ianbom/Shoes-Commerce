@@ -1,546 +1,572 @@
-import { Link } from '@inertiajs/react';
-import { Feather, Mountain, ShieldCheck, Target } from 'lucide-react';
-import type { ComponentType } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 
 import SeoHead from '@/components/seo-head';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import ShopLayout from '@/layouts/shop-layout';
 
-type ValueCard = {
-    title: string;
-    body: string;
-    icon: ComponentType<{
-        className?: string;
-        size?: number;
-        strokeWidth?: number;
-    }>;
+type ComparisonImage = {
+    id: string;
+    src: string;
+    alt: string;
+    label: string;
+    category: string;
+    className: string;
+    imageClassName?: string;
+    marker?: 'good' | 'other';
 };
 
-type DisciplineCard = {
-    title: string;
-    image: string;
-};
-
-type TimelineItem = {
-    year: string;
-    title: string;
-    body: string;
-};
-
-type FeatureCard = {
-    title: string;
-    body: string;
-    image: string;
-};
-
-type AthleteCard = {
-    title: string;
-    body: string;
-    image?: string;
-    cta?: string;
-    href?: string;
-};
-
-type CollectionCard = {
-    title: string;
-    image: string;
-    href: string;
-};
-
-const heroImage =
-    'https://plus.unsplash.com/premium_photo-1661962327591-1b7072da3242?q=80&w=1306&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-const storyImage =
-    'https://images.unsplash.com/photo-1626130569162-f90681b6982a?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-
-const values: ValueCard[] = [
+const mainImages: ComparisonImage[] = [
     {
-        title: 'Precision Performance',
-        body: 'Engineered for clarity, accuracy, and peak performance.',
-        icon: Target,
+        id: 'outsole',
+        src: '/why-us/image.png',
+        alt: 'Retail reference and GodKillerGoods outsole comparison',
+        label: 'RETAIL REFERENCE',
+        category: 'OUTSOLE DETAIL',
+        className:
+            'col-span-2 row-span-3 md:col-span-3 md:row-span-4 lg:col-span-3 lg:row-span-5',
+        imageClassName: 'object-contain',
     },
     {
-        title: 'Athlete-Tested Design',
-        body: 'Tested by athletes. Refined by real-world performance.',
-        icon: ShieldCheck,
+        id: 'shape',
+        src: '/why-us/image copy.png',
+        alt: 'Side profile and heel shape comparison between retail and GodKillerGoods sneakers',
+        label: 'GG',
+        category: 'SHAPE',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-4 lg:col-span-4 lg:row-span-5 lg:translate-y-8 lg:-rotate-[1.25deg]',
+        marker: 'good',
     },
     {
-        title: 'Lightweight Protection',
-        body: 'Lightweight materials with serious impact protection.',
-        icon: Feather,
+        id: 'construction',
+        src: '/why-us/image copy 2.png',
+        alt: 'Inner bar construction comparison on a red sneaker',
+        label: 'OTHER SAMPLE',
+        category: 'CONSTRUCTION',
+        className:
+            'col-span-1 row-span-4 md:col-span-2 md:row-span-5 lg:col-span-2 lg:row-span-6 lg:translate-y-2',
+        imageClassName: 'object-contain',
+        marker: 'other',
     },
     {
-        title: 'Everyday Versatility',
-        body: 'From training to adventure, gear that fits your every moment.',
-        icon: Mountain,
+        id: 'black-detail',
+        src: '/why-us/image copy 3.png',
+        alt: 'Black sneaker material, tongue, and outsole comparison details',
+        label: 'GG QUALITY',
+        category: 'MATERIAL & LABEL',
+        className:
+            'col-span-2 row-span-3 md:col-span-4 md:row-span-4 lg:col-span-3 lg:row-span-5 lg:-translate-y-4 lg:rotate-[0.75deg]',
+        marker: 'good',
+    },
+    {
+        id: 'logo-shape',
+        src: '/why-us/image copy 4.png',
+        alt: 'Side logo, toe box, and tongue comparison on a light sneaker',
+        label: 'RETAIL REFERENCE',
+        category: 'SIDE LOGO & TOE BOX',
+        className:
+            'col-span-2 row-span-3 md:col-span-3 md:row-span-4 lg:col-span-4 lg:row-span-5 lg:translate-y-6',
+    },
+    {
+        id: 'tongue',
+        src: '/why-us/image copy 5.png',
+        alt: 'Retail, GodKillerGoods, and other sample tongue label comparison',
+        label: 'GG',
+        category: 'TONGUE LABEL',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-5 lg:col-span-2 lg:row-span-6 lg:-rotate-[1deg]',
+        imageClassName: 'object-contain',
+        marker: 'good',
+    },
+    {
+        id: 'color',
+        src: '/why-us/image copy 6.png',
+        alt: 'Retail, GodKillerGoods, and other sample panel color comparison',
+        label: 'OTHER SAMPLE',
+        category: 'COLOR & PANEL',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-5 lg:col-span-3 lg:row-span-6 lg:translate-y-10',
+        imageClassName: 'object-contain',
+        marker: 'other',
+    },
+    {
+        id: 'inside-label',
+        src: '/why-us/image copy 7.png',
+        alt: 'Retail, GodKillerGoods, and other sample inside label comparison',
+        label: 'RETAIL REFERENCE',
+        category: 'INSIDE LABEL',
+        className:
+            'col-span-2 row-span-3 md:col-span-2 md:row-span-5 lg:col-span-2 lg:row-span-6 lg:-translate-y-2 lg:rotate-[1.25deg]',
+        imageClassName: 'object-contain',
+    },
+    {
+        id: 'heel',
+        src: '/why-us/image copy 8.png',
+        alt: 'Retail, GodKillerGoods, and other sample heel logo comparison',
+        label: 'GG QUALITY',
+        category: 'HEEL EMBROIDERY',
+        className:
+            'col-span-1 row-span-4 md:col-span-4 md:row-span-4 lg:col-span-4 lg:row-span-5 lg:translate-y-4',
+        imageClassName: 'object-contain',
+        marker: 'good',
+    },
+    {
+        id: 'apparel-finish',
+        src: '/why-us/image copy 9.png',
+        alt: 'Retail reference and GodKillerGoods product finishing comparison',
+        label: 'GG',
+        category: 'OVERALL FINISHING',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-4 lg:col-span-3 lg:row-span-5 lg:-translate-y-6 lg:-rotate-[0.75deg]',
+        imageClassName: 'object-contain',
+        marker: 'good',
+    },
+    {
+        id: 'button',
+        src: '/why-us/image copy 10.png',
+        alt: 'Retail reference and GodKillerGoods detail consistency comparison',
+        label: 'RETAIL REFERENCE',
+        category: 'DETAIL CONSISTENCY',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-5 lg:col-span-2 lg:row-span-6 lg:translate-y-2',
+        imageClassName: 'object-contain',
+    },
+    {
+        id: 'print',
+        src: '/why-us/image copy 11.png',
+        alt: 'Retail reference and GodKillerGoods print proportion comparison',
+        label: 'GG QUALITY',
+        category: 'PRINT & PROPORTION',
+        className:
+            'col-span-2 row-span-3 md:col-span-3 md:row-span-4 lg:col-span-4 lg:row-span-5 lg:translate-y-8 lg:rotate-[1deg]',
+        imageClassName: 'object-contain',
+        marker: 'good',
     },
 ];
 
-const disciplines: DisciplineCard[] = [
+const detailImages: ComparisonImage[] = [
     {
-        title: 'Moto',
-        image: 'https://images.unsplash.com/photo-1558980664-10e7170b5df9?q=80&w=1100&auto=format&fit=crop',
+        id: 'embroidery',
+        src: '/why-us/image copy 12.png',
+        alt: 'Embroidery comparison between retail and GodKillerGoods',
+        label: 'GG',
+        category: 'EMBROIDERY',
+        className: 'col-span-2 row-span-4 md:col-span-3 md:row-span-5',
+        imageClassName: 'object-contain',
+        marker: 'good',
     },
     {
-        title: 'MTB',
-        image: 'https://images.unsplash.com/photo-1544191696-102dbdaeeaa0?q=80&w=1100&auto=format&fit=crop',
+        id: 'back-print',
+        src: '/why-us/image copy 13.png',
+        alt: 'Back print comparison between retail and GodKillerGoods',
+        label: 'RETAIL REFERENCE',
+        category: 'PRINT POSITION',
+        className: 'col-span-1 row-span-4 md:col-span-2 md:row-span-4',
+        imageClassName: 'object-contain',
     },
     {
-        title: 'Cycling',
-        image: 'https://images.unsplash.com/photo-1716331710125-b0b849479686?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        id: 'surface',
+        src: '/why-us/image copy 14.png',
+        alt: 'Material surface and graphic comparison',
+        label: 'GG QUALITY',
+        category: 'MATERIAL',
+        className:
+            'col-span-1 row-span-4 md:col-span-3 md:row-span-5 md:translate-y-8',
+        imageClassName: 'object-contain',
+        marker: 'good',
     },
     {
-        title: 'Running',
-        image: 'https://images.unsplash.com/photo-1486218119243-13883505764c?q=80&w=1100&auto=format&fit=crop',
+        id: 'density',
+        src: '/why-us/image copy 15.png',
+        alt: 'Embroidery density comparison between retail and GodKillerGoods',
+        label: 'GG',
+        category: 'STITCHING',
+        className: 'col-span-2 row-span-3 md:col-span-4 md:row-span-4',
+        imageClassName: 'object-contain',
+        marker: 'good',
     },
     {
-        title: 'Outdoor',
-        image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1100&auto=format&fit=crop',
+        id: 'outsole-macro',
+        src: '/why-us/image.png',
+        alt: 'Macro crop of sneaker outsole comparison',
+        label: 'OTHER SAMPLE',
+        category: 'FINISHING',
+        className:
+            'col-span-1 row-span-4 md:col-span-2 md:row-span-5 md:-translate-y-5',
+        imageClassName: 'object-cover object-bottom',
+        marker: 'other',
     },
     {
-        title: 'Snow',
-        image: 'https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=1100&auto=format&fit=crop',
-    },
-];
-
-const timeline: TimelineItem[] = [
-    {
-        year: "2010's",
-        title: 'The Beginning',
-        body: 'A small idea born from a passion for speed and the outdoors.',
+        id: 'tongue-macro',
+        src: '/why-us/image copy 5.png',
+        alt: 'Macro crop of sneaker tongue label and stitching',
+        label: 'RETAIL REFERENCE',
+        category: 'LABEL',
+        className: 'col-span-1 row-span-4 md:col-span-3 md:row-span-5',
+        imageClassName: 'object-cover object-top',
     },
     {
-        year: "2012's",
-        title: 'First Collection',
-        body: 'Our first line of performance eyewear launched with a focus on clarity and fit.',
-    },
-    {
-        year: "2015's",
-        title: 'Built to Perform',
-        body: 'Expanded our range and community with athlete-tested, athlete-approved gear.',
-    },
-    {
-        year: "2018's",
-        title: 'Global Adventure',
-        body: 'GodKillerGoods reached athletes worldwide across every terrain and condition.',
-    },
-    {
-        year: "2022's",
-        title: 'The Future Ahead',
-        body: 'Continuing to innovate for the next generation of athletes.',
-    },
-];
-
-const features: FeatureCard[] = [
-    {
-        title: 'HD Clarity Lenses',
-        body: 'High-definition optics for unmatched clarity and contrast in any condition.',
-        image: 'https://images.unsplash.com/photo-1611004061856-ccc3cbe944b2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-        title: 'Impact Protection',
-        body: 'Durable, shatter-resistant lenses built to handle extreme impact.',
-        image: 'https://images.unsplash.com/photo-1707985034123-dbbed1830205?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-        title: 'Secure Fit',
-        body: 'Ergonomic design with non-slip grip for all-day comfort and stability.',
-        image: 'https://plus.unsplash.com/premium_photo-1694016219825-62a6a5697027?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-        title: 'Vented Design',
-        body: 'Advanced airflow reduces fog and keeps you cool when it matters most.',
-        image: 'https://plus.unsplash.com/premium_photo-1661870277562-53f9b176fc75?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-        title: 'Premium Materials',
-        body: 'Lightweight, flexible, and built to last through every adventure.',
-        image: 'https://images.unsplash.com/photo-1550085822-fe856d19136d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        id: 'heel-macro',
+        src: '/why-us/image copy 8.png',
+        alt: 'Macro crop of sneaker heel embroidery comparison',
+        label: 'GG QUALITY',
+        category: 'COLOR',
+        className:
+            'col-span-2 row-span-3 md:col-span-3 md:row-span-4 md:translate-y-5',
+        imageClassName: 'object-cover object-center',
+        marker: 'good',
     },
 ];
 
-const athletes: AthleteCard[] = [
-    {
-        title: 'Built on Feedback',
-        body: 'We listen to athletes across the world to create gear that solves real needs.',
-        image: 'https://images.unsplash.com/photo-1592247034198-9dd62e0b7a9e?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        cta: 'Learn More',
-        href: '/about',
-    },
-    {
-        title: 'Made for the Driven',
-        body: "Whether you race, train, or explore, we're with you.",
-        image: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?q=80&w=1200&auto=format&fit=crop',
-        cta: 'Our Story',
-        href: '/about',
-    },
-    {
-        title: 'Performance Without Limits',
-        body: 'Gear that adapts to you and every environment.',
-        image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop',
-        cta: 'Explore Gear',
-        href: '/list',
-    },
+const galleryImages = [...mainImages, ...detailImages];
+const processSteps = [
+    ['01', 'COMPARE', 'Kami membandingkan berbagai pilihan factory dan batch.'],
+    [
+        '02',
+        'SELECT',
+        'Produk dipilih berdasarkan detail, material, shape, warna dan finishing.',
+    ],
+    ['03', 'QC', 'Produk diperiksa kembali sebelum dikirim kepada customer.'],
+] as const;
+const qualityChecks = [
+    'MODEL',
+    'SKU',
+    'SIZE',
+    'COLOR',
+    'SHAPE',
+    'STITCHING',
+    'MATERIAL',
+    'OVERALL CONDITION',
 ];
-
-const collections: CollectionCard[] = [
-    {
-        title: 'Sunglasses',
-        image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=900&auto=format&fit=crop',
-        href: '/list?search=sunglasses',
-    },
-    {
-        title: 'Goggles',
-        image: 'https://images.unsplash.com/photo-1519764622345-23439dd774f7?q=80&w=900&auto=format&fit=crop',
-        href: '/list?search=goggles',
-    },
-    {
-        title: 'Gloves',
-        image: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=900&auto=format&fit=crop',
-        href: '/list?search=gloves',
-    },
-    {
-        title: 'Apparel',
-        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop',
-        href: '/list?search=apparel',
-    },
-    {
-        title: 'Accessories',
-        image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=900&auto=format&fit=crop',
-        href: '/list?search=accessories',
-    },
+const summaryRows = [
+    'SINCE 2020',
+    'GG QUALITY',
+    'FACTORY & BATCH COMPARISON',
+    'QC BEFORE SHIPPING',
+    'REAL PRODUCT PHOTOS',
+    'DIRECT SOURCING',
+    'SPECIAL REQUEST',
+    'SAFE PACKAGING',
+    'CLAIM SUPPORT',
 ];
+const realImages = [
+    [
+        '/why-us/image copy.png',
+        'SIDE PROFILE',
+        'On-hand side profile comparison of GodKillerGoods sneakers',
+    ],
+    [
+        '/why-us/image copy 4.png',
+        'DETAIL',
+        'On-hand detail comparison of GodKillerGoods sneakers',
+    ],
+    [
+        '/why-us/image copy 3.png',
+        'ON-HAND / QC',
+        'Quality control detail of a GodKillerGoods sneaker',
+    ],
+] as const;
 
-export default function AboutPage() {
+export default function About() {
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const selectedIndex = galleryImages.findIndex(
+        (image) => image.id === selectedId,
+    );
+    const selectedImage = galleryImages[selectedIndex] ?? null;
+
+    const moveLightbox = (direction: number) => {
+        if (selectedIndex < 0) {
+            return;
+        }
+
+        const nextIndex =
+            (selectedIndex + direction + galleryImages.length) %
+            galleryImages.length;
+        setSelectedId(galleryImages[nextIndex].id);
+    };
+
     return (
         <ShopLayout>
             <SeoHead
-                title="About GodKillerGoods | Premium Sneakers and Streetwear"
-                description="Learn about GodKillerGoods and our approach to premium sneakers, limited releases, and streetwear essentials."
-                canonical={`${window.location.origin}/about`}
+                title="Why Us | GodKillerGoods"
+                description="Lihat detail yang menjadi dasar proses perbandingan, seleksi, dan quality control GodKillerGoods."
+                canonical="/about"
+                image="/why-us/image copy.png"
             />
+            <div className="bg-white text-[#111111]">
+                <section className="px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24 lg:px-10 lg:pt-40 lg:pb-32">
+                    <div className="mx-auto flex max-w-[760px] flex-col items-center">
+                        <p className="text-[11px] font-semibold tracking-[0.28em] text-[#FA5400] uppercase sm:text-xs">
+                            Why GodKiller Goods
+                        </p>
+                        <h1 className="mt-5 text-[56px] leading-[0.86] font-black tracking-[-0.075em] uppercase sm:text-7xl lg:text-[112px]">
+                            Why Us
+                        </h1>
+                        <div className="mt-8 flex max-w-[720px] flex-col gap-4 text-sm leading-7 text-[#757575] sm:mt-10 sm:text-base sm:leading-8">
+                            <p>
+                                Sejak 2020, GodKillerGoods berkomitmen
+                                menghadirkan produk yang telah melalui proses
+                                seleksi detail berdasarkan standar Godkiller
+                                Goods Quality.
+                            </p>
+                            <p>
+                                Kami membandingkan berbagai factory dan batch
+                                untuk setiap model, mulai dari shape, material,
+                                warna, stitching, embroidery hingga overall
+                                finishing.
+                            </p>
+                        </div>
+                    </div>
+                </section>
 
-            <div className="bg-white">
-                <HeroSection />
-                <WhoWeAreSection />
-                <ValuesSection />
-                <DisciplinesSection />
-                <JourneySection />
-                <FeaturesSection />
-                <AthletesSection />
-                <CollectionsSection />
+                <section
+                    aria-label="GodKillerGoods product comparison gallery"
+                    className="mx-auto max-w-[1600px] px-3 sm:px-5 lg:px-8"
+                >
+                    <EditorialCollage
+                        images={mainImages}
+                        onSelect={setSelectedId}
+                    />
+                </section>
+
+                <br/>
+                <br/>
+
+                <section
+                    aria-labelledby="detail-comparison-title"
+                    className="mx-auto max-w-[1500px] px-4 pb-32 sm:px-6 sm:pb-44 lg:px-10 lg:pb-56"
+                >
+                    <div className="mb-12 flex items-end justify-between gap-6 border-b border-[#E5E5E5] pb-5 sm:mb-16">
+                        <div>
+                            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#757575] uppercase">
+                                Detail Comparison
+                            </p>
+                            <h2
+                                id="detail-comparison-title"
+                                className="mt-3 text-4xl font-black tracking-[-0.055em] uppercase sm:text-6xl"
+                            >
+                                Evidence in every detail.
+                            </h2>
+                        </div>
+                        <span className="hidden text-xs text-[#757575] sm:block">
+                            06—08 DETAILS
+                        </span>
+                    </div>
+                    <EditorialCollage
+                        images={detailImages}
+                        onSelect={setSelectedId}
+                        compact
+                    />
+                </section>
+
+                <section className="border-y border-[#E5E5E5]">
+                    <div className="mx-auto grid max-w-[1500px] gap-16 px-4 py-28 sm:px-6 sm:py-36 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:py-44">
+                        <div className="max-w-xl">
+                            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#757575] uppercase">
+                                Real Product Pictures
+                            </p>
+                            <h2 className="mt-5 text-5xl leading-[0.9] font-black tracking-[-0.06em] uppercase sm:text-7xl lg:text-[92px]">
+                                What you see
+                                <br />
+                                is what you get.
+                            </h2>
+                            <p className="mt-8 max-w-md text-base leading-8 text-[#757575]">
+                                Semua foto yang kami tampilkan merupakan real
+                                picture produk yang kami tangani.
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+                            {realImages.map(([src, label, alt], index) => (
+                                <figure
+                                    key={label}
+                                    className={
+                                        index === 0
+                                            ? 'col-span-2'
+                                            : index === 1
+                                              ? 'md:translate-y-14'
+                                              : 'md:translate-y-6'
+                                    }
+                                >
+                                    <div className="h-[280px] overflow-hidden bg-[#F5F5F5] sm:h-[360px] lg:h-[460px]">
+                                        <img
+                                            src={src}
+                                            alt={alt}
+                                            loading="lazy"
+                                            className="h-full w-full object-cover transition-transform duration-300 ease-out hover:scale-[1.02]"
+                                        />
+                                    </div>
+                                    <figcaption className="mt-3 text-[11px] font-semibold tracking-[0.18em] text-[#757575] uppercase">
+                                        {label}
+                                    </figcaption>
+                                </figure>
+                            ))}
+                        </div>
+                    </div>
+                </section>
             </div>
+
+            <Dialog
+                open={selectedImage !== null}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setSelectedId(null);
+                    }
+                }}
+            >
+                <DialogContent className="max-h-[94vh] max-w-[calc(100%-1rem)] gap-0 overflow-hidden rounded-none border-0 bg-[#111111] p-0 text-white shadow-none sm:max-w-6xl">
+                    {selectedImage ? (
+                        <div className="grid max-h-[94vh] lg:grid-cols-[1fr_320px]">
+                            <div className="flex min-h-0 items-center justify-center bg-black p-3 sm:p-6">
+                                <img
+                                    src={selectedImage.src}
+                                    alt={selectedImage.alt}
+                                    className="max-h-[72vh] w-full object-contain lg:max-h-[88vh]"
+                                />
+                            </div>
+                            <div className="flex flex-col justify-between gap-8 overflow-y-auto p-6 sm:p-8 lg:p-10">
+                                <DialogHeader className="pr-8 text-left">
+                                    <p className="text-[11px] font-semibold tracking-[0.2em] text-white/50 uppercase">
+                                        {selectedImage.label}
+                                    </p>
+                                    <DialogTitle className="mt-3 text-3xl leading-none font-black tracking-[-0.04em] uppercase">
+                                        {selectedImage.category}
+                                    </DialogTitle>
+                                    <DialogDescription className="mt-4 text-sm leading-7 text-white/60">
+                                        Detail produk dibandingkan secara visual
+                                        sebagai bagian dari proses seleksi
+                                        GodKillerGoods.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="flex items-center justify-between border-t border-white/20 pt-5">
+                                    <span className="text-xs text-white/50">
+                                        {String(selectedIndex + 1).padStart(
+                                            2,
+                                            '0',
+                                        )}{' '}
+                                        / {galleryImages.length}
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => moveLightbox(-1)}
+                                            aria-label="View previous comparison image"
+                                            className="inline-flex h-11 w-11 items-center justify-center border border-white/30 transition-colors hover:border-white hover:bg-white hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => moveLightbox(1)}
+                                            aria-label="View next comparison image"
+                                            className="inline-flex h-11 w-11 items-center justify-center border border-white/30 transition-colors hover:border-white hover:bg-white hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                        >
+                                            <ArrowRight className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+                </DialogContent>
+            </Dialog>
         </ShopLayout>
     );
 }
 
-function HeroSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white">
-            <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[0.98fr_1.02fr]">
-                <div className="flex items-center px-6 py-10 md:px-10 lg:px-14 lg:py-16">
-                    <div className="max-w-[650px]">
-                        <SectionTag>About GodKillerGoods Shop</SectionTag>
-                        <h1 className="mt-6 text-[52px] leading-[0.9] font-black text-[#000000] uppercase italic md:text-[74px] xl:text-[92px]">
-                            Built for speed. Designed for clarity.
-                        </h1>
-                        <p className="mt-6 max-w-[600px] text-[18px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
-                            At GodKillerGoods Shop, we create premium performance
-                            eyewear and gear for athletes who demand clarity,
-                            durability, and confidence on every ride, run, and
-                            adventure.
-                        </p>
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <Link
-                                href="/list"
-                                className="inline-flex h-13 items-center justify-center bg-[#000000] px-9 text-[14px] font-black tracking-[0.06em] text-white uppercase hover:bg-[rgba(0,0,0,0.84)]"
-                            >
-                                Shop Collection
-                            </Link>
-                            <a
-                                href="#our-story"
-                                className="inline-flex h-13 items-center justify-center border border-[#000000] bg-white px-9 text-[14px] font-black tracking-[0.06em] text-[#000000] uppercase hover:bg-[#000000] hover:text-white"
-                            >
-                                Our Story
-                            </a>
-                        </div>
-                    </div>
-                </div>
+function EditorialCollage({
+    images,
+    onSelect,
+    compact = false,
+}: {
+    images: ComparisonImage[];
+    onSelect: (id: string) => void;
+    compact?: boolean;
+}) {
+    const gridClassName = compact
+        ? 'lg:[grid-auto-rows:64px]'
+        : 'lg:[grid-auto-rows:72px]';
 
-                <div className="min-h-[360px] lg:min-h-[620px]">
-                    <img
-                        src={heroImage}
-                        alt="Cyclist wearing GodKillerGoods performance eyewear"
-                        className="h-full w-full object-cover"
-                    />
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function WhoWeAreSection() {
     return (
-        <section
-            id="our-story"
-            className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-12"
+        <div
+            className={[
+                'grid grid-flow-dense [grid-auto-rows:68px] grid-cols-2 gap-3 sm:[grid-auto-rows:76px] sm:gap-4 md:[grid-auto-rows:58px] md:grid-cols-6 lg:grid-cols-12',
+                gridClassName,
+            ].join(' ')}
         >
-            <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-                <div className="max-w-[560px]">
-                    <SectionTag>Who We Are</SectionTag>
-                    <h2 className="mt-5 text-[46px] leading-[0.92] font-black text-[#000000] uppercase italic md:text-[56px]">
-                        Built different.
-                    </h2>
-                    <p className="mt-5 text-[17px] leading-8 font-medium text-[rgba(0,0,0,0.72)]">
-                        GodKillerGoods Shop was built on a simple belief: athletes
-                        deserve gear that keeps up with their drive. We design
-                        high-performance eyewear and accessories that combine
-                        precision engineering, athlete feedback, and modern
-                        style to help you perform at your best.
-                    </p>
-                    <p className="mt-8 text-[17px] leading-8 font-black text-[#000000]">
-                        Built Different. Built for You.
-                    </p>
-                </div>
-
-                <div>
+            {images.map((image) => (
+                <button
+                    key={image.id}
+                    type="button"
+                    onClick={() => onSelect(image.id)}
+                    aria-label={
+                        'View ' +
+                        image.category.toLowerCase() +
+                        ' comparison detail'
+                    }
+                    className={[
+                        'group relative min-h-0 overflow-hidden bg-[#F5F5F5] text-left focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#FA5400]',
+                        image.className,
+                    ].join(' ')}
+                >
                     <img
-                        src={storyImage}
-                        alt="GodKillerGoods performance eyewear on rock surface"
-                        className="aspect-[16/7] w-full border border-[rgba(0,0,0,0.16)] object-cover"
+                        src={image.src}
+                        alt={image.alt}
+                        loading="lazy"
+                        className={[
+                            'h-full w-full transition-transform duration-300 ease-out group-hover:scale-[1.025]',
+                            image.imageClassName ?? 'object-cover',
+                        ].join(' ')}
                     />
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function ValuesSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-8 md:px-10 lg:px-12 lg:py-10">
-            <div className="mx-auto max-w-[1440px]">
-                <div className="mb-8 flex justify-center lg:justify-start">
-                    <SectionTag>What Drives Us</SectionTag>
-                </div>
-                <div className="grid grid-cols-1 border-y border-[rgba(0,0,0,0.16)] sm:grid-cols-2 lg:grid-cols-4">
-                    {values.map((item, index) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <article
-                                key={item.title}
-                                className={`flex flex-col items-center px-6 py-7 text-center ${index > 0 ? 'lg:border-l lg:border-[rgba(0,0,0,0.16)]' : ''} ${index > 1 ? 'sm:border-t sm:border-[rgba(0,0,0,0.16)] lg:border-t-0' : ''}`}
-                            >
-                                <Icon
-                                    size={56}
-                                    strokeWidth={1.5}
-                                    className="text-[#000000]"
-                                />
-                                <h3 className="mt-5 text-[24px] leading-tight font-black text-[#000000] uppercase">
-                                    {item.title}
-                                </h3>
-                                <p className="mt-3 max-w-[270px] text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
-                                    {item.body}
-                                </p>
-                            </article>
-                        );
-                    })}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function DisciplinesSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1440px]">
-                <CenteredTag>Engineered for every discipline</CenteredTag>
-                <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-                    {disciplines.map((item) => (
-                        <article
-                            key={item.title}
-                            className="relative aspect-[1.55] overflow-hidden border border-[rgba(0,0,0,0.16)]"
-                        >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="h-full w-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                            <p className="absolute right-4 bottom-3 left-4 text-[28px] leading-none font-black text-white uppercase italic md:text-[32px]">
-                                {item.title}
-                            </p>
-                        </article>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function JourneySection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1440px]">
-                <CenteredTag>Join Journey</CenteredTag>
-
-                <div className="mt-9 hidden items-center px-6 lg:flex">
-                    <div className="h-[2px] flex-1 bg-[#000000]" />
-                    {timeline.map((item) => (
-                        <div key={item.year} className="relative flex-1">
-                            <div className="mx-auto h-3 w-3 rounded-full bg-[#000000]" />
-                        </div>
-                    ))}
-                    <div className="h-[2px] flex-1 bg-[#000000]" />
-                </div>
-
-                <div className="mt-8 grid gap-6 lg:grid-cols-5 lg:gap-8">
-                    {timeline.map((item) => (
-                        <article
-                            key={item.year}
-                            className="border-t border-[rgba(0,0,0,0.16)] pt-5 lg:border-t-0 lg:pt-0"
-                        >
-                            <p className="text-[18px] font-black text-[#000000]">
-                                {item.year}
-                            </p>
-                            <h3 className="mt-3 text-[24px] leading-tight font-black text-[#000000] uppercase">
-                                {item.title}
-                            </h3>
-                            <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
-                                {item.body}
-                            </p>
-                        </article>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function FeaturesSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1440px]">
-                <CenteredTag>Designed for Performance</CenteredTag>
-                <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                    {features.map((item) => (
-                        <article
-                            key={item.title}
-                            className="border border-[rgba(0,0,0,0.16)] bg-white"
-                        >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="aspect-[1.5] w-full object-cover"
-                            />
-                            <div className="p-5">
-                                <h3 className="text-[22px] leading-tight font-black text-[#000000] uppercase">
-                                    {item.title}
-                                </h3>
-                                <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
-                                    {item.body}
-                                </p>
-                            </div>
-                        </article>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function AthletesSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1440px]">
-                <CenteredTag>Inspired by Athletes</CenteredTag>
-                <div className="mt-7 grid gap-4 lg:grid-cols-3">
-                    {athletes.map((item) => (
-                        <article
-                            key={item.title}
-                            className="grid min-h-[216px] border border-[rgba(0,0,0,0.16)] bg-white md:grid-cols-[0.95fr_1.05fr]"
-                        >
-                            {item.image && (
-                                <img
-                                    src={item.image}
-                                    alt={item.title}
-                                    className="h-full w-full object-cover"
-                                />
-                            )}
-                            <div className="flex flex-col justify-between p-5">
-                                <div>
-                                    <h3 className="text-[24px] leading-tight font-black text-[#000000] uppercase">
-                                        {item.title}
-                                    </h3>
-                                    <p className="mt-3 text-[15px] leading-7 font-medium text-[rgba(0,0,0,0.72)]">
-                                        {item.body}
-                                    </p>
-                                </div>
-                                {item.cta && item.href && (
-                                    <Link
-                                        href={item.href}
-                                        className="mt-5 inline-flex items-center gap-2 text-[13px] font-black tracking-[0.06em] text-[#000000] uppercase hover:text-[rgba(0,0,0,0.84)]"
-                                    >
-                                        {item.cta}{' '}
-                                        <span aria-hidden="true">-&gt;</span>
-                                    </Link>
-                                )}
-                            </div>
-                        </article>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function CollectionsSection() {
-    return (
-        <section className="border-b border-[rgba(0,0,0,0.16)] bg-white px-6 py-9 md:px-10 lg:px-12 lg:py-12">
-            <div className="mx-auto max-w-[1440px]">
-                <CenteredTag>Featured Collections</CenteredTag>
-                <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                    {collections.map((item) => (
-                        <Link
-                            key={item.title}
-                            href={item.href}
-                            className="border border-[rgba(0,0,0,0.16)] bg-white hover:border-[#000000]"
-                        >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="aspect-[1.5] w-full object-cover"
-                            />
-                            <div className="p-4 text-center">
-                                <h3 className="text-[21px] leading-tight font-black text-[#000000] uppercase">
-                                    {item.title}
-                                </h3>
-                                <p className="mt-2 text-[13px] font-black tracking-[0.05em] text-[#000000] uppercase">
-                                    Explore Collection{' '}
-                                    <span aria-hidden="true">-&gt;</span>
-                                </p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function SectionTag({ children }: { children: string }) {
-    return (
-        <div className="inline-flex items-center gap-3 text-[13px] font-black tracking-[0.06em] text-[#000000] uppercase">
-            <span className="h-[3px] w-10 bg-[#000000]" />
-            {children}
+                    <span className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/35" />
+                    <span className="absolute inset-x-0 bottom-0 flex translate-y-2 items-end justify-between gap-3 p-4 text-white opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                        <span>
+                            <span className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.18em] uppercase">
+                                {image.marker ? (
+                                    <span
+                                        className={
+                                            image.marker === 'good'
+                                                ? 'h-1.5 w-1.5 rounded-full bg-[#39B96E]'
+                                                : 'h-1.5 w-1.5 rounded-full bg-[#B35D5D]'
+                                        }
+                                    />
+                                ) : null}
+                                {image.label}
+                            </span>
+                            <span className="mt-1 block text-sm font-bold tracking-[-0.01em] uppercase sm:text-base">
+                                {image.category}
+                            </span>
+                        </span>
+                        <span className="hidden shrink-0 text-[10px] font-semibold tracking-[0.12em] uppercase sm:block">
+                            View detail →
+                        </span>
+                    </span>
+                </button>
+            ))}
         </div>
     );
 }
 
-function CenteredTag({ children }: { children: string }) {
+function ContactRow({
+    label,
+    value,
+}: {
+    label: string;
+    value: React.ReactNode;
+}) {
     return (
-        <div className="flex items-center justify-center gap-3 text-center text-[14px] font-black tracking-[0.03em] text-[#000000] uppercase italic">
-            <span className="h-[3px] w-8 bg-[#000000]" />
-            <span>{children}</span>
+        <div className="grid grid-cols-[130px_1fr] gap-5 border-b border-[#E5E5E5] py-5 sm:grid-cols-[160px_1fr] sm:py-6">
+            <dt className="text-[11px] font-semibold tracking-[0.14em] text-[#757575] uppercase">
+                {label}
+            </dt>
+            <dd className="text-sm leading-6 font-medium sm:text-base">
+                {value}
+            </dd>
         </div>
     );
 }
